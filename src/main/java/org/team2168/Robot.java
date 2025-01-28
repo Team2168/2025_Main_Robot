@@ -7,6 +7,8 @@ package org.team2168;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import io.github.oblarg.oblog.Logger;
+
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -89,7 +91,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    Logger.updateEntries();
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
