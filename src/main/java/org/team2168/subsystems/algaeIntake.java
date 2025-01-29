@@ -14,6 +14,25 @@ public class algaeIntake extends SubsystemBase {
   private final double TICKS_PER_REV = 2048;
   private final static double GEAR_RATIO = 50.0; // placeholder
 
+  private double kP = 15.0; //placeholders
+  private double kI = 0.0;
+  private double kD = 0.3;
+  private double kG = -2.6;
+
+  //private double kV = 0.12;
+  //private double kA = 0.1;
+
+  private final boolean ENABLE_CURRENT_LIMIT = true;
+  private final double CONTINUOUS_CURRENT_LIMIT = 15.0;
+  private final double TRIGGER_THRESHOLD_LIMIT = 20;
+  private final double TRIGGER_THRESHOLD_TIME = 0.2;
+  private double neutralDeadband = 0.01;
+  private double maxForwardOutput = 1;
+  private double maxBackwardOutput = -1;
+  final double MIN_ANGLE = -120;
+  final double MAX_ANGLE = 0;
+
+
   //private static = new
 
   //neo motor
@@ -40,6 +59,10 @@ public class algaeIntake extends SubsystemBase {
    */
   public double degreesToTicks(double degrees) {
     return (degrees/360.0) * GEAR_RATIO * TICKS_PER_REV;
+  }
+
+  public void setSpeed(double percentOutput) {
+    //algaeIntake.set(percentOutput);
   }
 
   public static algaeIntake getInstance() {
