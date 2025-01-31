@@ -3,9 +3,19 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package org.team2168.subsystems;
-//package com.revrobotics.config;
+
 
 import org.team2168.Constants;
+
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class algaeIntakePivot extends SubsystemBase {
@@ -32,11 +42,24 @@ public class algaeIntakePivot extends SubsystemBase {
   final double MIN_ANGLE = -120;
   final double MAX_ANGLE = 0;
 
-
-  //private static = new
+  private static SparkMax intakePivotOne = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
+  private static SparkMaxConfig config = new SparkMaxConfig();
+  private static SparkClosedLoopController maxPid = intakePivotOne.getClosedLoopController();
 
   //neo motor
-  public algaeIntakePivot() {}
+  public algaeIntakePivot() {
+    config
+    .inverted(true)
+    .idleMode(IdleMode.kBrake);
+  config.encoder
+    .positionConversionFactor(1000)
+    .velocityConversionFactor(1000);
+  config.closedLoop
+    .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+    .pid(1.0, 0.0, 0.0);
+    
+  intakePivotOne.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
+  }
 
   @Override
   public void periodic() {

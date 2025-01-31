@@ -5,6 +5,14 @@
 package org.team2168.subsystems;
 
 import org.team2168.Constants;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkRelativeEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
@@ -21,8 +29,20 @@ public class algaeIntakeWheel extends SubsystemBase {
   private final double GEAR_RATIO = 0; //placeholder
   private final int SMART_CURRENT_LIMIT = 20;
   private boolean isInverted = false;
+  private IdleMode coast = IdleMode.kCoast;
+
+  private static SparkMax intakeWheelOne = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
+  private static RelativeEncoder intakeWheelEncoder = intakeWheelOne.getEncoder();
+
 
   public algaeIntakeWheel() {
+    /*intakeWheelOne.restoreFactoryDefaults();
+
+    intakeWheelOne.setInverted(isInverted); //outdated
+    intakeWheelOne.setIdleMode(coast);
+    intakeWheelOne.setSmartCurrentLimit(SMART_CURRENT_LIMIT);*/ 
+
+    //figure out how to make these work in 2025 sparkmax code
     
   }
   
@@ -30,6 +50,14 @@ public class algaeIntakeWheel extends SubsystemBase {
       if(instance == null)
       instance = new algaeIntakeWheel();
       return instance;
+    }
+
+      /**
+   * sets the speed in percentage
+   * @param speed value is between -1.0 and 1.0
+   */
+     public void setRollerSpeed(double speed) {
+      intakeWheelOne.set(speed);
     }
 
     private double RPMToTicksPerOneHundredMS(double speedRPM) {
