@@ -8,9 +8,9 @@ package org.team2168.subsystems;
 import org.team2168.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class algaeIntake extends SubsystemBase {
+public class algaeIntakePivot extends SubsystemBase {
   /** Creates a new algaeIntake. */
-  private static algaeIntake instance = null;
+  private static algaeIntakePivot instance = null;
   private final double TICKS_PER_REV = 2048;
   private final static double GEAR_RATIO = 50.0; // placeholder
 
@@ -36,7 +36,7 @@ public class algaeIntake extends SubsystemBase {
   //private static = new
 
   //neo motor
-  public algaeIntake() {}
+  public algaeIntakePivot() {}
 
   @Override
   public void periodic() {
@@ -65,9 +65,9 @@ public class algaeIntake extends SubsystemBase {
     //algaeIntake.set(percentOutput);
   }
 
-  public static algaeIntake getInstance() {
+  public static algaeIntakePivot getInstance() {
     if(instance == null)
-    instance = new algaeIntake();
+    instance = new algaeIntakePivot();
     return instance;
   }
 }
