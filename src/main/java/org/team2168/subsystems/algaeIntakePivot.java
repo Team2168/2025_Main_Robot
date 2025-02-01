@@ -7,6 +7,7 @@ package org.team2168.subsystems;
 
 import org.team2168.Constants;
 
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -19,6 +20,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkBaseConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class algaeIntakePivot extends SubsystemBase {
@@ -47,6 +49,7 @@ public class algaeIntakePivot extends SubsystemBase {
   private IdleMode brake = IdleMode.kBrake;
   final double MIN_ANGLE = -120;
   final double MAX_ANGLE = 0;
+  final MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0.0);
 
   private static SparkMax intakePivotOne = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
   private static SparkMaxConfig config = new SparkMaxConfig();
@@ -103,6 +106,11 @@ public class algaeIntakePivot extends SubsystemBase {
 
   public void setSpeed(double percentOutput) {
     //algaeIntake.set(percentOutput);
+  }
+
+  public void setIntakePivotPosition(double degrees) {
+    var demand = MathUtil.clamp(degrees, MIN_ANGLE, MAX_ANGLE);
+    //intakePivotOne.setControl(motionMagicVoltage.withPosition((degreesToRot(demand)))); //figure out something that works for this with SPARKMAX
   }
 
   public static algaeIntakePivot getInstance() {
