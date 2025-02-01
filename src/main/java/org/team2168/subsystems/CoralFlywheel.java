@@ -20,4 +20,19 @@ public class CoralFlywheel extends SubsystemBase {
     private final int SMART_CURRENT_LIMIT = 20;
     private boolean isInverted = false;
     private IdleMode coast = IdleMode.kCoast;
+
+    private CoralFlywheel() {
+        final SparkMaxConfig motorConfig = new SparkMaxConfig();
+
+        motorConfig
+            .idleMode(coast)
+            .inverted(isInverted);
+        motorConfig.encoder
+            .positionConversionFactor(0) //tbd
+            .velocityConversionFactor(0); //tbd
+
+        motorConfig.signals.primaryEncoderPositionPeriodMs(5);
+
+        flywheelMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
 }
