@@ -22,18 +22,16 @@ public class CoralFlywheel extends SubsystemBase {
     private IdleMode coast = IdleMode.kCoast;
 
     private CoralFlywheel() {
-        final SparkMaxConfig motorConfig = new SparkMaxConfig();
+        final SparkMaxConfig motorConfigs = new SparkMaxConfig();
 
-        motorConfig
+        motorConfigs
             .idleMode(coast)
-            .inverted(isInverted);
-        motorConfig.encoder
-            .positionConversionFactor(0) //tbd
-            .velocityConversionFactor(0); //tbd
+            .inverted(isInverted)
+            .smartCurrentLimit(SMART_CURRENT_LIMIT);
 
-        motorConfig.signals.primaryEncoderPositionPeriodMs(5);
+        motorConfigs.signals.primaryEncoderPositionPeriodMs(5);
 
-        flywheelMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        flywheelMotor.configure(motorConfigs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
      /**
@@ -43,7 +41,6 @@ public class CoralFlywheel extends SubsystemBase {
     public void setFlywheelSpeed(double speed) {
         flywheelMotor.set(speed);
     }
-
 
      /**
      * converts RPM to ticks per one hundred ms
