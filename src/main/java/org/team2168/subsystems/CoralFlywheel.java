@@ -35,4 +35,12 @@ public class CoralFlywheel extends SubsystemBase {
 
         flywheelMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
+
+    /**
+     * sets the flywheel's motor speed
+     * @param speed the speed in percentage. value is between -1.0 and 1.0
+     */
+    public void setFlywheelSpeed(double speed) {
+        flywheelMotor.set(speed);
+    }
 }
