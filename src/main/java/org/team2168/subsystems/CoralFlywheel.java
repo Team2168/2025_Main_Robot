@@ -66,5 +66,10 @@ public class CoralFlywheel extends SubsystemBase {
      */
     private double TicksPerOneHundredMSToRPM(double ticksPerHundredMs) {
         return ticksPerHundredMs * (GEAR_RATIO/TICKS_PER_REV) * minuteInHundredMs;
-  }
+    }
+
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+    }
 }
