@@ -5,14 +5,20 @@
 package org.team2168.subsystems;
 
 import org.team2168.Constants;
+
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkRelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
@@ -27,23 +33,26 @@ public class algaeIntakeWheel extends SubsystemBase {
   private final double minuteInHundredMs = 600.0;
   private final double TICKS_PER_REV = 2048;
   private final double GEAR_RATIO = 0; //placeholder
-  private final int SMART_CURRENT_LIMIT = 20;
-  private boolean isInverted = false;
-  private IdleMode coast = IdleMode.kCoast;
+  private final int SMART_CURRENT_LIMIT = 20; //placeholder
+  private boolean isInverted = false; //placedholder
+  private IdleMode coast = IdleMode.kCoast; //placeholder
 
   private static SparkMax intakeWheelOne = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
   private static RelativeEncoder intakeWheelEncoder = intakeWheelOne.getEncoder();
-
-
+   private static SparkMaxConfig config = new SparkMaxConfig();
+  
   public algaeIntakeWheel() {
-    /*intakeWheelOne.restoreFactoryDefaults();
-
-    intakeWheelOne.setInverted(isInverted); //outdated
-    intakeWheelOne.setIdleMode(coast);
-    intakeWheelOne.setSmartCurrentLimit(SMART_CURRENT_LIMIT);*/ 
-
-    //figure out how to make these work in 2025 sparkmax code
+    config
+    .inverted(isInverted)
+    .idleMode(coast)
+    .smartCurrentLimit(SMART_CURRENT_LIMIT);
+  /* config.encoder
+    .positionConversionFactor(1000)
+    .velocityConversionFactor(1000);
+    config.closedLoop
+    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);*/
     
+    intakeWheelOne.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);  
   }
   
     public static algaeIntakeWheel getInstance() {
@@ -71,6 +80,10 @@ public class algaeIntakeWheel extends SubsystemBase {
      */
     private double TicksPerOneHundredMSToRPM(double ticksPerHundredMs) {
       return ticksPerHundredMs * (GEAR_RATIO/TICKS_PER_REV) * minuteInHundredMs;
+    }
+
+    public double getSpeedRPM () {
+      return TicksPerOneHundredMSToRPM(intakeWheelEncoder.getVelocity());
     }
 
   @Override

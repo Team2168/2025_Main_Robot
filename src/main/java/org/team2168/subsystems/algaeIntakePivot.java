@@ -7,13 +7,16 @@ package org.team2168.subsystems;
 
 import org.team2168.Constants;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkBaseConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,9 +39,12 @@ public class algaeIntakePivot extends SubsystemBase {
   private final double CONTINUOUS_CURRENT_LIMIT = 15.0;
   private final double TRIGGER_THRESHOLD_LIMIT = 20;
   private final double TRIGGER_THRESHOLD_TIME = 0.2;
+
   private double neutralDeadband = 0.01;
   private double maxForwardOutput = 1;
   private double maxBackwardOutput = -1;
+  private boolean isInverted = false;
+  private IdleMode brake = IdleMode.kBrake;
   final double MIN_ANGLE = -120;
   final double MAX_ANGLE = 0;
 
@@ -46,24 +52,35 @@ public class algaeIntakePivot extends SubsystemBase {
   private static SparkMaxConfig config = new SparkMaxConfig();
   private static SparkClosedLoopController maxPid = intakePivotOne.getClosedLoopController();
 
+   private static RelativeEncoder pivotEncoder = intakePivotOne.getAlternateEncoder();
+  private static SparkLimitSwitch forwardLimitSwitch = intakePivotOne.getForwardLimitSwitch();
+  private static SparkLimitSwitch reverseLimitSwitch = intakePivotOne.getReverseLimitSwitch();
+
   //neo motor
   public algaeIntakePivot() {
     config
-    .inverted(true)
-    .idleMode(IdleMode.kBrake);
+    .inverted(isInverted)
+    .idleMode(brake);
   config.encoder
     .positionConversionFactor(1000)
     .velocityConversionFactor(1000);
   config.closedLoop
     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-    .pid(1.0, 0.0, 0.0);
+    .pid(kP, kI, kD); //finish the configs. configs are not finished yet. still need to add current limits and soft limits.
+
+  /*config.
+    .withSupplyCurrentLimitEnable(ENABLE_CURRENT_LIMIT)
+    .withSupplyCurrentLimit(CONTINUOUS_CURRENT_LIMIT)
+    .withSupplyCurrentThreshold(TRIGGER_THRESHOLD_LIMIT)
+    .withSupplyTimeThreshold(TRIGGER_THRESHOLD_TIME);
+  config
+    .smartCurrentLimit*/
     
   intakePivotOne.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public static double rotToDegrees(double rot) {
+    return (rot) / GEAR_RATIO * 360.0;
   }
 
    /**
@@ -92,5 +109,10 @@ public class algaeIntakePivot extends SubsystemBase {
     if(instance == null)
     instance = new algaeIntakePivot();
     return instance;
+  }
+
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
   }
 }
