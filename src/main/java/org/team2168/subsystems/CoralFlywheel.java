@@ -36,11 +36,30 @@ public class CoralFlywheel extends SubsystemBase {
         flywheelMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    /**
+     /**
      * sets the flywheel's motor speed
      * @param speed the speed in percentage. value is between -1.0 and 1.0
      */
     public void setFlywheelSpeed(double speed) {
         flywheelMotor.set(speed);
     }
+
+
+     /**
+     * converts RPM to ticks per one hundred ms
+     * @param speedRPM the speed in rpm
+     * @return the amount of ticks from rpm
+     */
+    private double RPMToTicksPerOneHundredMS(double speedRPM) {
+        return (speedRPM/minuteInHundredMs) * (TICKS_PER_REV/GEAR_RATIO);
+    }
+
+    /**
+     * converts ticks per one hundred ms to rpm
+     * @param ticksPerHundredMs amount of ticks per hundred ms
+     * @return the amount of rpm from ticks
+     */
+    private double TicksPerOneHundredMSToRPM(double ticksPerHundredMs) {
+        return ticksPerHundredMs * (GEAR_RATIO/TICKS_PER_REV) * minuteInHundredMs;
+  }
 }
