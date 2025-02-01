@@ -43,6 +43,14 @@ public class CoralFlywheel extends SubsystemBase {
     }
 
      /**
+     * gets the speed in rpm
+     * @return the speedrpm
+     */
+    public double getSpeedRPM () {
+        return TicksPerOneHundredMSToRPM(flywheelEncoder.getVelocity());
+    }
+    
+     /**
      * converts RPM to ticks per one hundred ms
      * @param speedRPM the speed in rpm
      * @return the amount of ticks from rpm
