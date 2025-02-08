@@ -1,6 +1,9 @@
 package org.team2168.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import org.team2168.Constants.CANDevices;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -8,11 +11,14 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class CoralFlywheel extends SubsystemBase {
-    private static SparkMax flywheelMotor = new SparkMax(0, MotorType.kBrushless); // placeholder ID
+    private static SparkMax flywheelMotor = new SparkMax(CANDevices.CORAL_FLYWHEEL, MotorType.kBrushless); // placeholder ID
     private static RelativeEncoder flywheelEncoder = flywheelMotor.getAlternateEncoder();
+    private static DigitalInput coralDetector = new DigitalInput(0);
 
     private final double minuteInHundredMs = 600.0;
     private final double TICKS_PER_REV = 2048;
@@ -29,7 +35,7 @@ public class CoralFlywheel extends SubsystemBase {
             .inverted(isInverted)
             .smartCurrentLimit(SMART_CURRENT_LIMIT);
 
-        motorConfigs.signals.primaryEncoderPositionPeriodMs(5);
+        motorConfigs.signals.externalOrAltEncoderPosition(5);
 
         flywheelMotor.configure(motorConfigs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -67,6 +73,17 @@ public class CoralFlywheel extends SubsystemBase {
     private double TicksPerOneHundredMSToRPM(double ticksPerHundredMs) {
         return ticksPerHundredMs * (GEAR_RATIO/TICKS_PER_REV) * minuteInHundredMs;
     }
+
+    /**
+     * checks if there is a coral in the flywheel
+     * @return false if no coral, true if there is a coral
+     */
+    @Log(name = "Is coral present?")
+        public boolean isCoralPresent() {
+            return !coralDetector.get();
+        }
+
+    @Log(name = "flywheel speed (rotations per minutes)", rowIndex = 3, columnIndex = 1)
 
     @Override
     public void periodic() {
