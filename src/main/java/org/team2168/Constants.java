@@ -16,4 +16,9 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class CANDevices {
+    public static final int CORAL_PIVOT = 0;
+    public static final int CORAL_FLYWHEEL = 0;
+  }
 }
