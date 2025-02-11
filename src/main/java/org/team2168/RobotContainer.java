@@ -4,12 +4,22 @@
 
 package org.team2168;
 
+import org.team2168.Constants.Controllers;
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
+import org.team2168.commands.DriveFlywheelUntilCoral;
+import org.team2168.commands.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.ExampleCommand;
+import org.team2168.commands.SetCoralPivotAngle;
+import org.team2168.subsystems.CoralFlywheel;
+import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.ExampleSubsystem;
+
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
 
@@ -22,10 +32,17 @@ import io.github.oblarg.oblog.Logger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  
+  private final CoralFlywheel coralflyWheel = new CoralFlywheel();
+  private final CoralPivot coralPivot = new CoralPivot();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+      
+  public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
+  public CommandXboxController operatorJoystick = new CommandXboxController(Controllers.OPERATOR_JOYSTICK);
+  public CommandXboxController testJoystick = new CommandXboxController(Controllers.TEST_JOYSTICK);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -45,12 +62,17 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // new Trigger(m_exampleSubsystem::exampleCondition)
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0)); // TODO: find out angleee
+
+    testJoystick.a().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.5));
+    testJoystick.b().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.5));
   }
 
   /**
