@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveFlywheelUntilCoral extends Command {
   private CoralFlywheel coralFlywheel;
-  private DoubleSupplier speed;
+  private double speed;
 
   /** Creates a new DriveFlywheelUntilCoral. */
-  public DriveFlywheelUntilCoral(CoralFlywheel coralFlywheel, DoubleSupplier speed) {
+  public DriveFlywheelUntilCoral(CoralFlywheel coralFlywheel, double speed) {
     this.coralFlywheel = coralFlywheel;
     this.speed = speed;
 
@@ -30,7 +30,7 @@ public class DriveFlywheelUntilCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    coralFlywheel.setFlywheelSpeed(speed.getAsDouble());
+    coralFlywheel.setFlywheelSpeed(speed);
   }
 
   // Called once the command ends or is interrupted.
