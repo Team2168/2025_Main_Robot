@@ -19,9 +19,9 @@ public final class Constants {
 
   public static class CANDevices {
     public static final int CORAL_PIVOT = 0;
-    public static final int CORAL_FLYWHEEL = 0;
+    public static final int CORAL_FLYWHEEL = 1;
 
-    public static final int CORAL_PIVOT_LS = 0;
+    public static final int CORAL_PIVOT_LS = 2;
   }
 
   public static class Controllers {
