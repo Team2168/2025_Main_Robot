@@ -27,7 +27,7 @@ public class CoralFlywheel extends SubsystemBase {
     private boolean isInverted = false;
     private IdleMode coast = IdleMode.kCoast;
 
-    private CoralFlywheel() {
+    public CoralFlywheel() {
         final SparkMaxConfig motorConfigs = new SparkMaxConfig();
 
         motorConfigs
