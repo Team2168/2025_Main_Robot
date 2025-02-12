@@ -91,19 +91,19 @@ public class Lift extends SubsystemBase {
     configureMotors();
   }
   
-  public double degreesToTicks(double degrees){
-    return (degrees / 360 * TICKS_PER_REV);
-  }
+ // public double degreesToRotations(double degrees){
+ //   return (degrees / 360);
+ // }
 
-  public double ticksToDegrees(double rotations){
-    return (rotations * 360);
-  }
+ // public double rotationsToDegrees(double rotations){
+ //   return (rotations * 360);
+ // }
 
   public double inchesToRotations(double inches){
     return(inches / INCHES_PER_REV) * GEAR_RATIO;
   }
 
-  public  double RotationsToInches(double rotations){
+  public  double rotationsToInches(double rotations){
     return (rotations / GEAR_RATIO) * INCHES_PER_REV;
   }
 
@@ -156,12 +156,12 @@ public class Lift extends SubsystemBase {
     carriageLock.set(DoubleSolenoid.Value.kReverse);
   }
 
-  @Log(name = "Positiion (inches)", rowIndex = 3, columnIndex = 2)
+  @Log(name = "Position (inches)", rowIndex = 3, columnIndex = 2)
   public double getPositionIn(){
     return ticksToInches(motor.getSelectedSensorPosition());
   }
 
-  @Log(name = "Speed", rowIndex = 3, columnIndex = 3)
+  @Log(name = "Speed (%Output)", rowIndex = 3, columnIndex = 3)
   public double getSpeed(){
     return motor.get();
   }
@@ -171,19 +171,19 @@ public class Lift extends SubsystemBase {
     return (ticksToInches(motor.getSelectedSensorVelocity())) / TIME_UNITS_OF_VELOCITY;
   }
 
-  @Log(name = "At Zero", rowIndex = 3, columnIndex = 0)
-  public boolean isZeroPosition(){
-    return motor.isRevLimitSwitchClosed() == 1;
-  }
+  // @Log(name = "At Zero", rowIndex = 3, columnIndex = 0)
+  // public boolean isZeroPosition(){
+  //   return motor.isRevLimitSwitchClosed() == 1;
+  // }
 
-  @Log(name = "At Top", rowIndex = 3, columnIndex = 1)
-  public boolean isAtUpperPosition(){
-    return motor.isFwdLimitSwitchClosed() == 1;
-  }
+ // @Log(name = "At Top", rowIndex = 3, columnIndex = 1)
+ // public boolean isAtUpperPosition(){
+ //   return motor.isFwdLimitSwitchClosed() == 1;
+ // }
 
   @Log(name = "Error", rowIndex = 3, columnIndex = 5)
   public double getControllerError(){
-    return ticksToDegrees(motor.getClosedLoopError()); //this method returns the current error position
+    return motor.getClosedLoopError(); //this method returns the current error position
   }
   @Override
   public void periodic() {
