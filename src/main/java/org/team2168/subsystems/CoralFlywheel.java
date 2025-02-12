@@ -19,7 +19,7 @@ import io.github.oblarg.oblog.annotations.Log;
 public class CoralFlywheel extends SubsystemBase {
     private static SparkMax flywheelMotor = new SparkMax(CANDevices.CORAL_FLYWHEEL, MotorType.kBrushless); // placeholder ID
     private static RelativeEncoder flywheelEncoder = flywheelMotor.getAlternateEncoder();
-    private static DigitalInput coralDetector = new DigitalInput(0);
+    private static DigitalInput coralDetector = new DigitalInput(CANDevices.LINE_BREAK_SENSOR);
 
     private final double minuteInHundredMs = 600.0;
     private final double TICKS_PER_REV = 2048;

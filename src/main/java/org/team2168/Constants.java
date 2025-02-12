@@ -22,6 +22,8 @@ public final class Constants {
     public static final int CORAL_FLYWHEEL = 1;
 
     public static final int CORAL_PIVOT_LS = 2;
+
+    public static final int LINE_BREAK_SENSOR = 3;
   }
 
   public static class Controllers {
