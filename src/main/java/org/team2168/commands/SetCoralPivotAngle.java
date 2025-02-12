@@ -4,8 +4,6 @@
 
 package org.team2168.commands;
 
-import java.util.function.DoubleSupplier;
-
 import org.team2168.subsystems.CoralPivot;
 
 import edu.wpi.first.wpilibj2.command.Command;

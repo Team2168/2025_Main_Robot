@@ -4,8 +4,6 @@
 
 package org.team2168.commands;
 
-import java.util.function.DoubleSupplier;
-
 import org.team2168.subsystems.CoralFlywheel;
 
 import edu.wpi.first.wpilibj2.command.Command;
