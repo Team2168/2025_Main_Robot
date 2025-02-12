@@ -16,4 +16,18 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class CANDevices {
+    public static final int INTAKE_PIVOT = 0; //placeholders
+    public static final int INTAKE_WHEEL = 1;
+    public static final int LINE_BREAK_SENSOR = 2;
+    public static final int INTAKE_PIVOT_LIMIT_SWITCH = 3;
+  }
+
+  public static class Controllers {
+    public static final int DRIVER_JOYSTICK = 0;
+    public static final int OPERATOR_JOYSTICK = 1;
+    public static final int TEST_JOYSTICK = 2;
+  }
+
 }

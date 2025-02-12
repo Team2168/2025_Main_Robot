@@ -5,6 +5,7 @@
 package org.team2168.subsystems;
 
 import org.team2168.Constants;
+import org.team2168.Constants.CANDevices;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.revrobotics.RelativeEncoder;
@@ -16,10 +17,12 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -28,18 +31,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class algaeIntakeWheel extends SubsystemBase {
   /** Creates a new algaeIntakeWheel. */
 
-  private static algaeIntakeWheel instance = null;
+ // private static algaeIntakeWheel instance = null;
 
   private final double minuteInHundredMs = 600.0;
   private final double TICKS_PER_REV = 2048;
-  private final double GEAR_RATIO = 0; //placeholder
-  private final int SMART_CURRENT_LIMIT = 20; //placeholder
+  private final double GEAR_RATIO = (10/1); //placeholder
+  private final int SMART_CURRENT_LIMIT = 20; 
   private boolean isInverted = false; //placedholder
   private IdleMode coast = IdleMode.kCoast; //placeholder
 
-  private static SparkMax intakeWheelOne = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
-  private static RelativeEncoder intakeWheelEncoder = intakeWheelOne.getEncoder();
-   private static SparkMaxConfig config = new SparkMaxConfig();
+  private static SparkMax intakeWheelOne = new SparkMax(CANDevices.INTAKE_WHEEL, SparkLowLevel.MotorType.kBrushless);
+  private static RelativeEncoder intakeWheelEncoder = intakeWheelOne.getAlternateEncoder();
+  private static SparkMaxConfig config = new SparkMaxConfig();
+  private static final EncoderConfig encoderConfig = new EncoderConfig();
+  private static DigitalInput intakeDetector = new DigitalInput(CANDevices.LINE_BREAK_SENSOR);
+    //private static DigitalInput skibidi  = new DigitalInput(CANDevices.LINE_BREAK_SENSOR);
   
   public algaeIntakeWheel() {
     config
@@ -51,15 +57,17 @@ public class algaeIntakeWheel extends SubsystemBase {
     .velocityConversionFactor(1000);
     config.closedLoop
     .feedbackSensor(FeedbackSensor.kPrimaryEncoder);*/
+    config.encoder
+    .apply(encoderConfig);
     
     intakeWheelOne.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);  
   }
   
-    public static algaeIntakeWheel getInstance() {
+    /*public static algaeIntakeWheel getInstance() {
       if(instance == null)
       instance = new algaeIntakeWheel();
       return instance;
-    }
+    }*/
 
       /**
    * sets the speed in percentage
@@ -85,6 +93,11 @@ public class algaeIntakeWheel extends SubsystemBase {
     public double getSpeedRPM () {
       return TicksPerOneHundredMSToRPM(intakeWheelEncoder.getVelocity());
     }
+
+    @Log(name = "Is algae present?")
+        public boolean isCoralPresent() {
+            return !intakeDetector.get();
+        }
 
   @Override
   public void periodic() {

@@ -6,6 +6,7 @@ package org.team2168.subsystems;
 
 
 import org.team2168.Constants;
+import org.team2168.Constants.CANDevices;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -17,6 +18,7 @@ import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -25,11 +27,12 @@ import com.revrobotics.spark.config.SparkBaseConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class algaeIntakePivot extends SubsystemBase {
   /** Creates a new algaeIntake. */
-  private static algaeIntakePivot instance = null;
+  //private static algaeIntakePivot instance = null;
   private final double TICKS_PER_REV = 2048;
   private final static double GEAR_RATIO = (10/1); // placeholder
 
@@ -37,6 +40,7 @@ public class algaeIntakePivot extends SubsystemBase {
   private double kI = 0.0;
   private double kD = 0.3;
   private double kG = -2.6;
+  private int kV = 917; //placeholder
 
   //private double kV = 0.12;
   //private double kA = 0.1;
@@ -47,41 +51,38 @@ public class algaeIntakePivot extends SubsystemBase {
   private final double TRIGGER_THRESHOLD_TIME = 0.2;
 
   private double neutralDeadband = 0.01; //some of these are placeholders
-  private double maxForwardOutput = 1;
-  private double maxBackwardOutput = -1;
+  private double maxOutput = 1;
+  private double minOutput = -1;
   private boolean isInverted = false;
   private IdleMode brake = IdleMode.kBrake;
   final double MIN_ANGLE = -120;
   final double MAX_ANGLE = 0;
   private double MAXMotionAcceleration = degreesToRot(500.0);
   private double MAXMotionCruiseVelocity = degreesToRot(250.0);
+  private final int SMART_CURRENT_LIMIT = 20; 
 
-  private static SparkMax intakePivotOne = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
+  private static SparkMax intakePivotOne = new SparkMax(CANDevices.INTAKE_PIVOT, SparkLowLevel.MotorType.kBrushless);
   private static SparkMaxConfig config = new SparkMaxConfig();
   private static CurrentLimitsConfigs currentConfigs = new CurrentLimitsConfigs();
   private static SoftLimitConfig softLimitConfig = new SoftLimitConfig();
   private static MAXMotionConfig maxMotionConfig = new MAXMotionConfig();
-  //private static SparkClosedLoopController maxPid = intakePivotOne.getClosedLoopController();
+  private static final EncoderConfig encoderConfig = new EncoderConfig();
+  private static SparkClosedLoopController maxPid = intakePivotOne.getClosedLoopController();
 
    private static RelativeEncoder pivotEncoder = intakePivotOne.getAlternateEncoder();
-  //private static SparkLimitSwitch forwardLimitSwitch = intakePivotOne.getForwardLimitSwitch(); 
-  //private static SparkLimitSwitch reverseLimitSwitch = intakePivotOne.getReverseLimitSwitch();
+   private static DigitalInput limitSwitch = new DigitalInput(CANDevices.INTAKE_PIVOT_LIMIT_SWITCH);
 
   //neo motor
   public algaeIntakePivot() {
-   /* intakePivotOne.withDutyCycleNeutralDeadband(neutralDeadband);
-    intakePivotOne.withPeakForwardDutyCycle(maxForwardOutput);
-    intakePivotOne.withPeakReverseDutyCycle(maxBackwardOutput);*/
-
     config
     .inverted(isInverted)
-    .idleMode(brake);
-  config.encoder
-    .positionConversionFactor(1000)
-    .velocityConversionFactor(1000);
+    .idleMode(brake)
+    .smartCurrentLimit(SMART_CURRENT_LIMIT);
   config.closedLoop
     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-    .pid(kP, kI, kD); 
+    .pid(kP, kI, kD)
+    .velocityFF(1/kV)
+    .outputRange(minOutput, maxOutput);
   currentConfigs
   .withSupplyCurrentLimitEnable(ENABLE_CURRENT_LIMIT)
   .withSupplyCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
@@ -93,6 +94,8 @@ public class algaeIntakePivot extends SubsystemBase {
     .forwardSoftLimitEnabled(true)
     .reverseSoftLimit(degreesToRot(-125.0)) //5 degrees for error tolerance
     .reverseSoftLimitEnabled(true);
+  config.encoder
+  .apply(encoderConfig);
 
 //configs are done minus placeholders and potential troubleshooting that arises
     
@@ -131,11 +134,13 @@ public class algaeIntakePivot extends SubsystemBase {
     pivotEncoder.setPosition(degreesToRot(demand)); //change "demand" to degrees?
   }
 
-  public static algaeIntakePivot getInstance() {
+  //make a method related to angle of pivot ?
+
+  /*public static algaeIntakePivot getInstance() {
     if(instance == null)
     instance = new algaeIntakePivot();
     return instance;
-  }
+  }*/
 
   @Override
   public void periodic() {
