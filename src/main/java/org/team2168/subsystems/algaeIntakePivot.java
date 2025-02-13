@@ -4,12 +4,9 @@
 
 package org.team2168.subsystems;
 
-
 import org.team2168.Constants;
 import org.team2168.Constants.CANDevices;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -47,11 +44,6 @@ public class algaeIntakePivot extends SubsystemBase {
   //private double kV = 0.12;
   //private double kA = 0.1;
 
-  private final boolean ENABLE_CURRENT_LIMIT = true;
-  private final double CONTINUOUS_CURRENT_LIMIT = 15.0;
-  private final double TRIGGER_THRESHOLD_LIMIT = 20;
-  private final double TRIGGER_THRESHOLD_TIME = 0.2;
-
   private double neutralDeadband = 0.01; //some of these are placeholders
   private double maxOutput = 1;
   private double minOutput = -1;
@@ -66,7 +58,6 @@ public class algaeIntakePivot extends SubsystemBase {
 
   private static SparkMax intakePivotOne = new SparkMax(CANDevices.INTAKE_PIVOT, SparkLowLevel.MotorType.kBrushless);
   private static SparkMaxConfig config = new SparkMaxConfig();
-  private static CurrentLimitsConfigs currentConfigs = new CurrentLimitsConfigs();
   private static SoftLimitConfig softLimitConfig = new SoftLimitConfig();
   private static MAXMotionConfig maxMotionConfig = new MAXMotionConfig();
   private static final EncoderConfig encoderConfig = new EncoderConfig();
@@ -86,9 +77,6 @@ public class algaeIntakePivot extends SubsystemBase {
     .pid(kP, kI, kD)
     .velocityFF(1/kV)
     .outputRange(minOutput, maxOutput);
-  currentConfigs
-  .withSupplyCurrentLimitEnable(ENABLE_CURRENT_LIMIT)
-  .withSupplyCurrentLimit(CONTINUOUS_CURRENT_LIMIT);
   maxMotionConfig
   .maxAcceleration(MAXMotionAcceleration)
   .maxVelocity(MAXMotionCruiseVelocity);
