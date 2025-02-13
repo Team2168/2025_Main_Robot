@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
@@ -28,6 +29,7 @@ public class CoralPivot extends SubsystemBase {
   private static SparkMax pivotMotor = new SparkMax(CANDevices.CORAL_PIVOT, MotorType.kBrushless);
   private static RelativeEncoder pivotEncoder = pivotMotor.getAlternateEncoder();
   private static SparkClosedLoopController pidController = pivotMotor.getClosedLoopController();
+
   private static DigitalInput limitSwitch = new DigitalInput(CANDevices.CORAL_PIVOT_LS);
 
 
