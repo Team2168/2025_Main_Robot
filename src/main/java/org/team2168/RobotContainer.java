@@ -8,7 +8,10 @@ import org.team2168.Constants.Controllers;
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
 import org.team2168.commands.ExampleCommand;
+import org.team2168.commands.IntakePivot.setIntakePivotAngleHigher;
+import org.team2168.commands.IntakePivot.setIntakePivotAngleLower;
 import org.team2168.commands.IntakePivot.setIntakePivotPosition;
+import org.team2168.commands.IntakeWheel.setIntakeSpeed;
 import org.team2168.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -65,6 +68,14 @@ public class RobotContainer {
 
     testJoystick.a().whileTrue(new setIntakePivotPosition(algaeintakePivot, -0.5));
     testJoystick.b().whileTrue(new setIntakePivotPosition(algaeintakePivot, 0.5));
+
+    testJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake
+   testJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); //take off upper (up dpad)
+    testJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot)); //take off lower (down dpad)
+
+    //operatorJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake Algae
+    //operatorJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); 
+    //operatorJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot));
   }
 
   /**

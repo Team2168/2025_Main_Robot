@@ -95,7 +95,7 @@ public class algaeIntakeWheel extends SubsystemBase {
     }
 
     @Log(name = "Is algae present?")
-        public boolean isCoralPresent() {
+        public boolean isAlgaePresent() {
             return !intakeDetector.get();
         }
 

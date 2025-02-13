@@ -11,6 +11,7 @@ import org.team2168.Constants.CANDevices;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -29,6 +30,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class algaeIntakePivot extends SubsystemBase {
   /** Creates a new algaeIntake. */
@@ -57,6 +59,7 @@ public class algaeIntakePivot extends SubsystemBase {
   private IdleMode brake = IdleMode.kBrake;
   final double MIN_ANGLE = -120;
   final double MAX_ANGLE = 0;
+  private double setPoint = degreesToRot(0.0); //find what setpoint is
   private double MAXMotionAcceleration = degreesToRot(500.0);
   private double MAXMotionCruiseVelocity = degreesToRot(250.0);
   private final int SMART_CURRENT_LIMIT = 20; 
@@ -130,8 +133,24 @@ public class algaeIntakePivot extends SubsystemBase {
 
   public void setIntakePivotPosition(double degrees) {
     var demand = MathUtil.clamp(degrees, MIN_ANGLE, MAX_ANGLE);
-    //intakePivotOne.setControl(motionMagicVoltage.withPosition((degreesToRot(demand))));
     pivotEncoder.setPosition(degreesToRot(demand)); //change "demand" to degrees?
+    if (degrees > 0) { // find limit
+      if (limitSwitch.get()) {
+        intakePivotOne.set(0.0);
+      }
+      else {
+        maxPid.setReference(setPoint, ControlType.kPosition);
+      }
+    }
+  }
+
+  public void setIntakePivotAngle() {
+    maxPid.setReference(setPoint, ControlType.kPosition);
+  }
+
+  @Log(name = "Intake pivot angle (in degrees)")
+  public double getIntakePivotAngle() {
+    return rotToDegrees(pivotEncoder.getPosition());
   }
 
   //make a method related to angle of pivot ?

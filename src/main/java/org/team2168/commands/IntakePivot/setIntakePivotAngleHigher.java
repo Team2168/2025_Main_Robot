@@ -6,18 +6,17 @@ package org.team2168.commands.IntakePivot;
 
 import org.team2168.subsystems.algaeIntakePivot;
 
+
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class setIntakePivotPosition extends Command {
-  /** Creates a new setIntakePivotPosition. */
-
+public class setIntakePivotAngleHigher extends Command {
+  /** Creates a new setIntakePivotAngleHigher. */
   private algaeIntakePivot iPivot;
-  private double degrees;
 
-  public setIntakePivotPosition(algaeIntakePivot iPivot, double degrees) {
+  public setIntakePivotAngleHigher(algaeIntakePivot iPivot) {
     this.iPivot = iPivot;
-    this.degrees = degrees;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(iPivot);
   }
@@ -29,7 +28,7 @@ public class setIntakePivotPosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    iPivot.setIntakePivotPosition(degrees);
+    iPivot.setIntakePivotPosition(iPivot.getIntakePivotAngle() + 1.0);
   }
 
   // Called once the command ends or is interrupted.
@@ -39,6 +38,6 @@ public class setIntakePivotPosition extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
