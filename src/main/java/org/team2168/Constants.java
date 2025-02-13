@@ -14,6 +14,8 @@ package org.team2168;
  */
 public final class Constants {
   public static  class LiftConstants {
+    public static final int topLimitSwitchID = 0;
+    public static final int bottomLimitSwitchID = 0;
     public static final int motorPort = 0;
   }
   public static class OperatorConstants {

@@ -12,20 +12,26 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs; //TODO configure MotionMagi
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage; 
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class Lift extends SubsystemBase {
+  
+  DigitalInput toplimitSwitch = new DigitalInput(0);
+  DigitalInput bottomlimitSwitch = new DigitalInput(1);
   final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0); // TODO Should be able to input a position
-  private final double TICKS_PER_REV = 2048;
+  final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
+  final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+  //private final double TICKS_PER_REV = 2048; - I don't think we need to use ticks, instead we are using rotations.
   private final double GEAR_RATIO = 0; //TODO ask CAD
   private final double INCHES_PER_REV = 0; //TODO ask somebody
 
@@ -126,39 +132,79 @@ public class Lift extends SubsystemBase {
 
   //Config()
   public void setSpeedVelocity(double speed) {
-    motor.set(ControlModeValue.Velocity, inchesToTicks(speed) * TIME_UNITS_OF_VELOCITY, DemandType.ArbitraryFeedForward, kArbitraryFeedForward); //the "speed" parameter is the rate of the movement per second (in inches)
+    velocityVoltage.Slot = 0;
+    if (speed > 0) {
+      if (toplimitSwitch.get()) {
+          // We are going up and top limit is tripped so stop
+          motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
+      } else {
+          // We are going up but top limit is not tripped so go at commanded speed
+          motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
+      }
+    } else {
+      if (bottomlimitSwitch.get()) {
+          // We are going down and bottom limit is tripped so stop
+          motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
+      } else {
+          // We are going down but bottom limit is not tripped so go at commanded speed
+          motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
+      }
+    }
   }
+//(ControlModeValue.Velocity, inchesToRotations(speed) * TIME_UNITS_OF_VELOCITY, DemandType.ArbitraryFeedForward, kArbitraryFeedForward); //the "speed" parameter is the rate of the movement per second (in inches)
+//}
 
   //@Config()
 
-  
   public void setPosition(double inches){
     //this.position = position;
-  m_motmag.Slot = 0;
-  motor.setControl(m_motmag.withPosition(inchesToRotations(inches))); // default position
+    m_motmag.Slot = 0;
+    if (inches > 0) {
+      if (toplimitSwitch.get()) {
+        motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
+      }
+      else {
+        motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
+      }
+    } else {
+      if (bottomlimitSwitch.get()) {
+      motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
+      }
+      else {
+        motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
+      }
+    }
         // motor.set(ControlModeValue.MotionMagic, inchesToRotations(inches), DemandType.ArbitraryFeedForward, kArbitraryFeedForward);
   }
 
   //@Config()
   public void setPercentOutput(double percentOutput) {
-    motor.set(ControlModeValue.PercentOutput, percentOutput, DemandType.ArbitraryFeedForward, kArbitraryFeedForward);
+    if (percentOutput > 0) {
+      if (toplimitSwitch.get()) {
+        motor.setControl(dutyCycleOut.withOutput(0));
+      }
+      else {
+        motor.setControl(dutyCycleOut.withOutput(percentOutput));
+      }
+    } else {
+      if (bottomlimitSwitch.get()) {
+        motor.setControl(dutyCycleOut.withOutput(0));
+      }
+      else {
+        motor.setControl(dutyCycleOut.withOutput(percentOutput));
+      }
+    
+    }
   }
-
+ //(ControlModeValue.percentOutput, percentOutput, DemandType.ArbitraryFeedForward, kArbitraryFeedForward)
   public void setToZero(){
-    motor.set(ControlModeValue.PercentOutput, 0, DemandType.ArbitraryFeedForward, kArbitraryFeedForward);
+    motor.setControl(dutyCycleOut.withOutput(0));
   }
-
-  public void extendLock(){
-    carriageLock.set(DoubleSolenoid.Value.kForward);
-  }
-
-  public void retractLock(){
-    carriageLock.set(DoubleSolenoid.Value.kReverse);
-  }
+//(ControlModeValue.PercentOutput, 0, DemandType.ArbitraryFeedForward, kArbitraryFeedForward);
 
   @Log(name = "Position (inches)", rowIndex = 3, columnIndex = 2)
   public double getPositionIn(){
-    return ticksToInches(motor.getSelectedSensorPosition());
+    return rotationsToInches(motor.getPosition().getValueAsDouble());
   }
 
   @Log(name = "Speed (%Output)", rowIndex = 3, columnIndex = 3)
@@ -168,7 +214,7 @@ public class Lift extends SubsystemBase {
 
   @Log(name = "Velocity (inches / sec)", rowIndex = 3, columnIndex = 4)
   public double getVelocity(){
-    return (ticksToInches(motor.getSelectedSensorVelocity())) / TIME_UNITS_OF_VELOCITY;
+    return (rotationsToInches(motor.getVelocity().getValueAsDouble()));
   }
 
   // @Log(name = "At Zero", rowIndex = 3, columnIndex = 0)
@@ -183,7 +229,7 @@ public class Lift extends SubsystemBase {
 
   @Log(name = "Error", rowIndex = 3, columnIndex = 5)
   public double getControllerError(){
-    return motor.getClosedLoopError(); //this method returns the current error position
+    return motor.getClosedLoopError().getValueAsDouble(); //this method returns the current error position
   }
   @Override
   public void periodic() {
