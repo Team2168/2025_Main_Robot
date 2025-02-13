@@ -26,8 +26,8 @@ import io.github.oblarg.oblog.annotations.Log;
 
 public class Lift extends SubsystemBase {
   
-  DigitalInput toplimitSwitch = new DigitalInput(0);
-  DigitalInput bottomlimitSwitch = new DigitalInput(1);
+  DigitalInput toplimitSwitch = new DigitalInput(LiftConstants.topLimitSwitchID);
+  DigitalInput bottomlimitSwitch = new DigitalInput(LiftConstants.bottomLimitSwitchID);
   final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0); // TODO Should be able to input a position
   final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
   final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
