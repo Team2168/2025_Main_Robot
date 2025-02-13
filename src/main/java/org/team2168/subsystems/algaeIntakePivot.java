@@ -57,7 +57,7 @@ public class algaeIntakePivot extends SubsystemBase {
   private double minOutput = -1;
   private boolean isInverted = false;
   private IdleMode brake = IdleMode.kBrake;
-  final double MIN_ANGLE = -120;
+  final double MIN_ANGLE = -120; //discover min and max angles
   final double MAX_ANGLE = 0;
   private double setPoint = degreesToRot(0.0); //find what setpoint is
   private double MAXMotionAcceleration = degreesToRot(500.0);

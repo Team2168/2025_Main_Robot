@@ -66,16 +66,13 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    testJoystick.a().whileTrue(new setIntakePivotPosition(algaeintakePivot, -0.5));
-    testJoystick.b().whileTrue(new setIntakePivotPosition(algaeintakePivot, 0.5));
-
     testJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake
    testJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); //take off upper (up dpad)
     testJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot)); //take off lower (down dpad)
 
-    //operatorJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake Algae
-    //operatorJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); 
-    //operatorJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot));
+    operatorJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake Algae
+    operatorJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); 
+    operatorJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot));
   }
 
   /**
