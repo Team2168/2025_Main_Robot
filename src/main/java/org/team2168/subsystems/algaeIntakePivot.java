@@ -33,7 +33,7 @@ public class algaeIntakePivot extends SubsystemBase {
   /** Creates a new algaeIntake. */
   //private static algaeIntakePivot instance = null;
   private final double TICKS_PER_REV = 2048;
-  private final static double GEAR_RATIO = (10/1); // placeholder
+  private final static double GEAR_RATIO = (25/1); // placeholder
 
   private double kP = 15.0; //placeholders
   private double kI = 0.0;
