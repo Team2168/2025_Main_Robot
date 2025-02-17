@@ -26,8 +26,8 @@ import io.github.oblarg.oblog.annotations.Log;
 
 public class Lift extends SubsystemBase {
   
-  DigitalInput toplimitSwitch = new DigitalInput(LiftConstants.topLimitSwitchID);
-  DigitalInput bottomlimitSwitch = new DigitalInput(LiftConstants.bottomLimitSwitchID);
+ // DigitalInput toplimitSwitch = new DigitalInput(LiftConstants.topLimitSwitchID);
+ // DigitalInput bottomlimitSwitch = new DigitalInput(LiftConstants.bottomLimitSwitchID);
   final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0); // TODO Should be able to input a position
   final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
   final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
@@ -133,23 +133,24 @@ public class Lift extends SubsystemBase {
   //Config()
   public void setSpeedVelocity(double speed) {
     velocityVoltage.Slot = 0;
-    if (speed > 0) {
-      if (toplimitSwitch.get()) {
+    motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
+   // if (speed > 0) {
+   //   if (toplimitSwitch.get()) {
           // We are going up and top limit is tripped so stop
-          motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
-      } else {
+   //       motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
+   //   } else {
           // We are going up but top limit is not tripped so go at commanded speed
-          motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
-      }
-    } else {
-      if (bottomlimitSwitch.get()) {
+   //       motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
+   //   }
+   // } else {
+   //   if (bottomlimitSwitch.get()) {
           // We are going down and bottom limit is tripped so stop
-          motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
-      } else {
-          // We are going down but bottom limit is not tripped so go at commanded speed
-          motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
-      }
-    }
+   //       motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
+   //   } else {
+   //       // We are going down but bottom limit is not tripped so go at commanded speed
+   //       motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
+   //   }
+   // }
   }
 //(ControlModeValue.Velocity, inchesToRotations(speed) * TIME_UNITS_OF_VELOCITY, DemandType.ArbitraryFeedForward, kArbitraryFeedForward); //the "speed" parameter is the rate of the movement per second (in inches)
 //}
@@ -157,46 +158,47 @@ public class Lift extends SubsystemBase {
   //@Config()
 
   public void setPosition(double inches){
-    //this.position = position;
     m_motmag.Slot = 0;
-    if (inches > 0) {
-      if (toplimitSwitch.get()) {
-        motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
-      }
-      else {
-        motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
-      }
-    } else {
-      if (bottomlimitSwitch.get()) {
-      motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
-      }
-      else {
-        motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
-      }
-    }
-        // motor.set(ControlModeValue.MotionMagic, inchesToRotations(inches), DemandType.ArbitraryFeedForward, kArbitraryFeedForward);
+    motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
+    
+  // Limit switch code
+  //  if (inches > 0) {
+  //    if (toplimitSwitch.get()) {
+  //      motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
+  //    }
+  //    else {
+  //      motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
+  //    }
+  //  } else {
+  //    if (bottomlimitSwitch.get()) {
+  //    motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
+  //    }
+  //    else {
+  //      motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
+  //    }
+  //  }
+        
   }
 
   //@Config()
   public void setPercentOutput(double percentOutput) {
-    if (percentOutput > 0) {
-      if (toplimitSwitch.get()) {
-        motor.setControl(dutyCycleOut.withOutput(0));
-      }
-      else {
-        motor.setControl(dutyCycleOut.withOutput(percentOutput));
-      }
-    } else {
-      if (bottomlimitSwitch.get()) {
-        motor.setControl(dutyCycleOut.withOutput(0));
-      }
-      else {
-        motor.setControl(dutyCycleOut.withOutput(percentOutput));
-      }
-    
+    motor.setControl(dutyCycleOut.withOutput(percentOutput));
+   // if (percentOutput > 0) {
+   //  if (toplimitSwitch.get()) {
+   //    motor.setControl(dutyCycleOut.withOutput(0));
+   //   }
+   //   else {
+   //     motor.setControl(dutyCycleOut.withOutput(percentOutput));
+   //   }
+   // } else {
+   //   if (bottomlimitSwitch.get()) {
+   //     motor.setControl(dutyCycleOut.withOutput(0));
+   //   }
+   //   else {
+   //     motor.setControl(dutyCycleOut.withOutput(percentOutput));
     }
-  }
- //(ControlModeValue.percentOutput, percentOutput, DemandType.ArbitraryFeedForward, kArbitraryFeedForward)
+  
+ 
   public void setToZero(){
     motor.setControl(dutyCycleOut.withOutput(0));
   }
