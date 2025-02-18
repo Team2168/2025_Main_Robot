@@ -25,7 +25,24 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class Lift extends SubsystemBase {
-  
+
+   public enum LiftHeights {
+    BARGE(0.0),
+    L2(0.0),
+    L3(0.0),
+    L4(0.0);
+
+    public double liftHeight;
+
+    LiftHeights(double liftHeight) {
+
+      this.liftHeight = liftHeight;
+    }
+    public double getValue() {
+      return liftHeight;
+    }
+  }
+
  // DigitalInput toplimitSwitch = new DigitalInput(LiftConstants.topLimitSwitchID);
  // DigitalInput bottomlimitSwitch = new DigitalInput(LiftConstants.bottomLimitSwitchID);
   final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0); // TODO Should be able to input a position
