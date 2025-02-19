@@ -16,11 +16,16 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
 
   TalonFX motor = new TalonFX(ClimberConstants.ClimberMotorID);
+  
+  DigitalInput toplimitSwitch = new DigitalInput(0);
+  DigitalInput bottomlimitSwitch = new DigitalInput(0);
+  
   // The motor's inversion is such that moving clockwise is considered moving forward
   private final InvertedValue INVERSION = InvertedValue.Clockwise_Positive;
   // The deadband for the motor--the minimum percentage output it needs to be commanded to go before actually moving
@@ -56,6 +61,13 @@ public class Climber extends SubsystemBase {
   public void driveClimbMotor(double speed) {
     motor.set(speed);
   } 
+
+  public boolean gettoplimitSwitch() {
+   return toplimitSwitch.get(); }
+
+    public boolean getbottomlimitSwitch() {
+      return bottomlimitSwitch.get();
+    }
 
 
   /** Creates a new Climber. */
