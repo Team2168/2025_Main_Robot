@@ -49,7 +49,7 @@ public class Lift extends SubsystemBase {
   final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
   final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
   //private final double TICKS_PER_REV = 2048; - I don't think we need to use ticks, instead we are using rotations.
-  private final double GEAR_RATIO = 0; //TODO ask CAD
+  private final double GEAR_RATIO = 21;
   private final double INCHES_PER_REV = 0; //TODO ask somebody
 
   TalonFX motor = new TalonFX(LiftConstants.motorPort);
@@ -59,14 +59,14 @@ public class Lift extends SubsystemBase {
   private final double CURRENT_LIMIT = 20.0; //ask electrical
   private final boolean CURRENT_LIMIT_ENABLED = true;
   
-  private final double kP = 0.0; //TODO tune gains
+  private final double kP = 2.5; //TODO tune gains
   private final double kI = 0.0; //TODO
-  private final double kD = 0.0; //TODO
+  private final double kD = 0.1; //TODO
   private final double kArbitryFeedFoward = 0.0; //gravity accountment
 
 
-  private final int CRUISE_VELOCITY = 25; //in rotations per second TODO ask elecrical
-  private final int ACCELERATION = 25; //in rotations per seconds squared TODO ask electrical
+  private final int CRUISE_VELOCITY = 80; // TODO modify in future
+  private final int ACCELERATION = 120;  // TODO modify in future
   
     
   
