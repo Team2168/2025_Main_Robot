@@ -32,20 +32,20 @@ public class CoralPivot extends SubsystemBase {
   private static DigitalInput limitSwitch = new DigitalInput(CANDevices.CORAL_PIVOT_LS);
 
 
-  private final double TICKS_PER_REV = 2048;
-  private static final double GEAR_RATIO = 43.66162388;
-  private final int SMART_CURRENT_LIMIT = 20;
-  private final double MAX_ANGLE = degreesToRot(0.0); //TODO: find angles
+  private final double TICKS_PER_REV = 4096;
+  private static final double GEAR_RATIO = 55.55556;
+  private final int SMART_CURRENT_LIMIT = 50;
+  private final double MAX_ANGLE = degreesToRot(-21.0); //TODO: find angles
   private final double MIN_ANGLE = degreesToRot(0.0); 
   private boolean isInverted = false;
   private IdleMode brake = IdleMode.kBrake;
   private double kMaxOutput = 1.0;
   private double kMinOutput = -1.0;
   private int kV = 917;
-  private double setPoint = degreesToRot(0.0); //TODO: find angle setpoint woll be
-  private double kP = 0.0; // TODO: find out PID values
+  private double setPoint = degreesToRot(0.0);
+  private double kP = 0.0145; // TODO: maybe tune values a little more
   private double kI = 0.0;
-  private double kD = 0.0;
+  private double kD = 0.0099;
 
 
   public enum CORAL_PIVOT_ANGLE {
@@ -75,7 +75,7 @@ public class CoralPivot extends SubsystemBase {
     motorConfigs.closedLoop
       .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
       .pid(kP, kI, kD)
-      .velocityFF(1/kV)
+      //.velocityFF(1/kV)
       .outputRange(kMinOutput, kMaxOutput);
 
     motorConfigs.softLimit
