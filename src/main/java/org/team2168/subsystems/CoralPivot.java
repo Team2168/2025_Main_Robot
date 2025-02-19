@@ -35,14 +35,14 @@ public class CoralPivot extends SubsystemBase {
   private final double TICKS_PER_REV = 4096;
   private static final double GEAR_RATIO = 55.55556;
   private final int SMART_CURRENT_LIMIT = 50;
-  private final double MAX_ANGLE = degreesToRot(-21.0); //TODO: find angles
-  private final double MIN_ANGLE = degreesToRot(0.0); 
+  private final double MAX_ANGLE = -21.0; //TODO: is in rotations
+  private final double MIN_ANGLE = 0.0;
   private boolean isInverted = false;
   private IdleMode brake = IdleMode.kBrake;
   private double kMaxOutput = 1.0;
   private double kMinOutput = -1.0;
   private int kV = 917;
-  private double setPoint = degreesToRot(0.0);
+  private double setPoint = 0.0;
   private double kP = 0.0145; // TODO: maybe tune values a little more
   private double kI = 0.0;
   private double kD = 0.0099;
@@ -79,13 +79,14 @@ public class CoralPivot extends SubsystemBase {
       .outputRange(kMinOutput, kMaxOutput);
 
     motorConfigs.softLimit
-      .forwardSoftLimit(degreesToRot(0.0)) //TODO: find value
-      .reverseSoftLimit(degreesToRot(0.0)) //TODO: find value
+      .forwardSoftLimit(-20.0) // in rotations
+      .reverseSoftLimit(degreesToRot(0.0)) // in rotations
       .forwardSoftLimitEnabled(true)
       .reverseSoftLimitEnabled(true);
 
     motorConfigs.encoder
-      .apply(encoderConfig);
+      .apply(encoderConfig)
+      .countsPerRevolution(4096);
 
     motorConfigs.signals.externalOrAltEncoderPosition(5);
 
@@ -94,13 +95,13 @@ public class CoralPivot extends SubsystemBase {
 
 
   /**
-   * sets the coral pivot's position in degrees
-   * @param degrees amount of degrees to move
+   * sets the coral pivot's position in rotations
+   * @param rot amount of rotations to move
    */
-  public void setCoralPivotPosition(double degrees) {
-    degrees = MathUtil.clamp(degrees, MIN_ANGLE, MAX_ANGLE);
-    setPoint = degreesToRot(degrees);
-    if (degrees > 0) {
+  public void setCoralPivotPosition(double rot) {
+    rot = MathUtil.clamp(rot, MIN_ANGLE, MAX_ANGLE);
+    setPoint = rot;
+    if (rot > 0) {
       if (limitSwitch.get()) {
         pivotMotor.set(0.0);
       }
@@ -133,7 +134,7 @@ public class CoralPivot extends SubsystemBase {
 
   /**
    * converts degrees to rotations
-   * @param degrees amount of degrees/angles to move intakepivot up
+   * @param degrees amount of degrees/angles to move pivot up
    * @return amount of degrees from amount of rotations
    */
   public static double degreesToRot(double degrees) {

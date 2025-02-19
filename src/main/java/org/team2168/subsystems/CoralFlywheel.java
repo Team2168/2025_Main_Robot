@@ -22,7 +22,7 @@ public class CoralFlywheel extends SubsystemBase {
     private static DigitalInput coralDetector = new DigitalInput(CANDevices.LINE_BREAK_SENSOR);
 
     private final double minuteInHundredMs = 600.0;
-    private final double TICKS_PER_REV = 2048;
+    private final double TICKS_PER_REV = 4096;
     private final double GEAR_RATIO = 10;
     private final int SMART_CURRENT_LIMIT = 20;
     private boolean isInverted = false;
@@ -39,7 +39,8 @@ public class CoralFlywheel extends SubsystemBase {
             .smartCurrentLimit(SMART_CURRENT_LIMIT);
 
         motorConfigs.encoder
-            .apply(encoderConfig);
+            .apply(encoderConfig)
+            .countsPerRevolution(4096);
 
 
         motorConfigs.signals.externalOrAltEncoderPosition(5);
