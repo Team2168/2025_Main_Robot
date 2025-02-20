@@ -10,7 +10,6 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.AlternateEncoderConfig;
-import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -42,8 +41,6 @@ public class CoralFlywheel extends SubsystemBase {
 
         // motorConfigs.encoder
         //     .apply(encoderConfig);
-
-        //altEncoderConfig.apply(altEncoderConfig);
 
         motorConfigs.alternateEncoder
             .apply(altEncoderConfig)
