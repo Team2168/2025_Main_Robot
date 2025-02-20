@@ -4,6 +4,7 @@
 
 package org.team2168.subsystems;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -11,13 +12,11 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.AlternateEncoderConfig;
-import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import org.team2168.Constants.CANDevices;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -31,10 +30,6 @@ public class CoralPivot extends SubsystemBase {
   //private static RelativeEncoder pivotPrimaryEncoder = pivotMotor.getEncoder();
   private static RelativeEncoder pivotEncoder = pivotMotor.getAlternateEncoder();
   private static SparkClosedLoopController pidController = pivotMotor.getClosedLoopController();
-
-  final SparkMaxConfig motorConfigs = new SparkMaxConfig();
-  final EncoderConfig encoderConfig = new EncoderConfig();
-  final AlternateEncoderConfig altEncoderConfig = new AlternateEncoderConfig();
 
   private static DigitalInput limitSwitch = new DigitalInput(CANDevices.CORAL_PIVOT_LS);
 
@@ -70,6 +65,9 @@ public class CoralPivot extends SubsystemBase {
 
   /** Creates a new CoralPivot. */
   public CoralPivot() {
+    final SparkMaxConfig motorConfigs = new SparkMaxConfig();
+    // final EncoderConfig encoderConfig = new EncoderConfig();
+    final AlternateEncoderConfig altEncoderConfig = new AlternateEncoderConfig();
     pidController.setReference(setPoint, ControlType.kPosition);
 
     motorConfigs
@@ -92,7 +90,7 @@ public class CoralPivot extends SubsystemBase {
     // motorConfigs.encoder
     //   .apply(encoderConfig);
 
-      motorConfigs.alternateEncoder
+    motorConfigs.alternateEncoder
       .apply(altEncoderConfig)
       .countsPerRevolution(4096)
       .setSparkMaxDataPortConfig();
@@ -108,18 +106,17 @@ public class CoralPivot extends SubsystemBase {
    * @param rot amount of rotations to move
    */
   public void setCoralPivotPosition(double rot) {
-    rot = MathUtil.clamp(rot, MIN_ANGLE, MAX_ANGLE);
-    setPoint = rot;
-    pidController.setReference(setPoint, ControlType.kPosition);
-
-    // if (rot > 0) {
-    //   if (limitSwitch.get()) {
-    //     pivotMotor.set(0.0);
-    //   }
-    //   else {
-    //     pidController.setReference(setPoint, ControlType.kPosition);
-    //   }
-    // }
+    // rot = MathUtil.clamp(rot, MIN_ANGLE, MAX_ANGLE);
+    // setPoint = rot;
+    // pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    if (rot > 0) {
+      if (limitSwitch.get()) {
+        pivotMotor.set(0.0);
+      }
+      else {
+        pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+      }
+    }
   }
 
   public void setCoralPivotStowAngle() {
@@ -166,8 +163,17 @@ public class CoralPivot extends SubsystemBase {
    * @return the position in degrees
    */
   @Log(name = "coral pivot angle (degrees)", rowIndex = 0, columnIndex = 0)
-  public double getCoralPivotAngle() {
+  public double getCoralPivotPositionDegrees() {
     return rotToDegrees(pivotEncoder.getPosition());
+  }
+
+  /**
+   * gets the coral pivot's position
+   * @return the position in rotations
+   */
+  @Log(name = "coral pivot angle (rotations)", rowIndex = 0, columnIndex = 0)
+  public double getCoralPivotPositionRot() {
+    return pivotEncoder.getPosition();
   }
 
   @Override
