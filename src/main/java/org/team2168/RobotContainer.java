@@ -69,12 +69,12 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0.0)); // TODO: find out angleee
+    //coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0.0)); // TODO: find out angleee
 
-    testJoystick.a().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.5));
-    testJoystick.b().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.5));
+    testJoystick.a().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.2));
+    testJoystick.b().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.2));
 
-    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, -5.0));
+    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, -10.0));
   }
 
   /**

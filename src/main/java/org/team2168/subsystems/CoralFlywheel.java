@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
@@ -30,7 +31,8 @@ public class CoralFlywheel extends SubsystemBase {
 
     public CoralFlywheel() {
         final SparkMaxConfig motorConfigs = new SparkMaxConfig();
-        final EncoderConfig encoderConfig = new EncoderConfig();
+        // final EncoderConfig encoderConfig = new EncoderConfig();
+        final AlternateEncoderConfig altEncoderConfig = new AlternateEncoderConfig();
 
 
         motorConfigs
@@ -38,9 +40,15 @@ public class CoralFlywheel extends SubsystemBase {
             .inverted(isInverted)
             .smartCurrentLimit(SMART_CURRENT_LIMIT);
 
-        motorConfigs.encoder
-            .apply(encoderConfig)
-            .countsPerRevolution(4096);
+        // motorConfigs.encoder
+        //     .apply(encoderConfig);
+
+        //altEncoderConfig.apply(altEncoderConfig);
+
+        motorConfigs.alternateEncoder
+            .apply(altEncoderConfig)
+            .countsPerRevolution(4096)
+            .setSparkMaxDataPortConfig();
 
 
         motorConfigs.signals.externalOrAltEncoderPosition(5);
