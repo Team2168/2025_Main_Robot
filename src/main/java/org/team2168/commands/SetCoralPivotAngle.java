@@ -11,12 +11,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetCoralPivotAngle extends Command {
   private CoralPivot coralPivot;
-  private double pivotAngle; // IN ROT RIGHT NOW
+  private double coralPivPosition; // IN ROT RIGHT NOW
+  private double tolerance = 1.0; // rotation
 
   /** Creates a new SetCoralPivotAngle. */
-  public SetCoralPivotAngle(CoralPivot coralPivot, double pivotAngle) {
+  public SetCoralPivotAngle(CoralPivot coralPivot, double coralPivPosition) {
     this.coralPivot = coralPivot;
-    this.pivotAngle = pivotAngle;
+    this.coralPivPosition = coralPivPosition;
 
     addRequirements(coralPivot);
   }
@@ -28,7 +29,7 @@ public class SetCoralPivotAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    coralPivot.setCoralPivotPosition(pivotAngle);
+    coralPivot.setCoralPivotPosition(coralPivPosition);
   }
 
   // Called once the command ends or is interrupted.
@@ -40,6 +41,10 @@ public class SetCoralPivotAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    if (coralPivot.getCoralPivotPositionRot() >= coralPivPosition - tolerance && coralPivot.getCoralPivotPositionRot() <= coralPivPosition + tolerance) {
+      return true;
+    }
+    else
+      return false;
   }
 }
