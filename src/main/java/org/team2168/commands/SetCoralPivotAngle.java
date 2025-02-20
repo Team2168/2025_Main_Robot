@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class SetCoralPivotAngle extends Command {
   private CoralPivot coralPivot;
   private double coralPivPosition; // IN ROT RIGHT NOW
-  private double tolerance = 1.0; // rotation
+  private double tolerance = 0.5; // rotation
 
   /** Creates a new SetCoralPivotAngle. */
   public SetCoralPivotAngle(CoralPivot coralPivot, double coralPivPosition) {
