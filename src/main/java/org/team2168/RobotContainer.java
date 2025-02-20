@@ -12,11 +12,17 @@ import org.team2168.commands.IntakePivot.setIntakePivotAngleHigher;
 import org.team2168.commands.IntakePivot.setIntakePivotAngleLower;
 import org.team2168.commands.IntakePivot.setIntakePivotPosition;
 import org.team2168.commands.IntakeWheel.setIntakeSpeed;
+import org.team2168.commands.lift.DriveLift;
+import org.team2168.commands.lift.DriveLiftHeights;
 import org.team2168.subsystems.ExampleSubsystem;
+import org.team2168.subsystems.Lift;
+import org.team2168.subsystems.Lift.LiftHeights;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
+import org.team2168.Constants.Controllers;
 
 import org.team2168.subsystems.algaeIntakeWheel;
 import org.team2168.subsystems.algaeIntakePivot;
@@ -32,14 +38,12 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final algaeIntakePivot algaeintakePivot = new algaeIntakePivot();
   private final algaeIntakeWheel algaeintakeWheel = new algaeIntakeWheel();
+  private final Lift m_Lift = new Lift();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
-      public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
-      public CommandXboxController operatorJoystick = new CommandXboxController(Controllers.OPERATOR_JOYSTICK);
-      public CommandXboxController testJoystick = new CommandXboxController(Controllers.TEST_JOYSTICK);
+  public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
+  public CommandXboxController operatorJoystick = new CommandXboxController(Controllers.OPERATOR_JOYSTICK);
+  public CommandXboxController testJoystick = new CommandXboxController(Controllers.TEST_JOYSTICK);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -64,7 +68,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     testJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake
    testJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); //take off upper (up dpad)
@@ -73,6 +77,12 @@ public class RobotContainer {
     operatorJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake Algae
     operatorJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); 
     operatorJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot));
+    testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
+    operatorJoystick.a().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.BARGE));
+    operatorJoystick.b().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L2));
+    operatorJoystick.y().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L3));
+    operatorJoystick.x().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L4));
+  
   }
 
   /**

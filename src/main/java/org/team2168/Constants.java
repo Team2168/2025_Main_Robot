@@ -13,6 +13,11 @@ package org.team2168;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static  class LiftConstants {
+    public static final int topLimitSwitchID = 0;
+    public static final int bottomLimitSwitchID = 0;
+    public static final int motorPort = 0;
+  }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
