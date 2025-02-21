@@ -86,8 +86,8 @@ public class CoralPivot extends SubsystemBase {
       .outputRange(kMinOutput, kMaxOutput);
 
     motorConfigs.softLimit
-      .forwardSoftLimit(-20.0) // in rotations
-      .reverseSoftLimit(degreesToRot(0.0)) // in rotations
+      .forwardSoftLimit(-18.0) // in rotations
+      .reverseSoftLimit(0.0) // in rotations
       .forwardSoftLimitEnabled(true)
       .reverseSoftLimitEnabled(true);
 
@@ -112,7 +112,7 @@ public class CoralPivot extends SubsystemBase {
   public void setCoralPivotPosition(double rot) {
     // rot = MathUtil.clamp(rot, MIN_ANGLE, MAX_ANGLE);
     // setPoint = rot;
-    // pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
     if (rot > 0) {
       if (limitSwitch.get()) {
         pivotMotor.set(0.0);

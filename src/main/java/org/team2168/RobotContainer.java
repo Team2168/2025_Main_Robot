@@ -7,6 +7,7 @@ package org.team2168;
 import org.team2168.Constants.Controllers;
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
+import org.team2168.commands.BumpCoralPivotAngleUp;
 import org.team2168.commands.DriveFlywheelUntilCoral;
 import org.team2168.commands.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.ExampleCommand;
@@ -72,10 +73,18 @@ public class RobotContainer {
 
     //coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0.0)); // TODO: find out angleee
 
-    testJoystick.a().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4));
-    testJoystick.b().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
+    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); // line break doesnt sense
+    testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, 0.4));
+    // testJoystick.b().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
+
+    testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); //both bring pivot back to 0
+    testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot));
 
     testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, -5.0));
+    testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, -10.0));
+    testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, -16)); // for some reason brings pivot all the way up?
+    testJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, 0.0));
+  
 
     operatorJoystick.rightTrigger().onTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
     operatorJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4));

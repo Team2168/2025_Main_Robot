@@ -35,16 +35,17 @@ public class SetCoralPivotAngle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    coralPivot.setCoralPivotSpeed(0.0);
+    // coralPivot.setCoralPivotSpeed(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (coralPivot.getCoralPivotPositionRot() >= coralPivPosition - tolerance && coralPivot.getCoralPivotPositionRot() <= coralPivPosition + tolerance) {
-      return true;
-    }
-    else
-      return false;
+    return true;
+    // if (coralPivot.getCoralPivotPositionRot() >= coralPivPosition - tolerance && coralPivot.getCoralPivotPositionRot() <= coralPivPosition + tolerance) {
+    //   return true;
+    // }
+    // else
+    //   return false;
   }
 }

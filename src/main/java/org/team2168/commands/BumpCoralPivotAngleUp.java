@@ -27,7 +27,7 @@ public class BumpCoralPivotAngleUp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    coralPivot.setCoralPivotPosition(coralPivot.getCoralPivotPositionRot() + 1.0);
+    coralPivot.setCoralPivotPosition(coralPivot.getCoralPivotPositionRot() + 0.1);
   }
 
   // Called once the command ends or is interrupted.
