@@ -21,5 +21,6 @@ public final class Constants {
   
   public static final int toplimitSwitchChannel = 0;
   public static final int bottomlimitSwitchChannel = 0;
+  public static final int closingSpeed = 0;
   }
 }
