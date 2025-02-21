@@ -4,6 +4,8 @@
 
 package org.team2168.subsystems;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import org.team2168.Constants.LiftConstants;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -28,9 +30,9 @@ public class Lift extends SubsystemBase {
 
    public enum LiftHeights {
     BARGE(0.0),
-    L2(0.0),
-    L3(0.0),
-    L4(0.0);
+    L2(5.0),
+    L3(20.0),
+    L4(40.0);
 
     public double liftHeight;
 
@@ -67,7 +69,6 @@ public class Lift extends SubsystemBase {
 
   private final int CRUISE_VELOCITY = 80; // TODO modify in future
   private final int ACCELERATION = 120;  // TODO modify in future
-  
     
   
   private void configureMotors() {
@@ -80,12 +81,16 @@ public class Lift extends SubsystemBase {
     FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
     MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
 
-    /* Motor Output Configurations */    
-    motorConfigs.withNeutralMode(NEUTRAL_MODE);
-    motorConfigs.withInverted(INVERSION); 
+    /* Motor Output Configurations */   
+    motorConfigs
+    .withNeutralMode(NEUTRAL_MODE)
+    .withInverted(INVERSION);
+     
+   
     /* Current Limits Configurations */
-    currentConfigs.withSupplyCurrentLimit(CURRENT_LIMIT);
-    currentConfigs.withSupplyCurrentLimitEnable(CURRENT_LIMIT_ENABLED);
+    currentConfigs
+    .withSupplyCurrentLimit(CURRENT_LIMIT)
+    .withSupplyCurrentLimitEnable(CURRENT_LIMIT_ENABLED);
 
     /* PID Gains Configurations */
     gains.withKP(kP)
@@ -174,9 +179,9 @@ public class Lift extends SubsystemBase {
 
   //@Config()
 
-  public void setPosition(double inches){
+  public void setPosition(double rotations){
     m_motmag.Slot = 0;
-    motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
+    motor.setControl(m_motmag.withPosition(rotations).withFeedForward(kArbitryFeedFoward));
     
   // Limit switch code
   //  if (inches > 0) {

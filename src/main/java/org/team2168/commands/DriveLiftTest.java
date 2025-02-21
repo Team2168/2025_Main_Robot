@@ -2,25 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.team2168.commands.lift;
-
-import static edu.wpi.first.units.Units.Inches;
-
-import org.team2168.subsystems.Lift;
-import org.team2168.subsystems.Lift.LiftHeights;
+package org.team2168.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
+import org.team2168.subsystems.Lift;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveLiftHeights extends Command {
-  
-  private final Lift m_lift;
-  private final LiftHeights m_liftHeights;
+public class DriveLiftTest extends Command {
+  private Lift lift;
+  private double liftPosition;
 
-  public DriveLiftHeights(Lift lift, LiftHeights H) {
-    m_lift = lift;
+  /** Creates a new DriveLiftTest. */
+  public DriveLiftTest(Lift lift, double liftPosition) {
+    this.lift = lift;
+    this.liftPosition = liftPosition;
     addRequirements(lift);
-    m_liftHeights = H;
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -30,15 +26,12 @@ public class DriveLiftHeights extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lift.setPosition(m_liftHeights.getValue());
-    
+    lift.setPosition(liftPosition);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_lift.setPercentOutput(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

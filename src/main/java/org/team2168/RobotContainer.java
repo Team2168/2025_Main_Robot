@@ -6,6 +6,7 @@ package org.team2168;
 
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
+import org.team2168.commands.DriveLiftTest;
 import org.team2168.commands.ExampleCommand;
 import org.team2168.commands.lift.DriveLift;
 import org.team2168.commands.lift.DriveLiftHeights;
@@ -13,6 +14,7 @@ import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.Lift.LiftHeights;
 
+import edu.wpi.first.math.controller.LTVDifferentialDriveController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -57,7 +59,12 @@ public class RobotContainer {
     operatorJoystick.b().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L2));
     operatorJoystick.y().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L3));
     operatorJoystick.x().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L4));
-  
+
+    testJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
+    testJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));
+    testJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
+    testJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
+    
   }
 
   /**
