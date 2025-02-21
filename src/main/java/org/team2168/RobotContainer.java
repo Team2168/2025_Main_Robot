@@ -14,6 +14,7 @@ import org.team2168.commands.SetCoralPivotAngle;
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.ExampleSubsystem;
+import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -71,10 +72,16 @@ public class RobotContainer {
 
     //coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0.0)); // TODO: find out angleee
 
-    testJoystick.a().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.2));
-    testJoystick.b().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.2));
+    testJoystick.a().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4));
+    testJoystick.b().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
 
-    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, -10.0));
+    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, -5.0));
+
+    operatorJoystick.rightTrigger().onTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
+    operatorJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4));
+
+    operatorJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()));
+    operatorJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()));
   }
 
   /**
