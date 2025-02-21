@@ -4,10 +4,10 @@
 
 package org.team2168.commands;
 
+import org.team2168.Constants.ClimberConstants;
 import org.team2168.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class CloseClimber extends Command {
@@ -27,7 +27,8 @@ public CloseClimber(Climber c) {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.driveClimbMotor(8); //Placeholder
+
+    climber.driveClimbMotor(ClimberConstants.closingSpeed); //Placeholder
 
   }
 
