@@ -50,16 +50,20 @@ public class CoralPivot extends SubsystemBase {
   private double kD = 0.0099;
 
 
-  public enum CORAL_PIVOT_ANGLE {
+  public enum CORAL_PIVOT_POSITION {
     BARGE(0.0),
-    L2(0.0),
+    L2(-5.0),
     L3(0.0),
     L4(0.0);
 
-    public double pivotAngle;
+    public double pivotPosition;
 
-    CORAL_PIVOT_ANGLE(double pivotAngle) {
-      this.pivotAngle = pivotAngle;
+    CORAL_PIVOT_POSITION(double pivotPosition) {
+      this.pivotPosition = pivotPosition;
+    }
+
+    public double getPivotPositon() {
+      return pivotPosition;
     }
   }
 
