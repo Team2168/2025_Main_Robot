@@ -81,9 +81,9 @@ public class algaeIntakePivot extends SubsystemBase {
   .maxAcceleration(MAXMotionAcceleration)
   .maxVelocity(MAXMotionCruiseVelocity);
   softLimitConfig
-    .forwardSoftLimit(degreesToRot(5.0)) //5 degrees for error tolerance
+    .forwardSoftLimit(degreesToRot(2.5)) //5 degrees for error tolerance
     .forwardSoftLimitEnabled(true)
-    .reverseSoftLimit(degreesToRot(-125.0)) //5 degrees for error tolerance
+    .reverseSoftLimit(degreesToRot(-115.0)) //5 degrees for error tolerance
     .reverseSoftLimitEnabled(true);
   config.encoder
   .apply(encoderConfig);
