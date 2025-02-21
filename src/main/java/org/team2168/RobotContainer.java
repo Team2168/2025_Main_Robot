@@ -7,6 +7,7 @@ package org.team2168;
 import org.team2168.Constants.Controllers;
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
+import org.team2168.commands.BumpCoralPivotAngleDown;
 import org.team2168.commands.BumpCoralPivotAngleUp;
 import org.team2168.commands.DriveFlywheelUntilCoral;
 import org.team2168.commands.DriveFlywheelUntilNoCoral;
@@ -17,11 +18,8 @@ import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
 
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
 
@@ -71,26 +69,27 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    //coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0.0)); // TODO: find out angleee
+    //coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0.0)); // setting this doesnt allow the other commands to work
 
-    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); // line break doesnt sense
-    testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, 0.4));
-    // testJoystick.b().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
+    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); // line break doesnt sense - update ok forgot to get its can id need to get that
+    testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
 
-    testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); //both bring pivot back to 0
-    testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot));
+    testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); //brings pivot back to 0
+    testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleDown(coralPivot));
 
     testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, -5.0));
     testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, -10.0));
-    testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, -16)); // for some reason brings pivot all the way up?
+    testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, -16.0)); // for some reason brings pivot all the way up?
     testJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, 0.0));
   
 
-    operatorJoystick.rightTrigger().onTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
+    operatorJoystick.rightTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
     operatorJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4));
 
     operatorJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()));
     operatorJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()));
+    operatorJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()));
+    operatorJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()));
   }
 
   /**
