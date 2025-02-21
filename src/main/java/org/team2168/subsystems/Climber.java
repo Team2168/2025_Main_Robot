@@ -118,7 +118,7 @@ public class Climber extends SubsystemBase {
       motor.getConfigurator().apply(gains);
       motor.getConfigurator().apply(feedbackConfigs);
       motor.getConfigurator().apply(motionMagicConfigs);
-
+        
   }
 
   @Override
