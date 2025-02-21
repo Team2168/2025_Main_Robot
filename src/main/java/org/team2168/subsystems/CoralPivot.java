@@ -37,13 +37,12 @@ public class CoralPivot extends SubsystemBase {
   private final double TICKS_PER_REV = 4096;
   private static final double GEAR_RATIO = 55.55556;
   private final int SMART_CURRENT_LIMIT = 50;
-  private final double MAX_ANGLE = -21.0; //TODO: is in rotations
-  private final double MIN_ANGLE = 0.0;
+  private final double MAX_POSITION_ROT = -20.0;
+  private final double MIN_POSITION_ROT = 0.0;
   private boolean isInverted = false;
   private IdleMode brake = IdleMode.kBrake;
   private double kMaxOutput = 1.0;
   private double kMinOutput = -1.0;
-  private int kV = 917;
   private double setPoint = 0.0;
   private double kP = 0.0145; // TODO: maybe tune values a little more
   private double kI = 0.0;
@@ -53,8 +52,8 @@ public class CoralPivot extends SubsystemBase {
   public enum CORAL_PIVOT_POSITION {
     BARGE(0.0),
     L2(-5.0),
-    L3(0.0),
-    L4(0.0);
+    L3(-10.0),
+    L4(-15.0);
 
     public double pivotPosition;
 
@@ -82,7 +81,6 @@ public class CoralPivot extends SubsystemBase {
     motorConfigs.closedLoop
       .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
       .pid(kP, kI, kD)
-      //.velocityFF(1/kV)
       .outputRange(kMinOutput, kMaxOutput);
 
     motorConfigs.softLimit
@@ -112,8 +110,8 @@ public class CoralPivot extends SubsystemBase {
   public void setCoralPivotPosition(double rot) {
     // rot = MathUtil.clamp(rot, MIN_ANGLE, MAX_ANGLE);
     // setPoint = rot;
-    pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-    if (rot > 0) {
+    // pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    if (rot < 0) {
       if (limitSwitch.get()) {
         pivotMotor.set(0.0);
       }
@@ -175,7 +173,7 @@ public class CoralPivot extends SubsystemBase {
    * gets the coral pivot's position
    * @return the position in rotations
    */
-  @Log(name = "coral pivot angle (rotations)", rowIndex = 0, columnIndex = 0)
+  @Log(name = "coral pivot position (rotations)", rowIndex = 0, columnIndex = 0)
   public double getCoralPivotPositionRot() {
     return pivotEncoder.getPosition();
   }
