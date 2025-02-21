@@ -23,8 +23,8 @@ public class Climber extends SubsystemBase {
 
   TalonFX motor = new TalonFX(ClimberConstants.ClimberMotorID);
   
-  DigitalInput toplimitSwitch = new DigitalInput(0);
-  DigitalInput bottomlimitSwitch = new DigitalInput(0);
+  DigitalInput rightlimitSwitch = new DigitalInput(ClimberConstants.rightlimitSwitchChannel);
+  DigitalInput leftlimitSwitch = new DigitalInput(ClimberConstants.leftlimitSwitchChannel);
   
   // The motor's inversion is such that moving clockwise is considered moving forward
   private final InvertedValue INVERSION = InvertedValue.Clockwise_Positive;
@@ -62,11 +62,11 @@ public class Climber extends SubsystemBase {
     motor.set(speed);
   } 
 
-  public boolean gettoplimitSwitch() {
-   return toplimitSwitch.get(); }
+  public boolean getrightlimitSwitch() {
+   return rightlimitSwitch.get(); }
 
-    public boolean getbottomlimitSwitch() {
-      return bottomlimitSwitch.get();
+    public boolean getleftlimitSwitch() {
+      return leftlimitSwitch.get();
     }
 
 

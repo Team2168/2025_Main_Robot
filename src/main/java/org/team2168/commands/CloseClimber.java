@@ -39,10 +39,10 @@ public CloseClimber(Climber c) {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(climber.gettoplimitSwitch()) {
+    if(climber.getrightlimitSwitch()) {
       return true;
     }
-    if(climber.getbottomlimitSwitch()) {
+    if(climber.getleftlimitSwitch()) {
       return true;
     }
     return false;

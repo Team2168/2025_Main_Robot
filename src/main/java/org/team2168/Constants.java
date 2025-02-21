@@ -19,8 +19,8 @@ public final class Constants {
   public static class ClimberConstants {
     public static final int ClimberMotorID = 0;
   
-  public static final int toplimitSwitchChannel = 0;
-  public static final int bottomlimitSwitchChannel = 0;
+  public static final int rightlimitSwitchChannel = 0;
+  public static final int leftlimitSwitchChannel = 0;
   public static final int closingSpeed = 0;
   }
 }
