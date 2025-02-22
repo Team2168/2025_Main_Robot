@@ -20,8 +20,6 @@ import org.team2168.Constants.CANDevices;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,7 +37,7 @@ public class CoralPivot extends SubsystemBase {
 
   private final double TICKS_PER_REV = 4096;
   private static final double GEAR_RATIO = 111.11111;
-  private final int SMART_CURRENT_LIMIT = 50; // might need to set lower for motor temp
+  private final int SMART_CURRENT_LIMIT = 30;
   private final double MAX_POSITION_ROT = 20.0;
   private final double MIN_POSITION_ROT = 0.0;
   private boolean isInverted = true;
@@ -47,7 +45,7 @@ public class CoralPivot extends SubsystemBase {
   private double kMaxOutput = 1.0;
   private double kMinOutput = -1.0;
   private double setPoint = 0.0;
-  private double kP = 0.0145; // TODO: maybe tune values a little more
+  private double kP = 0.0145; // TODO: tune values
   private double kI = 0.0;
   private double kD = 0.0099;
 
@@ -76,33 +74,35 @@ public class CoralPivot extends SubsystemBase {
     final AlternateEncoderConfig altEncoderConfig = new AlternateEncoderConfig();
     pidController.setReference(setPoint, ControlType.kPosition);
     
-    // motor configs
+    /* motor configs */ 
     motorConfigs
       .idleMode(brake)
       .inverted(isInverted)
       .smartCurrentLimit(SMART_CURRENT_LIMIT);
     
-    // closed loop configs
+    /* closed loop configs */ 
     motorConfigs.closedLoop
       .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
       .pid(kP, kI, kD)
       .outputRange(kMinOutput, kMaxOutput);
 
-    // soft limit configs (in rotations)
+    /* soft limit configs (in rotations) */ 
     motorConfigs.softLimit
-      .forwardSoftLimit(18.0)
-      .reverseSoftLimit(0.0)
+      .forwardSoftLimit(MAX_POSITION_ROT)
+      .reverseSoftLimit(MIN_POSITION_ROT)
       .forwardSoftLimitEnabled(true)
       .reverseSoftLimitEnabled(true);
 
     // motorConfigs.encoder
     //   .apply(encoderConfig);
 
+    /* alt encoder configs (using a through bore encoder) */
     motorConfigs.alternateEncoder
       .apply(altEncoderConfig)
       .countsPerRevolution(4096)
       .setSparkMaxDataPortConfig()
       .inverted(isInverted);
+      // .positionConversionFactor(GEAR_RATIO); // not sure if this is correct
 
     motorConfigs.signals.externalOrAltEncoderPosition(5);
 
@@ -116,8 +116,6 @@ public class CoralPivot extends SubsystemBase {
    * @param rot amount of rotations to move
    */
   public void setCoralPivotPosition(double rot) {
-    // rot = MathUtil.clamp(rot, MIN_ANGLE, MAX_ANGLE);
-    // setPoint = rot;
     pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
