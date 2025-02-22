@@ -36,7 +36,7 @@ public class CoralPivot extends SubsystemBase {
 
   private final double TICKS_PER_REV = 4096;
   private static final double GEAR_RATIO = 55.55556;
-  private final int SMART_CURRENT_LIMIT = 50;
+  private final int SMART_CURRENT_LIMIT = 50; // might need to set lower for motor temp
   private final double MAX_POSITION_ROT = 20.0;
   private final double MIN_POSITION_ROT = 0.0;
   private boolean isInverted = true;

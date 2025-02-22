@@ -69,7 +69,7 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    //coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0.0)); // setting this doesnt allow the other commands to work
+    coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0.0)); // setting this doesnt allow the other commands to work
 
     testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); // line break doesnt sense - update ok forgot to get its can id need to get that
     testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
@@ -77,10 +77,11 @@ public class RobotContainer {
     testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); //brings pivot back to 0
     testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleDown(coralPivot));
 
-    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 5.0));
-    testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, 10.0));
-    testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, 16.0)); // for some reason brings pivot all the way up?
     testJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, 0.0));
+    testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, 5.0));
+    testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, 10.0));
+    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 16.0)); // for some reason brings pivot all the way up?
+
   
 
     operatorJoystick.rightTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
@@ -88,8 +89,8 @@ public class RobotContainer {
 
     operatorJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()));
     operatorJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()));
-    operatorJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()));
-    operatorJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()));
+    operatorJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()));
+    operatorJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()));
   }
 
   /**
