@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class CoralFlywheel extends SubsystemBase {
-    private static SparkMax flywheelMotor = new SparkMax(CANDevices.CORAL_FLYWHEEL, MotorType.kBrushless); // placeholder ID
+    private static SparkMax flywheelMotor = new SparkMax(CANDevices.CORAL_FLYWHEEL, MotorType.kBrushless);
     private static RelativeEncoder flywheelEncoder = flywheelMotor.getAlternateEncoder();
     private static DigitalInput coralDetector = new DigitalInput(CANDevices.LINE_BREAK_SENSOR);
 
@@ -60,18 +60,10 @@ public class CoralFlywheel extends SubsystemBase {
     public void setFlywheelSpeed(double speed) {
         flywheelMotor.set(speed);
     }
-
-     /**
-     * gets the speed in rpm
-     * @return the speedrpm
-     */
-    public double getSpeedRPM () {
-        return TicksPerOneHundredMSToRPM(flywheelEncoder.getVelocity());
-    }
     
      /**
      * converts RPM to ticks per one hundred ms
-     * @param speedRPM the speed in rpm
+     * @param speedRPM the speed in rotations
      * @return the amount of ticks from rpm
      */
     private double RPMToTicksPerOneHundredMS(double speedRPM) {
@@ -81,7 +73,7 @@ public class CoralFlywheel extends SubsystemBase {
     /**
      * converts ticks per one hundred ms to rpm
      * @param ticksPerHundredMs amount of ticks per hundred ms
-     * @return the amount of rpm from ticks
+     * @return the amount of rotations from ticks
      */
     private double TicksPerOneHundredMSToRPM(double ticksPerHundredMs) {
         return ticksPerHundredMs * (GEAR_RATIO/TICKS_PER_REV) * minuteInHundredMs;
@@ -95,8 +87,24 @@ public class CoralFlywheel extends SubsystemBase {
         public boolean isCoralPresent() {
             return !coralDetector.get();
         }
-
+    
+    /**
+     * gets the speed in rotations per minute
+     * @return amount of rotations
+     */
     @Log(name = "flywheel speed (rotations per minutes)", rowIndex = 3, columnIndex = 1)
+        public double getCoralFlywheelSpeedRPM() {
+            return flywheelEncoder.getVelocity();
+        }
+
+    /**
+     * gets the speed in ticks per hundred ms
+     * @return amount of ticks per hundred ms
+     */
+    @Log(name = "flywheel speed (ticks per hundred ms)", rowIndex = 3, columnIndex = 1)
+        public double getCoralFlywheelSpeedTicks() {
+            return RPMToTicksPerOneHundredMS(flywheelEncoder.getVelocity());
+        }       
 
     @Override
     public void periodic() {
