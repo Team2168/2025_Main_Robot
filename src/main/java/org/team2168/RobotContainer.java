@@ -6,17 +6,24 @@ package org.team2168;
 
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
+import org.team2168.commands.CloseClimber;
+import org.team2168.commands.DriveClimber;
 import org.team2168.commands.ExampleCommand;
 import org.team2168.commands.lift.DriveLift;
 import org.team2168.commands.lift.DriveLiftHeights;
+import org.team2168.subsystems.Climber;
 import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.Lift.LiftHeights;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
+
+import org.team2168.Constants.ClimberConstants;
 import org.team2168.Constants.Controllers;
 
 /**
@@ -26,6 +33,8 @@ import org.team2168.Constants.Controllers;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private final Climber climber = new Climber(); 
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Lift m_Lift = new Lift();
@@ -51,13 +60,15 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+  //bindings for moving the climber teehee
   private void configureBindings() {
     testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
     operatorJoystick.a().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.BARGE));
     operatorJoystick.b().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L2));
     operatorJoystick.y().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L3));
     operatorJoystick.x().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L4));
-  
+    operatorJoystick.povLeft().whileTrue(new CloseClimber(climber));
+    operatorJoystick.povRight().whileTrue(new DriveClimber(climber, ()-> ClimberConstants.openingSpeed));
   }
 
   /**
