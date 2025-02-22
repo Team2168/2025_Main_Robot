@@ -37,9 +37,9 @@ public class CoralPivot extends SubsystemBase {
   private final double TICKS_PER_REV = 4096;
   private static final double GEAR_RATIO = 55.55556;
   private final int SMART_CURRENT_LIMIT = 50;
-  private final double MAX_POSITION_ROT = -20.0;
+  private final double MAX_POSITION_ROT = 20.0;
   private final double MIN_POSITION_ROT = 0.0;
-  private boolean isInverted = false;
+  private boolean isInverted = true;
   private IdleMode brake = IdleMode.kBrake;
   private double kMaxOutput = 1.0;
   private double kMinOutput = -1.0;
@@ -51,9 +51,9 @@ public class CoralPivot extends SubsystemBase {
 
   public enum CORAL_PIVOT_POSITION {
     BARGE(0.0),
-    L2(-5.0),
-    L3(-10.0),
-    L4(-15.0);
+    L2(5.0),
+    L3(10.0),
+    L4(15.0);
 
     public double pivotPosition;
 
@@ -72,20 +72,23 @@ public class CoralPivot extends SubsystemBase {
     // final EncoderConfig encoderConfig = new EncoderConfig();
     final AlternateEncoderConfig altEncoderConfig = new AlternateEncoderConfig();
     pidController.setReference(setPoint, ControlType.kPosition);
-
+    
+    // motor configs
     motorConfigs
       .idleMode(brake)
       .inverted(isInverted)
       .smartCurrentLimit(SMART_CURRENT_LIMIT);
     
+    // closed loop configs
     motorConfigs.closedLoop
       .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
       .pid(kP, kI, kD)
       .outputRange(kMinOutput, kMaxOutput);
 
+    // soft limit configs (in rotations)
     motorConfigs.softLimit
-      .forwardSoftLimit(-18.0) // in rotations
-      .reverseSoftLimit(0.0) // in rotations
+      .forwardSoftLimit(18.0)
+      .reverseSoftLimit(0.0)
       .forwardSoftLimitEnabled(true)
       .reverseSoftLimitEnabled(true);
 
@@ -111,7 +114,7 @@ public class CoralPivot extends SubsystemBase {
     // rot = MathUtil.clamp(rot, MIN_ANGLE, MAX_ANGLE);
     // setPoint = rot;
     // pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-    if (rot < 0) {
+    if (rot > 0.0) {
       if (limitSwitch.get()) {
         pivotMotor.set(0.0);
       }
@@ -121,6 +124,9 @@ public class CoralPivot extends SubsystemBase {
     }
   }
 
+  /**
+   * sets the coral pivot's stow angle, which is 0 rotations
+   */
   public void setCoralPivotStowAngle() {
     pidController.setReference(setPoint, ControlType.kPosition);
   }
@@ -164,7 +170,7 @@ public class CoralPivot extends SubsystemBase {
    * gets the coral pivot's position
    * @return the position in degrees
    */
-  @Log(name = "coral pivot angle (degrees)", rowIndex = 0, columnIndex = 0)
+  @Log(name = "coral pivot angle (degrees)", rowIndex = 1, columnIndex = 0)
   public double getCoralPivotPositionDegrees() {
     return rotToDegrees(pivotEncoder.getPosition());
   }
@@ -173,7 +179,7 @@ public class CoralPivot extends SubsystemBase {
    * gets the coral pivot's position
    * @return the position in rotations
    */
-  @Log(name = "coral pivot position (rotations)", rowIndex = 0, columnIndex = 0)
+  @Log(name = "coral pivot position (rotations)", rowIndex = 1, columnIndex = 1)
   public double getCoralPivotPositionRot() {
     return pivotEncoder.getPosition();
   }

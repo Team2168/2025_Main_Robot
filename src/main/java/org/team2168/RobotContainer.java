@@ -77,9 +77,9 @@ public class RobotContainer {
     testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); //brings pivot back to 0
     testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleDown(coralPivot));
 
-    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, -5.0));
-    testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, -10.0));
-    testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, -16.0)); // for some reason brings pivot all the way up?
+    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 5.0));
+    testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, 10.0));
+    testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, 16.0)); // for some reason brings pivot all the way up?
     testJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, 0.0));
   
 
