@@ -43,8 +43,8 @@ public class SetCoralPivotAngle extends Command {
   public boolean isFinished() {
     if (coralPivot.getCoralPivotPositionRot() >= coralPivPosition - tolerance && coralPivot.getCoralPivotPositionRot() <= coralPivPosition + tolerance) {
       return true;
-    }
+    } 
     else
       return false;
   }
-}
+} 

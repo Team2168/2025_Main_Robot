@@ -69,8 +69,6 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    coralPivot.setDefaultCommand(new SetCoralPivotAngle(coralPivot, 0.0)); // setting this doesnt allow the other commands to work
-
     testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); // line break doesnt sense - update ok forgot to get its can id need to get that
     testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
 

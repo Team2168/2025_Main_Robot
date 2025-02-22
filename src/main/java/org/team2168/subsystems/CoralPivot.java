@@ -22,6 +22,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -31,11 +33,12 @@ public class CoralPivot extends SubsystemBase {
   private static RelativeEncoder pivotEncoder = pivotMotor.getAlternateEncoder();
   private static SparkClosedLoopController pidController = pivotMotor.getClosedLoopController();
 
-  private static DigitalInput limitSwitch = new DigitalInput(CANDevices.CORAL_PIVOT_LS);
+  // private Encoder encoder = new Encoder(1, 2);
+  // private EncoderSim encoderSim = new EncoderSim(encoder);
 
 
   private final double TICKS_PER_REV = 4096;
-  private static final double GEAR_RATIO = 55.55556;
+  private static final double GEAR_RATIO = 111.11111;
   private final int SMART_CURRENT_LIMIT = 50; // might need to set lower for motor temp
   private final double MAX_POSITION_ROT = 20.0;
   private final double MIN_POSITION_ROT = 0.0;
@@ -98,11 +101,13 @@ public class CoralPivot extends SubsystemBase {
     motorConfigs.alternateEncoder
       .apply(altEncoderConfig)
       .countsPerRevolution(4096)
-      .setSparkMaxDataPortConfig();
+      .setSparkMaxDataPortConfig()
+      .inverted(isInverted);
 
     motorConfigs.signals.externalOrAltEncoderPosition(5);
 
     pivotMotor.configure(motorConfigs, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
   }
 
 
@@ -113,15 +118,7 @@ public class CoralPivot extends SubsystemBase {
   public void setCoralPivotPosition(double rot) {
     // rot = MathUtil.clamp(rot, MIN_ANGLE, MAX_ANGLE);
     // setPoint = rot;
-    // pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-    if (rot > 0.0) {
-      if (limitSwitch.get()) {
-        pivotMotor.set(0.0);
-      }
-      else {
-        pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-      }
-    }
+    pidController.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
   /**
@@ -182,6 +179,7 @@ public class CoralPivot extends SubsystemBase {
   @Log(name = "coral pivot position (rotations)", rowIndex = 1, columnIndex = 1)
   public double getCoralPivotPositionRot() {
     return pivotEncoder.getPosition();
+    // return encoderSim.getDistance();
   }
 
   @Override
