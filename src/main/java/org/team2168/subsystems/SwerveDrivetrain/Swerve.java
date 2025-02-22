@@ -14,10 +14,12 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -43,7 +45,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     /* Swerve requests to apply during SysId characterization */
@@ -293,11 +295,15 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 
-    public void driveWithJoystickInput(double xSpeed, double ySpeed, double rot) {
-        this.applyRequest(() ->
+    public Command driveWithJoystickInput(double xSpeed, double ySpeed, double rot) {
+        SlewRateLimiter xLimiter = new SlewRateLimiter(8.0);
+        SlewRateLimiter yLimiter = new SlewRateLimiter(8.0);
+        SlewRateLimiter rotLimiter = new SlewRateLimiter(Units.degreesToRadians(1000));
+        return applyRequest(() ->
                 fieldCentricDrive.withVelocityX(xSpeed * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(xSpeed * MaxSpeed) // Drive left with negative X (left)
+                    .withVelocityY(ySpeed * MaxSpeed) // Drive left with negative X (left)
                     .withRotationalRate(rot * MaxAngularRate) // Drive counterclockwise with negative X (left)
             );
+            
     }
 }
