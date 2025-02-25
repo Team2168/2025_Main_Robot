@@ -21,9 +21,7 @@ public final class Constants {
     public static final int CORAL_PIVOT = 21;
     public static final int CORAL_FLYWHEEL = 20;
 
-    public static final int CORAL_PIVOT_LS = 2; // TODO: need value
-
-    public static final int LINE_BREAK_SENSOR = 3; // TODO: need value
+    public static final int LINE_BREAK_SENSOR = 0; // TODO: need value
   }
 
   public static class Controllers {

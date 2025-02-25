@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -109,5 +110,6 @@ public class CoralFlywheel extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+            SmartDashboard.putBoolean("linebreak sensor", isCoralPresent());
     }
 }
