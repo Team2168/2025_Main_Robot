@@ -29,6 +29,7 @@ public final class Constants {
 
   public static class MotorConstants {
     public static final int ELEVATORID = 12;
+    public static final int CANCODER_ID = 11;
        
     
   }

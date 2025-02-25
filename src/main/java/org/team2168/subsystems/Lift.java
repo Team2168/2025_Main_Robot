@@ -6,6 +6,7 @@ package org.team2168.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
 
+import org.team2168.Constants;
 import org.team2168.Constants.LiftConstants;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -17,10 +18,13 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage; 
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,9 +34,9 @@ public class Lift extends SubsystemBase {
 
    public enum LiftHeights {
     BARGE(0.0),
-    L2(5.0),
-    L3(20.0),
-    L4(40.0);
+    L2(0.0),
+    L3(0.0),
+    L4(5.0);
 
     public double liftHeight;
 
@@ -54,21 +58,40 @@ public class Lift extends SubsystemBase {
   private final double GEAR_RATIO = 21;
   private final double INCHES_PER_REV = 0; //TODO ask somebody
 
-  TalonFX motor = new TalonFX(LiftConstants.motorPort);
-  private final InvertedValue INVERSION = InvertedValue.Clockwise_Positive; // "inversion" is placeholder
+  TalonFX motor = new TalonFX(Constants.MotorConstants.ELEVATORID);
+  CANcoder cancoder = new CANcoder(Constants.MotorConstants.CANCODER_ID);
+  private final InvertedValue INVERSION = InvertedValue.CounterClockwise_Positive; // "inversion" is placeholder
   private final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
+  private final GravityTypeValue FEEDFORWARD_TYPE = GravityTypeValue.Elevator_Static;
 
-  private final double CURRENT_LIMIT = 20.0; //ask electrical
+  private final SensorDirectionValue encoderValue = SensorDirectionValue.Clockwise_Positive;
+  private final double peakCancoderAbsolute = 1.0;
+
+  private final double STATOR_CURRENT_LIMIT = 40.0; //ask electrical
+  private final double SUPPLY_CURRENT_LIMIT = 45.0;
+  private final double SUPPLY_LOWER_LIMIT = 40;
+  private final double LOWER_TIME = 1;
   private final boolean CURRENT_LIMIT_ENABLED = true;
+  private final double PEAK_FORWARD_DUTY_CYCLE = 1.0;
+  private final double PEAK_REVERSE_DUTY_CYCLE = -1.0;
+  private final double NEUTRAL_DEADBAND = 0.005;
   
-  private final double kP = 2.5; //TODO tune gains
+  private final double kP = 2.75; //TODO tune gains
   private final double kI = 0.0; //TODO
-  private final double kD = 0.1; //TODO
-  private final double kArbitryFeedFoward = 0.0; //gravity accountment
+  private final double kD = 0.25; //TODO
+  private final double kGravity = 0.24; //gravity accountment
 
 
-  private final int CRUISE_VELOCITY = 80; // TODO modify in future
-  private final int ACCELERATION = 120;  // TODO modify in future
+  private final int CRUISE_VELOCITY = 85; // TODO modify in future
+  private final int ACCELERATION = 50;  // TODO modify in future
+  private final double expoKV = 0.119;
+  private final double expoKA = 0.1;
+
+  private final double peakForwardVoltage = 16.0;
+  private final double oeakReverseVoltage = -16.0;
+
+  private final double forwardSoftLimit = 5.23;
+  private final double reverseSoftLimit = 0.0;
     
   
   private void configureMotors() {
