@@ -99,9 +99,9 @@ public class CoralPivot extends SubsystemBase {
     motorConfigs.alternateEncoder
       .apply(altEncoderConfig)
       .countsPerRevolution(TICKS_PER_REV)
-      .setSparkMaxDataPortConfig();
+      .setSparkMaxDataPortConfig()
       // .inverted(isInverted)
-      // .positionConversionFactor(GEAR_RATIO); // not sure if this is correct
+      .positionConversionFactor(GEAR_RATIO); // not sure if this is correct
 
     motorConfigs.signals.externalOrAltEncoderPosition(5);
 
