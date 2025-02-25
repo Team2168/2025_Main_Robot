@@ -20,8 +20,7 @@ import org.team2168.Constants.CANDevices;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -35,26 +34,26 @@ public class CoralPivot extends SubsystemBase {
   // private EncoderSim encoderSim = new EncoderSim(encoder);
 
 
-  private final double TICKS_PER_REV = 4096;
+  private final int TICKS_PER_REV = 8192;
   private static final double GEAR_RATIO = 111.11111;
-  private final int SMART_CURRENT_LIMIT = 30;
-  private final double MAX_POSITION_ROT = 20.0;
+  private final int SMART_CURRENT_LIMIT = 40;
+  private final double MAX_POSITION_ROT = 15.0;
   private final double MIN_POSITION_ROT = 0.0;
   private boolean isInverted = true;
   private IdleMode brake = IdleMode.kBrake;
-  private double kMaxOutput = 1.0;
-  private double kMinOutput = -1.0;
+  private double kMaxOutput = 0.5;
+  private double kMinOutput = -0.5;
   private double setPoint = 0.0;
-  private double kP = 0.0145; // TODO: tune values
+  private double kP = 0.0149; // TODO: tune values
   private double kI = 0.0;
-  private double kD = 0.0099;
+  private double kD = 0.013;
 
 
   public enum CORAL_PIVOT_POSITION {
     BARGE(0.0),
     L2(5.0),
-    L3(10.0),
-    L4(15.0);
+    L3(7.0),
+    L4(9.0);
 
     public double pivotPosition;
 
@@ -99,9 +98,9 @@ public class CoralPivot extends SubsystemBase {
     /* alt encoder configs (using a through bore encoder) */
     motorConfigs.alternateEncoder
       .apply(altEncoderConfig)
-      .countsPerRevolution(4096)
-      .setSparkMaxDataPortConfig()
-      .inverted(isInverted);
+      .countsPerRevolution(TICKS_PER_REV)
+      .setSparkMaxDataPortConfig();
+      // .inverted(isInverted)
       // .positionConversionFactor(GEAR_RATIO); // not sure if this is correct
 
     motorConfigs.signals.externalOrAltEncoderPosition(5);
@@ -183,5 +182,7 @@ public class CoralPivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("encoder rot", getCoralPivotPositionRot());
+    SmartDashboard.putNumber("encoder deg", getCoralPivotPositionDegrees());
   }
 }
