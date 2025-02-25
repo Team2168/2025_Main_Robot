@@ -15,13 +15,18 @@ import org.team2168.commands.ExampleCommand;
 import org.team2168.commands.SetCoralPivotAngle;
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
-import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
+import org.team2168.commands.lift.DriveLift;
+import org.team2168.commands.lift.DriveLiftHeights;
+import org.team2168.subsystems.ExampleSubsystem;
+import org.team2168.subsystems.Lift;
+import org.team2168.subsystems.Lift.LiftHeights;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
+import org.team2168.Constants.Controllers;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,11 +40,10 @@ public class RobotContainer {
   
   private final CoralFlywheel coralflyWheel = new CoralFlywheel();
   private final CoralPivot coralPivot = new CoralPivot();
+      
+  private final Lift m_Lift = new Lift();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-      
   public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
   public CommandXboxController operatorJoystick = new CommandXboxController(Controllers.OPERATOR_JOYSTICK);
   public CommandXboxController testJoystick = new CommandXboxController(Controllers.TEST_JOYSTICK);
@@ -67,7 +71,6 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); // line break doesnt sense - update ok forgot to get its can id need to get that
     testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
@@ -89,6 +92,13 @@ public class RobotContainer {
     operatorJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()));
     operatorJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()));
     operatorJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()));
+
+    testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
+    operatorJoystick.a().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.BARGE));
+    operatorJoystick.b().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L2));
+    operatorJoystick.y().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L3));
+    operatorJoystick.x().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L4));
+  
   }
 
   /**
