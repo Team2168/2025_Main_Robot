@@ -2,21 +2,22 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.team2168.commands;
+package org.team2168.commands.CoralManipulator;
+
+import org.team2168.subsystems.CoralPivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import org.team2168.subsystems.Lift;
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveLiftTest extends Command {
-  private Lift lift;
-  private double liftPosition;
 
-  /** Creates a new DriveLiftTest. */
-  public DriveLiftTest(Lift lift, double liftPosition) {
-    this.lift = lift;
-    this.liftPosition = liftPosition;
-    addRequirements(lift);
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class BumpCoralPivotAngleUp extends Command {
+  /** Creates a new BumpCoralPivotAngleUp. */
+  private CoralPivot coralPivot;
+
+  public BumpCoralPivotAngleUp(CoralPivot coralPivot) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.coralPivot = coralPivot;
+
+    addRequirements(coralPivot);
   }
 
   // Called when the command is initially scheduled.
@@ -26,7 +27,7 @@ public class DriveLiftTest extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    lift.setPosition(liftPosition);
+    coralPivot.setCoralPivotPosition(coralPivot.getCoralPivotPositionRot() + 1.0);
   }
 
   // Called once the command ends or is interrupted.
