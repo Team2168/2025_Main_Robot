@@ -37,12 +37,12 @@ public class CoralPivot extends SubsystemBase {
   private final int TICKS_PER_REV = 8192;
   private static final double GEAR_RATIO = 111.11111;
   private final int SMART_CURRENT_LIMIT = 40;
-  private final double MAX_POSITION_ROT = 15.0;
+  private final double MAX_POSITION_ROT = 20.0;
   private final double MIN_POSITION_ROT = 0.0;
   private boolean isInverted = true;
   private IdleMode brake = IdleMode.kBrake;
-  private double kMaxOutput = 0.5;
-  private double kMinOutput = -0.5;
+  private double kMaxOutput = 0.6;
+  private double kMinOutput = -0.6;
   private double setPoint = 0.0;
   private double kP = 0.0149; // TODO: tune values
   private double kI = 0.0;
@@ -50,10 +50,11 @@ public class CoralPivot extends SubsystemBase {
 
 
   public enum CORAL_PIVOT_POSITION {
-    BARGE(0.0),
-    L2(5.0),
-    L3(7.0),
-    L4(9.0);
+    BARGE(2.0),
+    L2(12.0),
+    L3(15.0),
+    L4(24.0),
+    INTAKE(18);
 
     public double pivotPosition;
 

@@ -38,10 +38,11 @@ import io.github.oblarg.oblog.annotations.Log;
 public class Lift extends SubsystemBase {
 
   public enum LiftHeights {
-    BARGE(0.0),
-    L2(2.0),
-    L3(3.0),
-    L4(5.2);
+    BARGE(0.0148),
+    L2(0.0139),
+    L3(0.9365),
+    L4(5.2270),
+    INTAKE(2.654);
 
     public double liftHeight;
 
@@ -67,8 +68,8 @@ public class Lift extends SubsystemBase {
   private final double GEAR_RATIO = 21;
   private final double INCHES_PER_REV = 0; // TODO ask somebody
 
-  TalonFX motor = new TalonFX(Constants.MotorConstants.ELEVATORID);
-  CANcoder cancoder = new CANcoder(Constants.MotorConstants.CANCODER_ID);
+  TalonFX motor = new TalonFX(Constants.CANDevices.ELEVATORID);
+  CANcoder cancoder = new CANcoder(Constants.CANDevices.CANCODER_ID);
   private final InvertedValue INVERSION = InvertedValue.CounterClockwise_Positive; // "inversion" is placeholder
   private final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
   private final GravityTypeValue FEEDFORWARD_TYPE = GravityTypeValue.Elevator_Static;
