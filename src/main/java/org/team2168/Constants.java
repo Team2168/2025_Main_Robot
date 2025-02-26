@@ -34,4 +34,11 @@ public final class Constants {
     public static final int OPERATOR_JOYSTICK = 1;
     public static final int TEST_JOYSTICK = 2;
   }
+
+  public static class MotorConstants {
+    public static final int ELEVATORID = 12;
+    public static final int CANCODER_ID = 11;
+       
+    
+  }
 }

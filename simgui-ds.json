@@ -90,9 +90,7 @@
     }
   ],
   "robotJoysticks": [
-    {
-      "useGamepad": true
-    },
+
     {
       "useGamepad": true
     },
