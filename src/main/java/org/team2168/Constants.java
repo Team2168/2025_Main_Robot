@@ -21,6 +21,14 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static class CANDevices {
+    public static final int CORAL_PIVOT = 21;
+    public static final int CORAL_FLYWHEEL = 20;
+
+    public static final int LINE_BREAK_SENSOR = 0; // TODO: need value
+  }
+
   public static class Controllers {
     public static final int DRIVER_JOYSTICK = 0;
     public static final int OPERATOR_JOYSTICK = 1;
