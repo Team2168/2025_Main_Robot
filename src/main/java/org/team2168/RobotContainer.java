@@ -55,15 +55,15 @@ public class RobotContainer {
    */
   private void configureBindings() {
     testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
-    operatorJoystick.a().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.BARGE));
-    operatorJoystick.b().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L2));
-    operatorJoystick.y().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L3));
-    operatorJoystick.x().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L4));
+    operatorJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
+    operatorJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));
+    operatorJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
+    operatorJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
 
-    testJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
-    testJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));
-    testJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
-    testJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
+    // testJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
+    // testJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));
+    // testJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
+    // testJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
     
   }
 

@@ -31,6 +31,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -38,9 +39,9 @@ public class Lift extends SubsystemBase {
 
   public enum LiftHeights {
     BARGE(0.0),
-    L2(0.0),
-    L3(0.0),
-    L4(5.0);
+    L2(2.0),
+    L3(3.0),
+    L4(5.2);
 
     public double liftHeight;
 
@@ -84,13 +85,13 @@ public class Lift extends SubsystemBase {
   private final double PEAK_REVERSE_DUTY_CYCLE = -1.0;
   private final double NEUTRAL_DEADBAND = 0.005;
 
-  private final double KP = 2.75; // TODO tune gains
+  private final double KP = 3.0; // TODO tune gains
   private final double KI = 0.0; // TODO
-  private final double KD = 0.25; // TODO
+  private final double KD = 0.23; // TODO
   private final double K_Gravity = 0.24; // gravity accountment
 
-  private final int CRUISE_VELOCITY = 85; // TODO modify in future
-  private final int ACCELERATION = 50; // TODO modify in future
+  private final int CRUISE_VELOCITY = 100; // TODO modify in future
+  private final int ACCELERATION = 85; // TODO modify in future
   private final double EXPO_KV = 0.119;
   private final double EXPO_KA = 0.1;
 
@@ -271,6 +272,10 @@ public class Lift extends SubsystemBase {
   public void setToZero() {
     motor.setControl(dutyCycleOut.withOutput(0));
   }
+
+  public double getPostionRotations() {
+    return motor.getPosition().getValueAsDouble();
+  }
   // (ControlModeValue.PercentOutput, 0, DemandType.ArbitraryFeedForward,
   // kArbitraryFeedForward);
 
@@ -303,9 +308,20 @@ public class Lift extends SubsystemBase {
   public double getControllerError() {
     return motor.getClosedLoopError().getValueAsDouble(); // this method returns the current error position
   }
+  public double getCanCoderPosition() {
+    return cancoder.getPosition().getValueAsDouble();
+  }
 
+  public double getCanoderAbsolutePosition() {
+    return cancoder.getAbsolutePosition().getValueAsDouble();
+  }
   @Override
+  
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("encoder rotations", getPostionRotations());
+    SmartDashboard.putNumber("encoder inches", getPositionIn());
+    SmartDashboard.putNumber("cancoder rotation", getCanCoderPosition());
+    SmartDashboard.putNumber("absolute cancoder position", getCanCoderPosition());
   }
 }
