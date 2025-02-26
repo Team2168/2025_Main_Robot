@@ -4,9 +4,18 @@
 
 package org.team2168;
 
+import org.team2168.Constants.Controllers;
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
+import org.team2168.commands.BumpCoralPivotAngleDown;
+import org.team2168.commands.BumpCoralPivotAngleUp;
+import org.team2168.commands.DriveFlywheelUntilCoral;
+import org.team2168.commands.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.ExampleCommand;
+import org.team2168.commands.SetCoralPivotAngle;
+import org.team2168.subsystems.CoralFlywheel;
+import org.team2168.subsystems.CoralPivot;
+import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
 import org.team2168.commands.lift.DriveLift;
 import org.team2168.commands.lift.DriveLiftHeights;
 import org.team2168.subsystems.ExampleSubsystem;
@@ -28,6 +37,10 @@ import org.team2168.Constants.Controllers;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  
+  private final CoralFlywheel coralflyWheel = new CoralFlywheel();
+  private final CoralPivot coralPivot = new CoralPivot();
+      
   private final Lift m_Lift = new Lift();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -52,6 +65,34 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    // new Trigger(m_exampleSubsystem::exampleCondition)
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
+
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // cancelling on release.
+
+    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); // line break doesnt sense - update ok forgot to get its can id need to get that
+    testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
+
+    testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); //brings pivot back to 0
+    testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleDown(coralPivot));
+
+    testJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, 0.0));
+    testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, 5.0));
+    testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, 10.0));
+    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 16.0)); // for some reason brings pivot all the way up?
+
+  
+
+    operatorJoystick.rightTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
+    operatorJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4));
+
+    operatorJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()));
+    operatorJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()));
+    operatorJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()));
+    operatorJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()));
+
     testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
     operatorJoystick.a().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.BARGE));
     operatorJoystick.b().onTrue(new DriveLiftHeights(m_Lift, LiftHeights.L2));
