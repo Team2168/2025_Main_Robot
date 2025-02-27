@@ -7,27 +7,36 @@ package org.team2168;
 import org.team2168.Constants.Controllers;
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
+import org.team2168.commands.ExampleCommand;
+
+import org.team2168.commands.CloseClimber;
+import org.team2168.commands.DriveClimber;
 import org.team2168.commands.DriveLiftTest;
 import org.team2168.commands.BumpCoralPivotAngleDown;
 import org.team2168.commands.BumpCoralPivotAngleUp;
 import org.team2168.commands.DriveFlywheelUntilCoral;
 import org.team2168.commands.DriveFlywheelUntilNoCoral;
-import org.team2168.commands.ExampleCommand;
 import org.team2168.commands.SetCoralPivotAngle;
+import org.team2168.commands.lift.DriveLift;
+import org.team2168.commands.lift.DriveLiftHeights;
+
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
-import org.team2168.commands.lift.DriveLift;
-import org.team2168.commands.lift.DriveLiftHeights;
+import org.team2168.subsystems.Climber;
 import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.Lift.LiftHeights;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.math.controller.LTVDifferentialDriveController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
+
+import org.team2168.Constants.ClimberConstants;
 import org.team2168.Constants.Controllers;
 
 /**
@@ -44,6 +53,8 @@ public class RobotContainer {
   private final CoralPivot coralPivot = new CoralPivot();
       
   private final Lift m_Lift = new Lift();
+  
+  private final Climber climber = new Climber(); 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
@@ -66,6 +77,7 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+  //bindings for moving the climber teehee
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
@@ -74,7 +86,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); // line break doesnt sense - update ok forgot to get its can id need to get that
+    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); 
     testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
 
     testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); //brings pivot back to 0
@@ -83,7 +95,9 @@ public class RobotContainer {
     testJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, 0.0));
     testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, 5.0));
     testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, 10.0));
-    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 16.0)); // for some reason brings pivot all the way up?
+    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 16.0));
+    
+    testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
 
   
 
@@ -95,11 +109,13 @@ public class RobotContainer {
     operatorJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()));
     operatorJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()));
 
-    testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
     operatorJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
     operatorJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));
     operatorJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
     operatorJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
+    
+    operatorJoystick.povLeft().whileTrue(new CloseClimber(climber));
+    operatorJoystick.povRight().whileTrue(new DriveClimber(climber, ()-> ClimberConstants.openingSpeed));
 
     // testJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
     // testJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));

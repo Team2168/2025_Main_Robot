@@ -35,10 +35,17 @@ public final class Constants {
     public static final int TEST_JOYSTICK = 2;
   }
 
+  public static class ClimberConstants {
+    public static final int ClimberMotorID = 5;
+    public static final double openingSpeed = 0.4;
+  
+  public static final int rightlimitSwitchChannel = 2;
+  public static final int leftlimitSwitchChannel = 0;
+  public static final double closingSpeed = 0;
+  }
+
   public static class MotorConstants {
     public static final int ELEVATORID = 12;
     public static final int CANCODER_ID = 11;
-       
-    
   }
 }
