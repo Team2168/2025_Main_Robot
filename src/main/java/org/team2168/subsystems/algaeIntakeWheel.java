@@ -17,6 +17,7 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -34,7 +35,7 @@ public class algaeIntakeWheel extends SubsystemBase {
  // private static algaeIntakeWheel instance = null;
 
   private final double minuteInHundredMs = 600.0;
-  private final double TICKS_PER_REV = 2048;
+  private final int TICKS_PER_REV = 8192;
   private final double GEAR_RATIO = (10/1); //placeholder
   private final int SMART_CURRENT_LIMIT = 20; 
   private boolean isInverted = false; //placedholder
@@ -43,7 +44,7 @@ public class algaeIntakeWheel extends SubsystemBase {
   private static SparkMax intakeWheelOne = new SparkMax(CANDevices.INTAKE_WHEEL, SparkLowLevel.MotorType.kBrushless);
   private static RelativeEncoder intakeWheelEncoder = intakeWheelOne.getAlternateEncoder();
   private static SparkMaxConfig config = new SparkMaxConfig();
-  private static final EncoderConfig encoderConfig = new EncoderConfig();
+  private static final AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig();
   private static DigitalInput intakeDetector = new DigitalInput(CANDevices.LINE_BREAK_SENSOR);
     //private static DigitalInput skibidi  = new DigitalInput(CANDevices.LINE_BREAK_SENSOR);
   
@@ -57,8 +58,11 @@ public class algaeIntakeWheel extends SubsystemBase {
     .velocityConversionFactor(1000);
     config.closedLoop
     .feedbackSensor(FeedbackSensor.kPrimaryEncoder);*/
-    config.encoder
-    .apply(encoderConfig);
+    config.alternateEncoder
+    .apply(encoderConfig)
+    .countsPerRevolution(TICKS_PER_REV)
+    .positionConversionFactor(GEAR_RATIO)
+    .setSparkMaxDataPortConfig();
     
     intakeWheelOne.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);  
   }

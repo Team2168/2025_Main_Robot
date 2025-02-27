@@ -16,6 +16,7 @@ import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
@@ -32,7 +33,7 @@ import io.github.oblarg.oblog.annotations.Log;
 public class algaeIntakePivot extends SubsystemBase {
   /** Creates a new algaeIntake. */
   //private static algaeIntakePivot instance = null;
-  private final double TICKS_PER_REV = 2048;
+  private final int TICKS_PER_REV = 8192;
   private final static double GEAR_RATIO = (25/1); // placeholder
 
   private double kP = 15.0; //placeholders
@@ -60,11 +61,10 @@ public class algaeIntakePivot extends SubsystemBase {
   private static SparkMaxConfig config = new SparkMaxConfig();
   private static SoftLimitConfig softLimitConfig = new SoftLimitConfig();
   private static MAXMotionConfig maxMotionConfig = new MAXMotionConfig();
-  private static final EncoderConfig encoderConfig = new EncoderConfig();
+  private static  AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig();
   private static SparkClosedLoopController maxPid = intakePivotOne.getClosedLoopController();
 
    private static RelativeEncoder pivotEncoder = intakePivotOne.getAlternateEncoder();
-   private static DigitalInput limitSwitch = new DigitalInput(CANDevices.INTAKE_PIVOT_LIMIT_SWITCH);
 
   //neo motor
   public algaeIntakePivot() {
@@ -73,9 +73,9 @@ public class algaeIntakePivot extends SubsystemBase {
     .idleMode(brake)
     .smartCurrentLimit(SMART_CURRENT_LIMIT);
   config.closedLoop
-    .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+    .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
     .pid(kP, kI, kD)
-    .velocityFF(1/kV)
+    //.velocityFF(1/kV)
     .outputRange(minOutput, maxOutput);
   maxMotionConfig
   .maxAcceleration(MAXMotionAcceleration)
@@ -85,7 +85,10 @@ public class algaeIntakePivot extends SubsystemBase {
     .forwardSoftLimitEnabled(true)
     .reverseSoftLimit(degreesToRot(-115.0)) //5 degrees for error tolerance
     .reverseSoftLimitEnabled(true);
-  config.encoder
+  config.alternateEncoder
+  .countsPerRevolution(TICKS_PER_REV)
+  .positionConversionFactor(GEAR_RATIO)
+  .setSparkMaxDataPortConfig()
   .apply(encoderConfig);
 
 //configs are done minus placeholders and potential troubleshooting that arises
@@ -122,14 +125,6 @@ public class algaeIntakePivot extends SubsystemBase {
   public void setIntakePivotPosition(double degrees) {
     var demand = MathUtil.clamp(degrees, MIN_ANGLE, MAX_ANGLE);
     pivotEncoder.setPosition(degreesToRot(demand)); //change "demand" to degrees?
-    if (degrees > 0) { // find limit
-      if (limitSwitch.get()) {
-        intakePivotOne.set(0.0);
-      }
-      else {
-        maxPid.setReference(setPoint, ControlType.kPosition);
-      }
-    }
   }
 
   public void setIntakePivotAngle() {

@@ -26,7 +26,6 @@ public final class Constants {
     public static final int INTAKE_PIVOT = 0; //placeholders
     public static final int INTAKE_WHEEL = 1;
     public static final int LINE_BREAK_SENSOR = 2;
-    public static final int INTAKE_PIVOT_LIMIT_SWITCH = 3;
   }
 
   public static class Controllers {
