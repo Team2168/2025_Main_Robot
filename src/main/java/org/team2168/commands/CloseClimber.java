@@ -2,49 +2,43 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.team2168.commands.lift;
+package org.team2168.commands;
 
-import static edu.wpi.first.units.Units.Inches;
-
-import org.team2168.subsystems.Lift;
-import org.team2168.subsystems.Lift.LiftHeights;
+import org.team2168.Constants.ClimberConstants;
+import org.team2168.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveLiftHeights extends Command {
+public class CloseClimber extends Command {
+  final Climber climber;
 
-  private final Lift m_lift;
-  private final LiftHeights m_liftHeights;
+public CloseClimber(Climber c) {
 
-  public DriveLiftHeights(Lift lift, LiftHeights H) {
-    m_lift = lift;
+    climber = c;
 
-    m_liftHeights = H;
-    addRequirements(lift);
+    addRequirements(c); 
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_lift.setPosition(m_liftHeights.getValue());
+
+    climber.driveClimbMotor(ClimberConstants.closingSpeed); //Placeholder
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_lift.setPercentOutput(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+     return climber.getrightlimitSwitch()||climber.getleftlimitSwitch(); 
   }
 }
