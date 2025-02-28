@@ -10,7 +10,6 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
-import org.team2168.commands.DriveWithJoystick;
 import org.team2168.commands.ExampleCommand;
 import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
@@ -40,17 +39,9 @@ import io.github.oblarg.oblog.Logger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem(); // Use open-loop control for drive motors
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final Swerve swerve = TunerConstants.createDrivetrain();
-  private final SwerveRequest.FieldCentric fieldCentricDrive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
   private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
-  SlewRateLimiter xLimiter = new SlewRateLimiter(8.0);
-  SlewRateLimiter yLimiter = new SlewRateLimiter(8.0);
-  SlewRateLimiter rotLimiter = new SlewRateLimiter(Units.degreesToRadians(1000));
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -86,9 +77,7 @@ public class RobotContainer {
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     swerve.setDefaultCommand(
-        swerve.applyRequest(() -> fieldCentricDrive.withVelocityX(xLimiter.calculate(-joystick.getLeftY() * MaxSpeed))
-            .withVelocityY(yLimiter.calculate(-joystick.getLeftX() * MaxSpeed))
-            .withRotationalRate(rotLimiter.calculate(-joystick.getRightX() * MaxAngularRate))));
+       swerve.runDriveWithJoystick(joystick));
 
     swerve.registerTelemetry(logger::telemeterize);
 
@@ -103,4 +92,5 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return Autos.exampleAuto(m_exampleSubsystem);
   }
+
 }

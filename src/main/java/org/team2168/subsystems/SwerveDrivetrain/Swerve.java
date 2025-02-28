@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
@@ -49,6 +50,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
+    private SlewRateLimiter xLimiter = new SlewRateLimiter(8.0);
+    private SlewRateLimiter yLimiter = new SlewRateLimiter(8.0);
+    private SlewRateLimiter rotLimiter = new SlewRateLimiter(Units.degreesToRadians(1000));
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -157,7 +161,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                     (chassisSpeeds, feedforward) -> robotSpeeds.withSpeeds(chassisSpeeds)
                             .withWheelForceFeedforwardsX(feedforward.robotRelativeForcesX())
                             .withWheelForceFeedforwardsY(feedforward.robotRelativeForcesY()),
-                    controller, RobotConfig.fromGUISettings(), () -> DriverStation.getAlliance().get() == Alliance.Blue, this);
+                    controller, RobotConfig.fromGUISettings(), () -> DriverStation.getAlliance().get() == Alliance.Blue,
+                    this);
         } catch (IOException | ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -343,17 +348,11 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                 visionMeasurementStdDevs);
     }
 
-    public Command driveWithJoystickInput(double xSpeed, double ySpeed, double rot) {
-        SlewRateLimiter xLimiter = new SlewRateLimiter(8.0);
-        SlewRateLimiter yLimiter = new SlewRateLimiter(8.0);
-        SlewRateLimiter rotLimiter = new SlewRateLimiter(Units.degreesToRadians(1000));
-        return applyRequest(() -> fieldCentricDrive.withVelocityX(xSpeed * MaxSpeed) // Drive forward with negative Y
-                                                                                     // (forward)
-                .withVelocityY(ySpeed * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(rot * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        );
-
-    }
+   public Command runDriveWithJoystick(CommandXboxController joystick) {
+    return applyRequest(() -> fieldCentricDrive.withVelocityX(xLimiter.calculate(-joystick.getLeftY() * MaxSpeed))
+    .withVelocityY(yLimiter.calculate(-joystick.getLeftX() * MaxSpeed))
+    .withRotationalRate(rotLimiter.calculate(-joystick.getRightX() * MaxAngularRate)));
+  }
 
     public Command drivePath(String pathName) {
         try {
@@ -371,7 +370,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     public Command pathFind(Pose2d targetPose) {
-        PathConstraints pathConstraints = new PathConstraints(MetersPerSecond.of(3.5), MetersPerSecondPerSecond.of(1.5),RadiansPerSecond.of(2*Math.PI), RadiansPerSecondPerSecond.of(2*Math.PI));
+        PathConstraints pathConstraints = new PathConstraints(MetersPerSecond.of(3.5), MetersPerSecondPerSecond.of(1.5),
+                RadiansPerSecond.of(2 * Math.PI), RadiansPerSecondPerSecond.of(2 * Math.PI));
         return AutoBuilder.pathfindToPose(targetPose, pathConstraints);
     }
 }
