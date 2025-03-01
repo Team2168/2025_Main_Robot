@@ -32,7 +32,7 @@ public class CoralPivot extends SubsystemBase {
   private final int TICKS_PER_REV = 8192;
   private static final double GEAR_RATIO = 111.11111;
   private final int SMART_CURRENT_LIMIT = 35;
-  private final double MAX_POSITION_ROT = degreesToRot(120.0);
+  private final double MAX_POSITION_ROT = degreesToRot(140.0);
   private final double MIN_POSITION_ROT = degreesToRot(0);
   private boolean isInverted = true;
   private IdleMode brake = IdleMode.kBrake;
@@ -46,11 +46,11 @@ public class CoralPivot extends SubsystemBase {
 
   public enum CORAL_PIVOT_POSITION {
     BARGE(degreesToRot(39.233)),
-    L2(degreesToRot(118.477)),
-    L3(degreesToRot(125.376)),
-    L4(degreesToRot(126.958)),
+    L2(degreesToRot(128.477)),
+    L3(degreesToRot(145.376)),
+    L4(degreesToRot(150.958)),
     INTAKE(18),
-    STOW(degreesToRot(0.0));
+    STOW(degreesToRot(1.0));
 
     public double pivotPosition;
 
