@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
-import org.team2168.Constants.Controllers;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -74,7 +73,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.6)); // line break doesnt sense - update ok forgot to get its can id need to get that
+    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.6));
     testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.6));
 
     testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); //brings pivot back to 0
@@ -83,35 +82,27 @@ public class RobotContainer {
     testJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, 0.0));
     testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, 5.0));
     testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, 10.0));
-    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 16.0)); // for some reason brings pivot all the way up?
+    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 16.0));
 
+    testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
+
+    // testJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
+    // testJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));
+    // testJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
+    // testJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
   
 
     operatorJoystick.rightTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.6));
-    // operatorJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.6));
+    operatorJoystick.leftTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, -0.6));
 
-    // operatorJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()));
-    // operatorJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()));
-    // operatorJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()));
-    // operatorJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()));
-
-    // testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
-    // operatorJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
-    // operatorJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));
-    // operatorJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
-    // operatorJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
+    operatorJoystick.rightBumper().whileTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.INTAKE.getValue()), new DriveFlywheelUntilCoral(coralflyWheel, -0.65))));
 
     operatorJoystick.a().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue())));
     operatorJoystick.b().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.L2.getValue())));
     operatorJoystick.y().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.L3.getValue())));
     operatorJoystick.x().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.L4.getValue())));
 
-    operatorJoystick.rightBumper().whileTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.INTAKE.getValue()), new DriveFlywheelUntilCoral(coralflyWheel, -0.8))));
-
-    // testJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
-    // testJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));
-    // testJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
-    // testJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
+    operatorJoystick.povRight().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.STOW.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.STOW.getValue())));
     
   }
 
