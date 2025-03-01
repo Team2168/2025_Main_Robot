@@ -8,8 +8,20 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import org.team2168.Constants.Controllers;
+import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
+import org.team2168.commands.lift.DriveLiftTest;
+import org.team2168.commands.CoralManipulator.BumpCoralPivotAngleDown;
+import org.team2168.commands.CoralManipulator.BumpCoralPivotAngleUp;
+import org.team2168.commands.CoralManipulator.DriveFlywheelUntilCoral;
+import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.ExampleCommand;
+import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
+import org.team2168.subsystems.CoralFlywheel;
+import org.team2168.subsystems.CoralPivot;
+import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
+import org.team2168.commands.lift.DriveLift;
 import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
 import org.team2168.subsystems.SwerveDrivetrain.TunerConstants;
@@ -20,6 +32,10 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
+import org.team2168.subsystems.Lift;
+import org.team2168.subsystems.Lift.LiftHeights;
+
+import edu.wpi.first.math.controller.LTVDifferentialDriveController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -45,6 +61,18 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+  
+  private final CoralFlywheel coralflyWheel = new CoralFlywheel();
+  private final CoralPivot coralPivot = new CoralPivot();
+      
+  private final Lift m_Lift = new Lift();
+
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
+  public CommandXboxController operatorJoystick = new CommandXboxController(Controllers.OPERATOR_JOYSTICK);
+  public CommandXboxController testJoystick = new CommandXboxController(Controllers.TEST_JOYSTICK);
+
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
@@ -67,8 +95,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // new Trigger(m_exampleSubsystem::exampleCondition)
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
@@ -80,6 +108,38 @@ public class RobotContainer {
 
     swerve.registerTelemetry(logger::telemeterize);
 
+
+    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.6));
+    testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.6));
+
+    testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); //brings pivot back to 0
+    testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleDown(coralPivot));
+
+    testJoystick.a().onTrue(new SetCoralPivotAngle(coralPivot, 0.0));
+    testJoystick.b().onTrue(new SetCoralPivotAngle(coralPivot, 5.0));
+    testJoystick.y().onTrue(new SetCoralPivotAngle(coralPivot, 10.0));
+    testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 16.0));
+
+    testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
+
+    // testJoystick.a().onTrue(new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue()));
+    // testJoystick.b().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L2.getValue()));
+    // testJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
+    // testJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
+  
+
+    operatorJoystick.rightTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.6));
+    operatorJoystick.leftTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, -0.6));
+
+    operatorJoystick.rightBumper().whileTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.INTAKE.getValue()), new DriveFlywheelUntilCoral(coralflyWheel, -0.65))));
+
+    operatorJoystick.a().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.BARGE.getValue())));
+    operatorJoystick.b().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.L2.getValue())));
+    operatorJoystick.y().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.L3.getValue())));
+    operatorJoystick.x().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.L4.getValue())));
+
+    operatorJoystick.povRight().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.STOW.getPivotPositon()), new DriveLiftTest(m_Lift, LiftHeights.STOW.getValue())));
+    
   }
 
   /**
