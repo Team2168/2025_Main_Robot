@@ -7,13 +7,12 @@ package org.team2168.subsystems;
 import static edu.wpi.first.units.Units.Rotations;
 
 import org.team2168.Constants;
-import org.team2168.Constants.LiftConstants;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs; //TODO configure MotionMagic configurations
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -24,13 +23,11 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
@@ -38,11 +35,12 @@ import io.github.oblarg.oblog.annotations.Log;
 public class Lift extends SubsystemBase {
 
   public enum LiftHeights {
-    BARGE(0.0148),
-    L2(0.0139),
+    BARGE(0.5148),
+    L2(0.5139),
     L3(0.9365),
     L4(5.2270),
-    INTAKE(2.654);
+    INTAKE(2.654),
+    STOW(0.0);
 
     public double liftHeight;
 
@@ -56,11 +54,8 @@ public class Lift extends SubsystemBase {
     }
   }
 
-  // DigitalInput toplimitSwitch = new
-  // DigitalInput(LiftConstants.topLimitSwitchID);
-  // DigitalInput bottomlimitSwitch = new
-  // DigitalInput(LiftConstants.bottomLimitSwitchID);
-  final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0); // TODO Should be able to input a position
+
+  final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0);
   final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
   final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
   // private final double TICKS_PER_REV = 2048; - I don't think we need to use
@@ -70,14 +65,14 @@ public class Lift extends SubsystemBase {
 
   TalonFX motor = new TalonFX(Constants.CANDevices.ELEVATORID);
   CANcoder cancoder = new CANcoder(Constants.CANDevices.CANCODER_ID);
-  private final InvertedValue INVERSION = InvertedValue.CounterClockwise_Positive; // "inversion" is placeholder
+  private final InvertedValue INVERSION = InvertedValue.CounterClockwise_Positive;
   private final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
   private final GravityTypeValue FEEDFORWARD_TYPE = GravityTypeValue.Elevator_Static;
 
   private final SensorDirectionValue ENCODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
   private final double PEAK_CANCODER_ABSOLUTE = 1.0;
 
-  private final double STATOR_CURRENT_LIMIT = 40.0; // ask electrical
+  private final double STATOR_CURRENT_LIMIT = 40.0;
   private final double SUPPLY_CURRENT_LIMIT = 45.0;
   private final double SUPPLY_LOWER_LIMIT = 40;
   private final double LOWER_TIME = 1;
@@ -86,13 +81,13 @@ public class Lift extends SubsystemBase {
   private final double PEAK_REVERSE_DUTY_CYCLE = -1.0;
   private final double NEUTRAL_DEADBAND = 0.005;
 
-  private final double KP = 3.0; // TODO tune gains
-  private final double KI = 0.0; // TODO
-  private final double KD = 0.23; // TODO
+  private final double KP = 3.1; //origally 3.0
+  private final double KI = 0.0;
+  private final double KD = 0.12; // originally 0.23
   private final double K_Gravity = 0.24; // gravity accountment
 
-  private final int CRUISE_VELOCITY = 100; // TODO modify in future
-  private final int ACCELERATION = 85; // TODO modify in future
+  private final int CRUISE_VELOCITY = 160; // TODO modify in future
+  private final int ACCELERATION = 130; // TODO modify in future
   private final double EXPO_KV = 0.119;
   private final double EXPO_KA = 0.1;
 
@@ -203,23 +198,6 @@ public class Lift extends SubsystemBase {
   public void setSpeedVelocity(double speed) {
     velocityVoltage.Slot = 0;
     motor.setControl(velocityVoltage.withVelocity(speed));
-    // if (speed > 0) {
-    // if (toplimitSwitch.get()) {
-    // We are going up and top limit is tripped so stop
-    // motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
-    // } else {
-    // We are going up but top limit is not tripped so go at commanded speed
-    // motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
-    // }
-    // } else {
-    // if (bottomlimitSwitch.get()) {
-    // We are going down and bottom limit is tripped so stop
-    // motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
-    // } else {
-    // // We are going down but bottom limit is not tripped so go at commanded speed
-    // motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
-    // }
-    // }
   }
   // (ControlModeValue.Velocity, inchesToRotations(speed) *
   // TIME_UNITS_OF_VELOCITY, DemandType.ArbitraryFeedForward,
@@ -232,42 +210,11 @@ public class Lift extends SubsystemBase {
   public void setPosition(double rotations) {
     m_motmag.Slot = 0;
     motor.setControl(m_motmag.withPosition(rotations));
-
-    // Limit switch code
-    // if (inches > 0) {
-    // if (toplimitSwitch.get()) {
-    // motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
-    // }
-    // else {
-    // motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
-    // }
-    // } else {
-    // if (bottomlimitSwitch.get()) {
-    // motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
-    // }
-    // else {
-    // motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
-    // }
-    // }
-
   }
 
   // @Config()
   public void setPercentOutput(double percentOutput) {
     motor.setControl(dutyCycleOut.withOutput(percentOutput));
-    // if (percentOutput > 0) {
-    // if (toplimitSwitch.get()) {
-    // motor.setControl(dutyCycleOut.withOutput(0));
-    // }
-    // else {
-    // motor.setControl(dutyCycleOut.withOutput(percentOutput));
-    // }
-    // } else {
-    // if (bottomlimitSwitch.get()) {
-    // motor.setControl(dutyCycleOut.withOutput(0));
-    // }
-    // else {
-    // motor.setControl(dutyCycleOut.withOutput(percentOutput));
   }
 
   public void setToZero() {
