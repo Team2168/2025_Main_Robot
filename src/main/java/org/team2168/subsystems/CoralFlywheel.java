@@ -25,7 +25,7 @@ public class CoralFlywheel extends SubsystemBase {
     private final double minuteInHundredMs = 600.0;
     private final double TICKS_PER_REV = 8192;
     private final double GEAR_RATIO = 10;
-    private final int SMART_CURRENT_LIMIT = 20;
+    private final int SMART_CURRENT_LIMIT = 40;
     private boolean isInverted = false;
     private IdleMode coast = IdleMode.kCoast;
 
