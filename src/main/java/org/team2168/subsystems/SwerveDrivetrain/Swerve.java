@@ -74,7 +74,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
     private final SwerveRequest.FieldCentric fieldCentricDrive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+            .withDriveRequestType(DriveRequestType.Velocity);
     /*
      * SysId routine for characterizing translation. This is used to find PID gains
      * for the drive motors.
@@ -167,6 +167,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        resetPose(new Pose2d(8,4,Rotation2d.fromDegrees(0.0)));
     }
 
     /**
