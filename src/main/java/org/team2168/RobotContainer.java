@@ -19,6 +19,7 @@ import org.team2168.commands.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.SetCoralPivotAngle;
 import org.team2168.commands.lift.DriveLift;
 import org.team2168.commands.lift.DriveLiftHeights;
+import org.team2168.commands.LEDStatus;
 
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
@@ -27,6 +28,8 @@ import org.team2168.subsystems.Climber;
 import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.Lift.LiftHeights;
+import org.team2168.subsystems.CageDetector;
+import org.team2168.subsystems.LEDs;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.math.controller.LTVDifferentialDriveController;
@@ -55,6 +58,9 @@ public class RobotContainer {
   private final Lift m_Lift = new Lift();
   
   private final Climber climber = new Climber(); 
+
+  private final LEDs leds = new LEDs();
+  private final CageDetector cageDetector = new CageDetector();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
@@ -86,6 +92,11 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
+    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    leds.setDefaultCommand(new LEDStatus(leds, cageDetector));
+    
+
     testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.4)); 
     testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
 
@@ -98,7 +109,6 @@ public class RobotContainer {
     testJoystick.x().onTrue(new SetCoralPivotAngle(coralPivot, 16.0));
     
     testJoystick.rightStick().whileTrue(new DriveLift(m_Lift, () -> testJoystick.getRightY()));
-
   
 
     operatorJoystick.rightTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.4));
