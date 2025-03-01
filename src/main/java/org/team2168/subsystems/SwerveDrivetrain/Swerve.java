@@ -53,6 +53,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private SlewRateLimiter xLimiter = new SlewRateLimiter(8.0);
     private SlewRateLimiter yLimiter = new SlewRateLimiter(8.0);
     private SlewRateLimiter rotLimiter = new SlewRateLimiter(Units.degreesToRadians(1000));
+    private SlewRateLimiter xSlowLimiter = new SlewRateLimiter(20);
+    private SlewRateLimiter ySlowLimiter = new SlewRateLimiter(20);
+    private SlewRateLimiter slowRotLimiter = new SlewRateLimiter(Units.degreesToRadians(5000));
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -351,9 +354,16 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     }
 
    public Command runDriveWithJoystick(CommandXboxController joystick) {
+    System.out.println(joystick.rightBumper().getAsBoolean());
+    if(joystick.rightBumper().getAsBoolean()) {
     return applyRequest(() -> fieldCentricDrive.withVelocityX(xLimiter.calculate(-joystick.getLeftY() * MaxSpeed))
     .withVelocityY(yLimiter.calculate(-joystick.getLeftX() * MaxSpeed))
-    .withRotationalRate(rotLimiter.calculate(-joystick.getRightX() * MaxAngularRate)));
+    .withRotationalRate(rotLimiter.calculate(-joystick.getRightX() * MaxAngularRate))); 
+    } else {
+        return applyRequest(() -> fieldCentricDrive.withVelocityX(xSlowLimiter.calculate(-joystick.getLeftY() * MaxSpeed))
+        .withVelocityY(ySlowLimiter.calculate(-joystick.getLeftX() * MaxSpeed))
+        .withRotationalRate(slowRotLimiter.calculate(-joystick.getRightX() * MaxAngularRate))); 
+    }
   }
 
     public Command drivePath(String pathName) {
