@@ -30,6 +30,10 @@ public class LEDs extends SubsystemBase {
 
     public double color;
 
+    public double getLEDColor() {
+      return color;
+    }
+
     LED_COLOR(double color) {
       this.color = color;
     } 
