@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
 import org.team2168.commands.ExampleCommand;
 import org.team2168.subsystems.ExampleSubsystem;

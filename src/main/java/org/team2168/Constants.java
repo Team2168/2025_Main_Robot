@@ -4,6 +4,12 @@
 
 package org.team2168;
 
+import static edu.wpi.first.units.Units.Kilogram;
+
+import java.util.DoubleSummaryStatistics;
+
+import com.pathplanner.lib.config.RobotConfig;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -13,7 +19,5 @@ package org.team2168;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
+ 
 }

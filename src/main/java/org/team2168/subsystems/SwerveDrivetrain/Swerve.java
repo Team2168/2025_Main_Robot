@@ -156,7 +156,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             startSimThread();
         }
 
-        try {
+        try { //robot weight is 103.6lbs
             AutoBuilder.configure(() -> this.getState().Pose, this::resetPose, () -> this.getState().Speeds,
                     (chassisSpeeds, feedforward) -> robotSpeeds.withSpeeds(chassisSpeeds)
                             .withWheelForceFeedforwardsX(feedforward.robotRelativeForcesX())
