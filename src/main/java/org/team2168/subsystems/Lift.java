@@ -36,9 +36,9 @@ public class Lift extends SubsystemBase {
 
   public enum LiftHeights {
     BARGE(0.5148),
-    L2(0.5139),
-    L3(0.9365),
-    L4(5.2270),
+    L2(0.1139),
+    L3(1.9365),
+    L4(5.27),
     INTAKE(2.654),
     STOW(0.0);
 
@@ -94,7 +94,7 @@ public class Lift extends SubsystemBase {
   private final double PEAK_FORWARD_VOLTAGE = 16.0;
   private final double PEAK_REVERSE_VOLTAGE = -16.0;
 
-  private final double FORWARD_SOFT_LIMIT = 5.23;
+  private final double FORWARD_SOFT_LIMIT = 5.3;
   private final double REVERSE_SOFT_LIMIT = 0.0;
 
   private void configureMotors() {
