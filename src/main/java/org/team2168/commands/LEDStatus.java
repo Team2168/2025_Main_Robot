@@ -5,6 +5,7 @@
 package org.team2168.commands;
 
 import org.team2168.subsystems.CageDetector;
+import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.LEDs;
 import org.team2168.subsystems.LEDs.LED_COLOR;
 
@@ -15,11 +16,13 @@ public class LEDStatus extends Command {
   /** Creates a new LEDStatus. */
   private LEDs leds;
   private CageDetector cageDetector;
+  private CoralFlywheel coralFlywheel;
 
-  public LEDStatus(LEDs leds, CageDetector cageDetector) {
+  public LEDStatus(LEDs leds, CageDetector cageDetector, CoralFlywheel coralFlywheel) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.leds = leds;
     this.cageDetector = cageDetector;
+    this.coralFlywheel = coralFlywheel;
 
     addRequirements(leds);
   }
@@ -33,6 +36,9 @@ public class LEDStatus extends Command {
   public void execute() {
     if (cageDetector.canClimb()) {
       leds.setLEDColor(LED_COLOR.BLUE.getLEDColor());
+    }
+    else if (coralFlywheel.isCoralPresent()) {
+      leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
     }
     else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
   }
