@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetCoralPivotAngle extends Command {
   private CoralPivot coralPivot;
-  private double coralPivPosition; // IN ROT RIGHT NOW
-  private double tolerance = 0.5; // rotation
+  private double coralPivPosition;
+  private double tolerance = 0.5;
 
   /** Creates a new SetCoralPivotAngle. */
   public SetCoralPivotAngle(CoralPivot coralPivot, double coralPivPosition) {

@@ -54,7 +54,7 @@ import io.github.oblarg.oblog.Logger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem(); // Use open-loop control for drive motors
-  private final CommandXboxController joystick = new CommandXboxController(0);
+
   private final Swerve swerve = TunerConstants.createDrivetrain();
   private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond));
 
@@ -107,8 +107,6 @@ public class RobotContainer {
        swerve.runDriveWithJoystick(driverJoystick));
 
     swerve.registerTelemetry(logger::telemeterize);
-  
-
 
     testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralflyWheel, -0.6));
     testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.6));
@@ -128,18 +126,20 @@ public class RobotContainer {
     // testJoystick.y().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L3.getValue()));
     // testJoystick.x().onTrue(new DriveLiftTest(m_Lift, LiftHeights.L4.getValue()));
   
+    /* coral shoot button: if coral is in the intake, then these will shoot it out color (doesn't work on L1) */
+    operatorJoystick.rightTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, -0.6));
 
-    operatorJoystick.rightTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, 0.6));
-    operatorJoystick.leftTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralflyWheel, -0.6));
-
+    /* coral intake button: sets elevator and coral pivot to the position to intake coral while also running the coral flywheel until line break sensor senses coral */
     operatorJoystick.rightBumper().whileTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.INTAKE.getValue()), new DriveFlywheelUntilCoral(coralflyWheel, -0.65))));
 
+    /* L1-L4 buttons: sets elevator and coral pivot to desired reef branch */
     operatorJoystick.a().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.BARGE.getValue())));
     operatorJoystick.b().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.L2.getValue())));
     operatorJoystick.y().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L3.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.L3.getValue())));
     operatorJoystick.x().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.L4.getValue())));
 
-    operatorJoystick.povRight().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.STOW.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.STOW.getValue())));
+    /* reset button: sets elevator and coral pivot position to 0 */
+    operatorJoystick.povRight().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.ZERO.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.ZERO.getValue())));
     
   }
 
