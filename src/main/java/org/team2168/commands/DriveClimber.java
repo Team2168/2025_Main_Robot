@@ -7,7 +7,6 @@ package org.team2168.commands;
 import java.util.function.DoubleSupplier;
 
 import org.team2168.subsystems.Climber;
-import org.team2168.subsystems.ExampleSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -25,8 +24,6 @@ private final DoubleSupplier input;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(c); 
-
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.

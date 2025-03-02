@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDs extends SubsystemBase {
   /** Creates a new LEDs. */
-  private static SparkMax leds = new SparkMax(CANDevices.LEDs, MotorType.kBrushless);
+  private static SparkMax leds = new SparkMax(CANDevices.LEDs_ID, MotorType.kBrushless);
 
   private final int SMART_CURRENT_LIMIT = 20;
 
@@ -49,7 +49,7 @@ public class LEDs extends SubsystemBase {
   }
 
   /**
-  * sets the LED's color based on a motor output value
+  * sets the LED's color based on a "motor" output value (blinkin leds are programmed like a SparkMAX)
   * @param speed the speed in percentage. value is between -1.0 and 1.0
   */
   public void setLEDColor(double speed) {

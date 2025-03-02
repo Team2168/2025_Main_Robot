@@ -28,7 +28,7 @@ public CloseClimber(Climber c) {
   @Override
   public void execute() {
 
-    climber.driveClimbMotor(ClimberConstants.closingSpeed); //Placeholder
+    climber.driveClimbMotor(ClimberConstants.CLOSING_SPEED); //Placeholder
 
   }
 

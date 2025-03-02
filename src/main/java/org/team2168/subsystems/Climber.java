@@ -4,6 +4,7 @@
 
 package org.team2168.subsystems;
 
+import org.team2168.Constants.CANDevices;
 import org.team2168.Constants.ClimberConstants;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -21,10 +22,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
 
-  TalonFX motor = new TalonFX(ClimberConstants.ClimberMotorID);
+  TalonFX motor = new TalonFX(CANDevices.CLIMBER_ID);
   
-  DigitalInput rightlimitSwitch = new DigitalInput(ClimberConstants.rightlimitSwitchChannel);
-  DigitalInput leftlimitSwitch = new DigitalInput(ClimberConstants.leftlimitSwitchChannel);
+  DigitalInput rightlimitSwitch = new DigitalInput(ClimberConstants.RIGHT_LIMIT_SWITCH);
+  DigitalInput leftlimitSwitch = new DigitalInput(ClimberConstants.LEFT_LIMIT_SWITCH);
   
   // The motor's inversion is such that moving clockwise is considered moving forward
   private final InvertedValue INVERSION = InvertedValue.Clockwise_Positive;
@@ -63,11 +64,12 @@ public class Climber extends SubsystemBase {
   } 
 
   public boolean getrightlimitSwitch() {
-   return rightlimitSwitch.get(); }
+    return rightlimitSwitch.get(); 
+  }
 
-    public boolean getleftlimitSwitch() {
-      return leftlimitSwitch.get();
-    }
+  public boolean getleftlimitSwitch() {
+    return leftlimitSwitch.get();
+  }
 
 
   /** Creates a new Climber. */

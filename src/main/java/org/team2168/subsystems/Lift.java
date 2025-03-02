@@ -6,8 +6,7 @@ package org.team2168.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
 
-import org.team2168.Constants;
-import org.team2168.Constants.LiftConstants;
+import org.team2168.Constants.CANDevices;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -30,7 +29,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
@@ -46,7 +44,6 @@ public class Lift extends SubsystemBase {
     public double liftHeight;
 
     LiftHeights(double liftHeight) {
-
       this.liftHeight = liftHeight;
     }
 
@@ -55,10 +52,7 @@ public class Lift extends SubsystemBase {
     }
   }
 
-  // DigitalInput toplimitSwitch = new
-  // DigitalInput(LiftConstants.topLimitSwitchID);
-  // DigitalInput bottomlimitSwitch = new
-  // DigitalInput(LiftConstants.bottomLimitSwitchID);
+  
   final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0); // TODO Should be able to input a position
   final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
   final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
@@ -67,16 +61,16 @@ public class Lift extends SubsystemBase {
   private final double GEAR_RATIO = 21;
   private final double INCHES_PER_REV = 0; // TODO ask somebody
 
-  TalonFX motor = new TalonFX(Constants.MotorConstants.ELEVATORID);
-  CANcoder cancoder = new CANcoder(Constants.MotorConstants.CANCODER_ID);
-  private final InvertedValue INVERSION = InvertedValue.CounterClockwise_Positive; // "inversion" is placeholder
+  TalonFX motor = new TalonFX(CANDevices.ELEVATOR_ID);
+  CANcoder cancoder = new CANcoder(CANDevices.ELEVATOR_CANCODER_ID);
+  private final InvertedValue INVERSION = InvertedValue.CounterClockwise_Positive;
   private final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
   private final GravityTypeValue FEEDFORWARD_TYPE = GravityTypeValue.Elevator_Static;
 
   private final SensorDirectionValue ENCODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
   private final double PEAK_CANCODER_ABSOLUTE = 1.0;
 
-  private final double STATOR_CURRENT_LIMIT = 40.0; // ask electrical
+  private final double STATOR_CURRENT_LIMIT = 40.0;
   private final double SUPPLY_CURRENT_LIMIT = 45.0;
   private final double SUPPLY_LOWER_LIMIT = 40;
   private final double LOWER_TIME = 1;
@@ -202,24 +196,8 @@ public class Lift extends SubsystemBase {
   public void setSpeedVelocity(double speed) {
     velocityVoltage.Slot = 0;
     motor.setControl(velocityVoltage.withVelocity(speed));
-    // if (speed > 0) {
-    // if (toplimitSwitch.get()) {
-    // We are going up and top limit is tripped so stop
-    // motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
-    // } else {
-    // We are going up but top limit is not tripped so go at commanded speed
-    // motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
-    // }
-    // } else {
-    // if (bottomlimitSwitch.get()) {
-    // We are going down and bottom limit is tripped so stop
-    // motor.setControl(velocityVoltage.withVelocity(0).withFeedForward(kArbitryFeedFoward));
-    // } else {
-    // // We are going down but bottom limit is not tripped so go at commanded speed
-    // motor.setControl(velocityVoltage.withVelocity(speed).withFeedForward(kArbitryFeedFoward));
-    // }
-    // }
   }
+
   // (ControlModeValue.Velocity, inchesToRotations(speed) *
   // TIME_UNITS_OF_VELOCITY, DemandType.ArbitraryFeedForward,
   // kArbitraryFeedForward); //the "speed" parameter is the rate of the movement
@@ -231,42 +209,11 @@ public class Lift extends SubsystemBase {
   public void setPosition(double rotations) {
     m_motmag.Slot = 0;
     motor.setControl(m_motmag.withPosition(rotations));
-
-    // Limit switch code
-    // if (inches > 0) {
-    // if (toplimitSwitch.get()) {
-    // motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
-    // }
-    // else {
-    // motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
-    // }
-    // } else {
-    // if (bottomlimitSwitch.get()) {
-    // motor.setControl(m_motmag.withPosition(inchesToRotations(0)).withFeedForward(kArbitryFeedFoward));
-    // }
-    // else {
-    // motor.setControl(m_motmag.withPosition(inchesToRotations(inches)).withFeedForward(kArbitryFeedFoward));
-    // }
-    // }
-
   }
 
   // @Config()
   public void setPercentOutput(double percentOutput) {
     motor.setControl(dutyCycleOut.withOutput(percentOutput));
-    // if (percentOutput > 0) {
-    // if (toplimitSwitch.get()) {
-    // motor.setControl(dutyCycleOut.withOutput(0));
-    // }
-    // else {
-    // motor.setControl(dutyCycleOut.withOutput(percentOutput));
-    // }
-    // } else {
-    // if (bottomlimitSwitch.get()) {
-    // motor.setControl(dutyCycleOut.withOutput(0));
-    // }
-    // else {
-    // motor.setControl(dutyCycleOut.withOutput(percentOutput));
   }
 
   public void setToZero() {
@@ -294,34 +241,25 @@ public class Lift extends SubsystemBase {
     return (rotationsToInches(motor.getVelocity().getValueAsDouble()));
   }
 
-  // @Log(name = "At Zero", rowIndex = 3, columnIndex = 0)
-  // public boolean isZeroPosition(){
-  // return motor.isRevLimitSwitchClosed() == 1;
-  // }
-
-  // @Log(name = "At Top", rowIndex = 3, columnIndex = 1)
-  // public boolean isAtUpperPosition(){
-  // return motor.isFwdLimitSwitchClosed() == 1;
-  // }
-
   @Log(name = "Error", rowIndex = 3, columnIndex = 5)
   public double getControllerError() {
     return motor.getClosedLoopError().getValueAsDouble(); // this method returns the current error position
   }
+
   public double getCanCoderPosition() {
     return cancoder.getPosition().getValueAsDouble();
   }
 
-  public double getCanoderAbsolutePosition() {
+  public double getCanCoderAbsolutePosition() {
     return cancoder.getAbsolutePosition().getValueAsDouble();
   }
   @Override
   
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("encoder rotations", getPostionRotations());
-    SmartDashboard.putNumber("encoder inches", getPositionIn());
-    SmartDashboard.putNumber("cancoder rotation", getCanCoderPosition());
-    SmartDashboard.putNumber("absolute cancoder position", getCanCoderPosition());
+    SmartDashboard.putNumber("elevator position (rot)", getPostionRotations());
+    SmartDashboard.putNumber("elevator position (in)", getPositionIn());
+    SmartDashboard.putNumber(" elevator cancoder (rot)", getCanCoderPosition());
+    SmartDashboard.putNumber("elevator absolute cancoder (rot)", getCanCoderAbsolutePosition());
   }
 }

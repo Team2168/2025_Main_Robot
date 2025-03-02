@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class CoralFlywheel extends SubsystemBase {
-    private static SparkMax flywheelMotor = new SparkMax(CANDevices.CORAL_FLYWHEEL, MotorType.kBrushless);
+    private static SparkMax flywheelMotor = new SparkMax(CANDevices.CORAL_FLYWHEEL_ID, MotorType.kBrushless);
     private static RelativeEncoder flywheelEncoder = flywheelMotor.getAlternateEncoder();
     private static DigitalInput coralDetector = new DigitalInput(CANDevices.LINE_BREAK_SENSOR);
 
@@ -109,7 +109,7 @@ public class CoralFlywheel extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
-            SmartDashboard.putBoolean("linebreak sensor", isCoralPresent());
+    // This method will be called once per scheduler run
+        SmartDashboard.putBoolean("linebreak sensor", isCoralPresent());
     }
 }
