@@ -133,8 +133,14 @@ public class RobotContainer {
     /* coral intake button: sets elevator and coral pivot to the position to intake coral while also running the coral flywheel until line break sensor senses coral */
     operatorJoystick.rightBumper().whileTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.INTAKE.getValue()), new DriveFlywheelUntilCoral(coralflyWheel, -0.65))));
 
-    operatorJoystick.leftStick().whileTrue(new DriveCoralFlywheel(coralflyWheel, operatorJoystick.getLeftX()));
-
+    /* control coral in intake buttons: (needs testing) sets the coral intake to a very slow speed depending on if the operator moves the left stick up or down */
+    if (operatorJoystick.getLeftY() > 0.15) {
+      operatorJoystick.leftStick().whileTrue(new DriveCoralFlywheel(coralflyWheel, 0.1));
+    }
+    else if (operatorJoystick.getLeftY() < -0.15) {
+      operatorJoystick.leftStick().whileTrue(new DriveCoralFlywheel(coralflyWheel, -0.1));
+    }
+    
     /* L1-L4 buttons: sets elevator and coral pivot to desired reef branch */
     operatorJoystick.a().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.BARGE.getValue())));
     operatorJoystick.b().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L2.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.L2.getValue())));
