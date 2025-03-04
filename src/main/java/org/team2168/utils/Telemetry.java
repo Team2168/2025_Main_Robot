@@ -1,7 +1,12 @@
 package org.team2168.utils;
 
+import org.team2168.subsystems.SwerveDrivetrain.Swerve;
+
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.ctre.phoenix6.swerve.SwerveModule;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -22,14 +27,16 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Telemetry {
     private final double MaxSpeed;
+    private final Swerve Swerve;
 
     /**
      * Construct a telemetry object, with the specified max speed of the robot
      * 
      * @param maxSpeed Maximum speed in meters per second
      */
-    public Telemetry(double maxSpeed) {
+    public Telemetry(double maxSpeed, Swerve swerve) {
         MaxSpeed = maxSpeed;
+        Swerve = swerve;
         SignalLogger.start();
     }
 
@@ -45,6 +52,7 @@ public class Telemetry {
     private final StructArrayPublisher<SwerveModulePosition> driveModulePositions = driveStateTable.getStructArrayTopic("ModulePositions", SwerveModulePosition.struct).publish();
     private final DoublePublisher driveTimestamp = driveStateTable.getDoubleTopic("Timestamp").publish();
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
+    private final DoubleArrayPublisher cancDoublePublisher = driveStateTable.getDoubleArrayTopic("/CancoderValues").publish();
 
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");
@@ -84,6 +92,7 @@ public class Telemetry {
     /** Accept the swerve drive state and telemeterize it to SmartDashboard and SignalLogger. */
     public void telemeterize(SwerveDriveState state) {
         /* Telemeterize the swerve drive state */
+        double[] cancoderStates = new double[4];
         drivePose.set(state.Pose);
         driveSpeeds.set(state.Speeds);
         driveModuleStates.set(state.ModuleStates);
@@ -91,6 +100,7 @@ public class Telemetry {
         driveModulePositions.set(state.ModulePositions);
         driveTimestamp.set(state.Timestamp);
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
+
 
         /* Also write to log file */
         m_poseArray[0] = state.Pose.getX();
@@ -120,5 +130,12 @@ public class Telemetry {
 
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
+        for(int i = 0; i < 4; i++) {
+            cancoderStates[i] = Swerve.getModules()[i].getEncoder().getAbsolutePosition().getValueAsDouble();
+        }
+        cancDoublePublisher.set(cancoderStates);
+
+        
+     
     }
 }
