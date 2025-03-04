@@ -100,10 +100,10 @@ public class algaeIntakeWheel extends SubsystemBase {
       return TicksPerOneHundredMSToRPM(intakeWheelEncoder.getVelocity());
     }
 
-    @Log(name = "Is algae present?")
+   /* @Log(name = "Is algae present?")
         public boolean isAlgaePresent() {
             return !intakeDetector.get();
-        }
+        }*/
 
   @Override
   public void periodic() {
