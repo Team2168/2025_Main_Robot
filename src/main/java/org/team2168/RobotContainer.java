@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import org.team2168.Constants.Controllers;
 import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
+import org.team2168.commands.DriveFlywheelWithJoystick;
 import org.team2168.commands.lift.DriveLiftHeights;
 import org.team2168.commands.CoralManipulator.BumpCoralPivotAngleDown;
 import org.team2168.commands.CoralManipulator.BumpCoralPivotAngleUp;
@@ -134,12 +135,7 @@ public class RobotContainer {
     operatorJoystick.rightBumper().whileTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.INTAKE.getValue()), new DriveFlywheelUntilCoral(coralflyWheel, -0.65))));
 
     /* control coral in intake buttons: (needs testing) sets the coral intake to a very slow speed depending on if the operator moves the left stick up or down */
-    if (operatorJoystick.getLeftY() > 0.15) {
-      operatorJoystick.leftStick().whileTrue(new DriveCoralFlywheel(coralflyWheel, 0.1));
-    }
-    else if (operatorJoystick.getLeftY() < -0.15) {
-      operatorJoystick.leftStick().whileTrue(new DriveCoralFlywheel(coralflyWheel, -0.1));
-    }
+    operatorJoystick.leftStick().whileTrue(new DriveFlywheelWithJoystick(coralflyWheel, () -> operatorJoystick.getLeftY()));
     
     /* L1-L4 buttons: sets elevator and coral pivot to desired reef branch */
     operatorJoystick.a().onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.BARGE.getPivotPositon()), new DriveLiftHeights(m_Lift, LiftHeights.BARGE.getValue())));
