@@ -6,13 +6,14 @@ package org.team2168.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
 
-import org.team2168.Constants.CANDevices;
 
+import org.team2168.Constants;
+import org.team2168.Constants.CANDevices;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs; //TODO configure MotionMagic configurations
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -23,7 +24,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -36,10 +36,12 @@ import io.github.oblarg.oblog.annotations.Log;
 public class Lift extends SubsystemBase {
 
   public enum LiftHeights {
-    BARGE(0.0),
-    L2(2.0),
-    L3(3.0),
-    L4(5.2);
+    BARGE(0.5148),
+    L2(0.1139),
+    L3(1.6365),
+    L4(5.27),
+    INTAKE(2.654),
+    ZERO(0.0);
 
     public double liftHeight;
 
@@ -52,8 +54,9 @@ public class Lift extends SubsystemBase {
     }
   }
 
-  
-  final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0); // TODO Should be able to input a position
+
+
+  final MotionMagicVoltage m_motmag = new MotionMagicVoltage(0);
   final DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
   final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
   // private final double TICKS_PER_REV = 2048; - I don't think we need to use
@@ -63,6 +66,7 @@ public class Lift extends SubsystemBase {
 
   TalonFX motor = new TalonFX(CANDevices.ELEVATOR_ID);
   CANcoder cancoder = new CANcoder(CANDevices.ELEVATOR_CANCODER_ID);
+
   private final InvertedValue INVERSION = InvertedValue.CounterClockwise_Positive;
   private final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
   private final GravityTypeValue FEEDFORWARD_TYPE = GravityTypeValue.Elevator_Static;
@@ -79,20 +83,20 @@ public class Lift extends SubsystemBase {
   private final double PEAK_REVERSE_DUTY_CYCLE = -1.0;
   private final double NEUTRAL_DEADBAND = 0.005;
 
-  private final double KP = 3.0; // TODO tune gains
-  private final double KI = 0.0; // TODO
-  private final double KD = 0.23; // TODO
+  private final double KP = 3.4; //origally 3.0
+  private final double KI = 0.0;
+  private final double KD = 0.9; // originally 0.23
   private final double K_Gravity = 0.24; // gravity accountment
 
-  private final int CRUISE_VELOCITY = 100; // TODO modify in future
-  private final int ACCELERATION = 85; // TODO modify in future
+  private final int CRUISE_VELOCITY = 160; // TODO modify in future
+  private final int ACCELERATION = 130; // TODO modify in future
   private final double EXPO_KV = 0.119;
   private final double EXPO_KA = 0.1;
 
   private final double PEAK_FORWARD_VOLTAGE = 16.0;
   private final double PEAK_REVERSE_VOLTAGE = -16.0;
 
-  private final double FORWARD_SOFT_LIMIT = 5.23;
+  private final double FORWARD_SOFT_LIMIT = 5.3;
   private final double REVERSE_SOFT_LIMIT = 0.0;
 
   private void configureMotors() {

@@ -4,19 +4,22 @@
 
 package org.team2168.commands;
 
+import java.util.function.DoubleSupplier;
+
 import org.team2168.subsystems.CoralFlywheel;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveFlywheelUntilNoCoral extends Command {
+public class DriveFlywheelWithJoystick extends Command {
+  /** Creates a new DriveFlywheelWithJoystick. */
   private CoralFlywheel coralFlywheel;
-  private double speed;
+  private DoubleSupplier yAxis;
 
-  /** Creates a new DriveFlywheelUntilNoCoral. */
-  public DriveFlywheelUntilNoCoral(CoralFlywheel coralFlywheel, double speed) {
+  public DriveFlywheelWithJoystick(CoralFlywheel coralFlywheel, DoubleSupplier yAxis) {
+    // Use addRequirements() here to declare subsystem dependencies.
     this.coralFlywheel = coralFlywheel;
-    this.speed = speed;
+    this.yAxis = yAxis;
 
     addRequirements(coralFlywheel);
   }
@@ -28,7 +31,12 @@ public class DriveFlywheelUntilNoCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    coralFlywheel.setFlywheelSpeed(speed);
+    if (yAxis.getAsDouble() > 0.15) {
+      coralFlywheel.setFlywheelSpeed(0.3);
+    }
+    else if (yAxis.getAsDouble() < -0.15) {
+      coralFlywheel.setFlywheelSpeed(-0.3);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -40,6 +48,6 @@ public class DriveFlywheelUntilNoCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !coralFlywheel.isCoralPresent();
+    return false;
   }
 }
