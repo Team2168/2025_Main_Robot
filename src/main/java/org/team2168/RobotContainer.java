@@ -125,6 +125,8 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
+    leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel));
+
     driverJoystick.leftTrigger().whileFalse(new InstantCommand(() -> {
       MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
       MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
@@ -139,24 +141,10 @@ public class RobotContainer {
         swerve.runDriveWithJoystick(driverJoystick, MaxSpeed, MaxAngularRate));
     driverJoystick.leftTrigger().onTrue(swerve.runDriveWithJoystick(driverJoystick, MaxSpeed/10, MaxAngularRate/10));
 
-    swerve.registerTelemetry(logger::telemeterize);
+    swerve.registerTelemetry(logger::telemeterize); 
 
-    leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel));
-    
-  
-    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralFlywheel, -0.6));
-    testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralFlywheel, 0.6));
+    driverJoystick.a().whileTrue(new CloseClimber(climber));
 
-    testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); // test
-    testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleDown(coralPivot));
-
-    testJoystick.rightStick().whileTrue(new DriveLift(lift, () -> testJoystick.getRightY()));
-
-    /*
-     * coral shoot button: if coral is in the intake, then these will shoot it out
-     * coral (cannot shoot into L1)
-     */
-    operatorJoystick.rightTrigger().whileTrue(new DriveFlywheelUntilNoCoral(coralFlywheel, -0.6));
 
     /*
      * coral intake button: sets elevator and coral pivot to the position to intake
@@ -164,19 +152,24 @@ public class RobotContainer {
      * coral
      */
     operatorJoystick.rightBumper()
-        .whileTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()),
-            new DriveLiftHeights(lift, LiftHeights.INTAKE.getValue()),
-            new DriveFlywheelUntilCoral(coralFlywheel, -0.65))));
+        .onTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()),
+            new DriveLiftHeights(lift, LiftHeights.INTAKE.getValue()))))
+                .whileTrue(new DriveFlywheelUntilCoral(coralFlywheel, -0.65));
 
     /*
      * control coral in intake buttons: (needs testing) sets the coral intake to a
-     * very slow speed depending on if the operator moves the left stick up or down
+     * very slow speed depending on if the operator moves the up stick up or down
      */
-    // operatorJoystick.leftStick()
-    //     .whileTrue(new DriveFlywheelWithJoystick(coralflyWheel, () -> operatorJoystick.getLeftY()));
+    operatorJoystick.leftStick()
+        .whileTrue(new DriveFlywheelWithJoystick(coralFlywheel, () -> operatorJoystick.getLeftY()));
 
-    operatorJoystick.povUp().whileTrue(new DriveCoralFlywheel(coralFlywheel, 0.15)); 
-    operatorJoystick.povDown().whileTrue(new DriveCoralFlywheel(coralFlywheel, -0.15)); 
+    // operatorJoystick.povUp().whileTrue(new DriveCoralFlywheel(coralFlywheel, 0.15)); 
+    // operatorJoystick.povDown().whileTrue(new DriveCoralFlywheel(coralFlywheel, -0.15)); 
+    
+    /*elevator and coral pivot reset button: sets elevator and coral pivot position to 0 */
+    operatorJoystick.rightTrigger().
+        onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.ZERO.getPivotPositon()),
+            new DriveLiftHeights(lift, LiftHeights.ZERO.getValue())));
 
     /* L1-L4 buttons: sets elevator and coral pivot to desired reef branch */
     operatorJoystick.a()
@@ -192,13 +185,19 @@ public class RobotContainer {
         .onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()),
             new DriveLiftHeights(lift, LiftHeights.L4.getValue())));
 
-    /* reset button: sets elevator and coral pivot position to 0 */
-    operatorJoystick.povRight()
-        .onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.ZERO.getPivotPositon()),
-            new DriveLiftHeights(lift, LiftHeights.ZERO.getValue())));
+    /* algae reset button: brings algae back to its 0 position */
+    //operatorJoystick.povRight()
     
-    operatorJoystick.povLeft().whileTrue(new CloseClimber(climber));
-    operatorJoystick.povRight().whileTrue(new DriveClimber(climber, ()-> ClimberConstants.OPENING_SPEED));
+    // operatorJoystick.povRight().whileTrue(new DriveClimber(climber, ()-> ClimberConstants.OPENING_SPEED));
+
+    
+    testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralFlywheel, -0.6));
+    testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralFlywheel, 0.6));
+
+    testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); // test
+    testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleDown(coralPivot));
+
+    testJoystick.rightStick().whileTrue(new DriveLift(lift, () -> testJoystick.getRightY()));
     
   }
 
