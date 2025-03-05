@@ -25,7 +25,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class CoralPivot extends SubsystemBase {
-  private static SparkMax pivotMotor = new SparkMax(CANDevices.CORAL_PIVOT, MotorType.kBrushless);
+  private static SparkMax pivotMotor = new SparkMax(CANDevices.CORAL_PIVOT_ID, MotorType.kBrushless);
+  //private static RelativeEncoder pivotPrimaryEncoder = pivotMotor.getEncoder();
   private static RelativeEncoder pivotEncoder = pivotMotor.getAlternateEncoder();
   private static SparkClosedLoopController pidController = pivotMotor.getClosedLoopController();
 
@@ -173,7 +174,7 @@ public class CoralPivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("encoder rot", getCoralPivotPositionRot());
-    SmartDashboard.putNumber("encoder deg", getCoralPivotPositionDegrees());
+    SmartDashboard.putNumber("coral pivot (rot)", getCoralPivotPositionRot());
+    SmartDashboard.putNumber("coral pivot (deg)", getCoralPivotPositionDegrees());
   }
 }
