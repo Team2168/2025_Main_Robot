@@ -2,29 +2,28 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.team2168.commands;
+package org.team2168.commands.Climber;
 
-import org.team2168.subsystems.CageDetector;
-import org.team2168.subsystems.CoralFlywheel;
-import org.team2168.subsystems.LEDs;
-import org.team2168.subsystems.LEDs.LED_COLOR;
+import java.util.function.DoubleSupplier;
+
+import org.team2168.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class LEDStatus extends Command {
-  /** Creates a new LEDStatus. */
-  private LEDs leds;
-  private CageDetector cageDetector;
-  private CoralFlywheel coralFlywheel;
+public class DriveClimber extends Command {
 
-  public LEDStatus(LEDs leds, CageDetector cageDetector, CoralFlywheel coralFlywheel) {
+private final Climber climber;
+
+private final DoubleSupplier input;
+
+  /** Creates a new DriveClimber. */
+  public DriveClimber(Climber c, DoubleSupplier i) {
+    climber = c;
+    input = i;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    this.leds = leds;
-    this.cageDetector = cageDetector;
-    this.coralFlywheel = coralFlywheel;
-
-    addRequirements(leds);
+    addRequirements(c); 
   }
 
   // Called when the command is initially scheduled.
@@ -34,13 +33,7 @@ public class LEDStatus extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (cageDetector.canClimb()) {
-      leds.setLEDColor(LED_COLOR.BLUE.getLEDColor());
-    }
-    else if (coralFlywheel.isCoralPresent()) {
-      leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
-    }
-    else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
+   climber.driveClimbMotor(input.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

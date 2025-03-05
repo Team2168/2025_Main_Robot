@@ -2,27 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.team2168.commands;
+package org.team2168.commands.Climber;
 
-import java.util.function.DoubleSupplier;
-
+import org.team2168.Constants.ClimberConstants;
 import org.team2168.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveClimber extends Command {
+public class CloseClimber extends Command {
+  final Climber climber;
 
-private final Climber climber;
+public CloseClimber(Climber c) {
 
-private final DoubleSupplier input;
-
-  /** Creates a new DriveClimber. */
-  public DriveClimber(Climber c, DoubleSupplier i) {
     climber = c;
-    input = i;
 
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(c); 
   }
 
@@ -33,7 +27,9 @@ private final DoubleSupplier input;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   climber.driveClimbMotor(input.getAsDouble());
+
+    climber.driveClimbMotor(ClimberConstants.CLOSING_SPEED); //Placeholder
+
   }
 
   // Called once the command ends or is interrupted.
@@ -43,6 +39,6 @@ private final DoubleSupplier input;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+     return climber.getrightlimitSwitch()||climber.getleftlimitSwitch(); 
   }
 }

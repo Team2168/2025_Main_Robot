@@ -209,7 +209,6 @@ public class Lift extends SubsystemBase {
   // }
 
   // @Config()
-
   public void setPosition(double rotations) {
     m_motmag.Slot = 0;
     motor.setControl(m_motmag.withPosition(rotations));
