@@ -50,7 +50,7 @@ public class CoralPivot extends SubsystemBase {
     L3(degreesToRot(145.376)),
     L4(degreesToRot(150.958)),
     INTAKE(18),
-    ZERO(degreesToRot(0.0));
+    ZERO(degreesToRot(5.0));
 
     public double pivotPosition;
 

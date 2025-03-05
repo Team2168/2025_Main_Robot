@@ -358,17 +358,12 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                 visionMeasurementStdDevs);
     }
 
-   public Command runDriveWithJoystick(CommandXboxController joystick) {
-    System.out.println(joystick.rightBumper().getAsBoolean());
-    if(joystick.rightBumper().getAsBoolean()) {
-    return applyRequest(() -> fieldCentricDrive.withVelocityX(-joystick.getLeftY() * MaxSpeed)
-    .withVelocityY(-joystick.getLeftX() * MaxSpeed)
-    .withRotationalRate(-joystick.getRightX() * MaxAngularRate)); 
-    } else {
-        return applyRequest(() -> fieldCentricDrive.withVelocityX(-joystick.getLeftY() * MaxSpeed)
-        .withVelocityY(-joystick.getLeftX() * MaxSpeed)
-        .withRotationalRate(-joystick.getRightX() * MaxAngularRate)); 
-    }
+   public Command runDriveWithJoystick(CommandXboxController joystick, double maxSpeed, double maxAngularSpeed) {
+
+    return applyRequest(() -> fieldCentricDrive.withVelocityX(-joystick.getLeftY() * maxSpeed)
+    .withVelocityY(-joystick.getLeftX() * maxSpeed)
+    .withRotationalRate(-joystick.getRightX() * maxAngularSpeed)); 
+
   }
 
     public Command drivePath(String pathName) {

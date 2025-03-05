@@ -37,7 +37,7 @@ public class Lift extends SubsystemBase {
   public enum LiftHeights {
     BARGE(0.5148),
     L2(0.1139),
-    L3(1.9365),
+    L3(1.6365),
     L4(5.27),
     INTAKE(2.654),
     ZERO(0.0);
@@ -81,9 +81,9 @@ public class Lift extends SubsystemBase {
   private final double PEAK_REVERSE_DUTY_CYCLE = -1.0;
   private final double NEUTRAL_DEADBAND = 0.005;
 
-  private final double KP = 3.1; //origally 3.0
+  private final double KP = 3.4; //origally 3.0
   private final double KI = 0.0;
-  private final double KD = 0.12; // originally 0.23
+  private final double KD = 0.9; // originally 0.23
   private final double K_Gravity = 0.24; // gravity accountment
 
   private final int CRUISE_VELOCITY = 160; // TODO modify in future
