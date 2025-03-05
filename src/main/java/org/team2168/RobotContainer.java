@@ -109,10 +109,16 @@ public class RobotContainer {
     // pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    driverJoystick.leftTrigger().whileTrue(new InstantCommand(() -> MaxSpeed = MaxSpeed/10, swerve));
-    driverJoystick.leftTrigger().whileTrue(new InstantCommand(() -> MaxAngularRate = MaxAngularRate/10, swerve));
-    driverJoystick.leftTrigger().whileFalse(new InstantCommand(() -> MaxSpeed = MaxSpeed, swerve));
-    driverJoystick.leftTrigger().whileFalse(new InstantCommand(() -> MaxAngularRate = MaxAngularRate, swerve));
+    driverJoystick.leftTrigger().whileFalse(new InstantCommand(() -> {
+      MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+      MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+  }, swerve));
+  
+  driverJoystick.leftTrigger().whileTrue(new InstantCommand(() -> {
+      MaxSpeed = MaxSpeed / 10;
+      MaxAngularRate = MaxAngularRate / 10;
+  }, swerve));
+
     swerve.setDefaultCommand(
         swerve.runDriveWithJoystick(driverJoystick, MaxSpeed, MaxAngularRate));
     driverJoystick.leftTrigger().onTrue(swerve.runDriveWithJoystick(driverJoystick, MaxSpeed/10, MaxAngularRate/10));
@@ -162,8 +168,11 @@ public class RobotContainer {
      * control coral in intake buttons: (needs testing) sets the coral intake to a
      * very slow speed depending on if the operator moves the left stick up or down
      */
-    operatorJoystick.leftStick()
-        .whileTrue(new DriveFlywheelWithJoystick(coralflyWheel, () -> operatorJoystick.getLeftY()));
+    // operatorJoystick.leftStick()
+    //     .whileTrue(new DriveFlywheelWithJoystick(coralflyWheel, () -> operatorJoystick.getLeftY()));
+
+    operatorJoystick.povUp().whileTrue(new DriveCoralFlywheel(coralflyWheel, 0.15)); 
+    operatorJoystick.povDown().whileTrue(new DriveCoralFlywheel(coralflyWheel, -0.15)); 
 
     /* L1-L4 buttons: sets elevator and coral pivot to desired reef branch */
     operatorJoystick.a()
