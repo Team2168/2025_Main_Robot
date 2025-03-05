@@ -361,13 +361,13 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
    public Command runDriveWithJoystick(CommandXboxController joystick) {
     System.out.println(joystick.rightBumper().getAsBoolean());
     if(joystick.rightBumper().getAsBoolean()) {
-    return applyRequest(() -> fieldCentricDrive.withVelocityX(xLimiter.calculate(-joystick.getLeftY() * MaxSpeed))
-    .withVelocityY(yLimiter.calculate(-joystick.getLeftX() * MaxSpeed))
-    .withRotationalRate(rotLimiter.calculate(-joystick.getRightX() * MaxAngularRate))); 
+    return applyRequest(() -> fieldCentricDrive.withVelocityX(-joystick.getLeftY() * MaxSpeed)
+    .withVelocityY(-joystick.getLeftX() * MaxSpeed)
+    .withRotationalRate(-joystick.getRightX() * MaxAngularRate)); 
     } else {
-        return applyRequest(() -> fieldCentricDrive.withVelocityX(xSlowLimiter.calculate(-joystick.getLeftY() * MaxSpeed))
-        .withVelocityY(ySlowLimiter.calculate(-joystick.getLeftX() * MaxSpeed))
-        .withRotationalRate(slowRotLimiter.calculate(-joystick.getRightX() * MaxAngularRate))); 
+        return applyRequest(() -> fieldCentricDrive.withVelocityX(-joystick.getLeftY() * MaxSpeed)
+        .withVelocityY(-joystick.getLeftX() * MaxSpeed)
+        .withRotationalRate(-joystick.getRightX() * MaxAngularRate)); 
     }
   }
 

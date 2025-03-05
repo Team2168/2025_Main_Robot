@@ -93,7 +93,7 @@ public class CoralPivot extends SubsystemBase {
       .apply(altEncoderConfig)
       .countsPerRevolution(TICKS_PER_REV)
       .setSparkMaxDataPortConfig()
-      .positionConversionFactor(GEAR_RATIO * TICKS_PER_REV); //changed to gear ratio * ticks per rev - check if encoder displays accurate values
+      .positionConversionFactor(GEAR_RATIO); 
 
     motorConfigs.signals.externalOrAltEncoderPosition(5);
 
