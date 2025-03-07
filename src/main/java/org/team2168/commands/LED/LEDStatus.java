@@ -15,13 +15,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class LEDStatus extends Command {
   /** Creates a new LEDStatus. */
   private LEDs leds;
-  private CageDetector cageDetector;
+  // private CageDetector cageDetector;
   private CoralFlywheel coralFlywheel;
 
-  public LEDStatus(LEDs leds, CageDetector cageDetector, CoralFlywheel coralFlywheel) {
+  public LEDStatus(LEDs leds, CoralFlywheel coralFlywheel) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.leds = leds;
-    this.cageDetector = cageDetector;
+    // this.cageDetector = cageDetector;
     this.coralFlywheel = coralFlywheel;
 
     addRequirements(leds);
@@ -34,12 +34,12 @@ public class LEDStatus extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (cageDetector.canClimb()) {
-      leds.setLEDColor(LED_COLOR.BLUE.getLEDColor());
-    }
-    else if (coralFlywheel.isCoralPresent()) {
+    if (coralFlywheel.isCoralPresent()) {
       leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
     }
+    // else if (cageDetector.canClimb()) {
+    //   leds.setLEDColor(LED_COLOR.BLUE.getLEDColor());
+    // }
     else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
   }
 
