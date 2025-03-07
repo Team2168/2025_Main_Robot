@@ -4,29 +4,19 @@
 
 package org.team2168.subsystems;
 
-import org.team2168.Constants;
 import org.team2168.Constants.CANDevices;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import come.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.EncoderConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import io.github.oblarg.oblog.annotations.Log;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -43,11 +33,9 @@ public class algaeIntakeWheel extends SubsystemBase {
   private IdleMode coast = IdleMode.kCoast; //placeholder
 
   private static SparkMax intakeWheelOne = new SparkMax(CANDevices.INTAKE_WHEEL, SparkLowLevel.MotorType.kBrushless);
-  //private static RelativeEncoder intakeWheelEncoder = intakeWheelOne.getAlternateEncoder();
-  private static AbsoluteEncoder intakeWheelEncoder = new AbsoluteEncoder();
   private static SparkMaxConfig config = new SparkMaxConfig();
-  private static final AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
-  //private static final AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig();
+  private static final EncoderConfig encoderConfig = new EncoderConfig();
+  private static RelativeEncoder intakeWheelEncoder = intakeWheelOne.getEncoder();
   //private static DigitalInput intakeDetector = new DigitalInput(CANDevices.LINE_BREAK_SENSOR);
   
   public algaeIntakeWheel() {
@@ -55,27 +43,18 @@ public class algaeIntakeWheel extends SubsystemBase {
     .inverted(isInverted)
     .idleMode(coast)
     .smartCurrentLimit(SMART_CURRENT_LIMIT);
-  /* config.encoder
-    .positionConversionFactor(1000)
-    .velocityConversionFactor(1000);
+ 
     config.closedLoop
-    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);*/
-    config.absoluteEncoder
+    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+
+    config.encoder
     .apply(encoderConfig)
-    //.countsPerRevolution(TICKS_PER_REV)
-    //.positionConversionFactor(GEAR_RATIO) //could use this maybe...? returns in native unit of rotations.
-    .setSparkMaxDataPortConfig();
+    .positionConversionFactor(GEAR_RATIO);
     
     intakeWheelOne.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);  
   }
-  
-    /*public static algaeIntakeWheel getInstance() {
-      if(instance == null)
-      instance = new algaeIntakeWheel();
-      return instance;
-    }*/
 
-      /**
+   /**
    * sets the speed in percentage
    * @param speed value is between -1.0 and 1.0
    */
