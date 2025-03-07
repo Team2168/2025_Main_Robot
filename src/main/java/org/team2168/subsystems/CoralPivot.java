@@ -33,7 +33,7 @@ public class CoralPivot extends SubsystemBase {
   private final int TICKS_PER_REV = 8192;
   private static final double GEAR_RATIO = 111.11111;
   private final int SMART_CURRENT_LIMIT = 35;
-  private final double MAX_ANGLE = degreesToRot(140.0); //TODO: figure out again
+  private final double MAX_ANGLE = degreesToRot(155.0); //TODO: figure out again
   private final double MIN_ANGLE = degreesToRot(0);
   private boolean isInverted = true;
   private IdleMode brake = IdleMode.kBrake;
