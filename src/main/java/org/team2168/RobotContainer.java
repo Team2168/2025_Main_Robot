@@ -9,6 +9,7 @@ import org.team2168.commands.Autos;
 import org.team2168.commands.ExampleCommand;
 import org.team2168.commands.IntakePivot.setIntakePivotAngleHigher;
 import org.team2168.commands.IntakePivot.setIntakePivotAngleLower;
+import org.team2168.commands.IntakePivot.setIntakePivotPosition;
 import org.team2168.commands.IntakeWheel.setIntakeSpeed;
 
 import org.team2168.subsystems.ExampleSubsystem;
@@ -72,7 +73,17 @@ public class RobotContainer {
     testJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); //take off upper (up dpad)
     testJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot)); //take off lower (down dpad)
 
-    //operatorJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake Algae
+    /* intake algae button */
+    operatorJoystick.leftBumper()
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -8.0))
+            .whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5));
+    
+    /* shoot algae button */
+    operatorJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, -0.5));
+
+    /* algae reset position button */
+    operatorJoystick.povRight()
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, 0.0));
   
 
     // new Trigger(m_exampleSubsystem::exampleCondition)
