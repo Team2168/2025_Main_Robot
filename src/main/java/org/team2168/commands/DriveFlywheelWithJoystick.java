@@ -32,10 +32,10 @@ public class DriveFlywheelWithJoystick extends Command {
   @Override
   public void execute() {
     if (yAxis.getAsDouble() > 0.15) {
-      coralFlywheel.setFlywheelSpeed(0.3);
+      coralFlywheel.setFlywheelSpeed(0.15);
     }
     else if (yAxis.getAsDouble() < -0.15) {
-      coralFlywheel.setFlywheelSpeed(-0.3);
+      coralFlywheel.setFlywheelSpeed(-0.15);
     }
   }
 
