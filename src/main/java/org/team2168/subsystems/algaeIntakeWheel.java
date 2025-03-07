@@ -18,19 +18,15 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 public class algaeIntakeWheel extends SubsystemBase {
   /** Creates a new algaeIntakeWheel. */
 
- // private static algaeIntakeWheel instance = null;
-
   private final double minuteInHundredMs = 600.0;
-  private final int TICKS_PER_REV = 8192;
-  private final double GEAR_RATIO = (10/1); //placeholder
+  private final int TICKS_PER_REV = 4096;
+  private final double GEAR_RATIO = (10/1);
   private final int SMART_CURRENT_LIMIT = 20; 
-  private boolean isInverted = false; //placedholder
-  private IdleMode coast = IdleMode.kCoast; //placeholder
+  private boolean isInverted = false;
+  private IdleMode coast = IdleMode.kCoast;
 
   private static SparkMax intakeWheelOne = new SparkMax(CANDevices.INTAKE_WHEEL, SparkLowLevel.MotorType.kBrushless);
   private static SparkMaxConfig config = new SparkMaxConfig();
