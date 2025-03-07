@@ -29,7 +29,7 @@ public class setIntakePivotPosition extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    iPivot.setIntakePivotPosition(degrees);
+    iPivot.setIntakePivotAngle(degrees);
   }
 
   // Called once the command ends or is interrupted.
