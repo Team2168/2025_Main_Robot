@@ -24,9 +24,8 @@ public final class Constants {
 
   public static class CANDevices {
 
-    public static final int INTAKE_PIVOT = 0; //placeholders
-    public static final int INTAKE_WHEEL = 1;
-    public static final int LINE_BREAK_SENSOR = 2;
+    public static final int INTAKE_PIVOT = 31; //placeholders
+    public static final int INTAKE_WHEEL = 30;
 
     public static final int CORAL_PIVOT = 21;
     public static final int CORAL_FLYWHEEL = 20;

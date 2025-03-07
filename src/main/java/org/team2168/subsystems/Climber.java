@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
 
+  
   TalonFX motor = new TalonFX(ClimberConstants.ClimberMotorID);
   
   DigitalInput rightlimitSwitch = new DigitalInput(ClimberConstants.rightlimitSwitchChannel);
