@@ -31,31 +31,22 @@ public class algaeIntakePivot extends SubsystemBase {
   private final int TICKS_PER_REV = 8192;
   private final static double GEAR_RATIO = (25/1); // placeholder
 
-  private double kP = 15.0; //placeholders
+  private double kP = 0.1;
   private double kI = 0.0;
-  private double kD = 0.3;
-  private double kG = -2.6;
-  private int kV = 917; //placeholder
+  private double kD = 0.0399;
 
-  //private double kV = 0.12; //may not use smart motion
-  //private double kA = 0.1;
-
-  private double neutralDeadband = 0.01; //some of these are placeholders
   private double maxOutput = 1;
   private double minOutput = -1;
-  private boolean isInverted = false;
+  private boolean isInverted = true;
   private IdleMode brake = IdleMode.kBrake;
-  final double MIN_ANGLE = -120; //discover min and max angles
-  final double MAX_ANGLE = 0;
+  final double MIN_ANGLE = 0.0; //in rot, change to degrees later
+  final double MAX_ANGLE = -15.0;
   private double setPoint = degreesToRot(0.0);
-  // private double MAXMotionAcceleration = degreesToRot(500.0);
-  // private double MAXMotionCruiseVelocity = degreesToRot(250.0);
-  private final int SMART_CURRENT_LIMIT = 20; 
+  private final int SMART_CURRENT_LIMIT = 30; 
 
   private static SparkMax intakePivotOne = new SparkMax(CANDevices.INTAKE_PIVOT, SparkLowLevel.MotorType.kBrushless);
   private static SparkMaxConfig config = new SparkMaxConfig();
   private static SoftLimitConfig softLimitConfig = new SoftLimitConfig();
-  // private static MAXMotionConfig maxMotionConfig = new MAXMotionConfig();
   private static RelativeEncoder pivotEncoder = intakePivotOne.getAlternateEncoder();
   private static AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig();
   private static SparkClosedLoopController maxPid = intakePivotOne.getClosedLoopController();
@@ -70,15 +61,11 @@ public class algaeIntakePivot extends SubsystemBase {
   config.closedLoop
     .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
     .pid(kP, kI, kD)
-    //.velocityFF(1/kV)
     .outputRange(minOutput, maxOutput);
-  // maxMotionConfig
-  // .maxAcceleration(MAXMotionAcceleration)
-  // .maxVelocity(MAXMotionCruiseVelocity);
   softLimitConfig
-    .forwardSoftLimit(degreesToRot(2.5)) //5 degrees for error tolerance
+    .forwardSoftLimit(MIN_ANGLE) 
     .forwardSoftLimitEnabled(true)
-    .reverseSoftLimit(degreesToRot(-115.0)) //5 degrees for error tolerance
+    .reverseSoftLimit(MAX_ANGLE)
     .reverseSoftLimitEnabled(true);
   config.alternateEncoder
     .countsPerRevolution(TICKS_PER_REV)
@@ -117,13 +104,14 @@ public class algaeIntakePivot extends SubsystemBase {
     intakePivotOne.set(percentOutput);
   }
 
-  public void setIntakePivotPosition(double degrees) {
-    var demand = MathUtil.clamp(degrees, MIN_ANGLE, MAX_ANGLE);
-    pivotEncoder.setPosition(degreesToRot(demand)); //change "demand" to degrees?
+  // change to degrees later
+  public void setIntakePivotPosition(double rot) {
+    pivotEncoder.setPosition(rot);
   }
 
-  public void setIntakePivotAngle() {
-    maxPid.setReference(setPoint, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+  // change to degrees later
+  public void setIntakePivotAngle(double rot) {
+    maxPid.setReference(rot, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
   @Log(name = "Intake pivot angle (in degrees)")
