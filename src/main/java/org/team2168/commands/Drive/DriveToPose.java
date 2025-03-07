@@ -51,7 +51,7 @@ public class DriveToPose extends Command {
     // Set tolerances for the controllers
     xController.setTolerance(0.001);
     yController.setTolerance(0.001);
-    thetaController.setTolerance(Units.degreesToRadians(1));
+    thetaController.setTolerance(Units.degreesToRadians(3));
 
     addRequirements(swerve);
   }

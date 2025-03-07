@@ -50,6 +50,7 @@ import org.team2168.subsystems.CageDetector;
 import org.team2168.subsystems.LEDs;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -95,6 +96,7 @@ public class RobotContainer {
   public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
   public CommandXboxController operatorJoystick = new CommandXboxController(Controllers.OPERATOR_JOYSTICK);
   public CommandXboxController testJoystick = new CommandXboxController(Controllers.TEST_JOYSTICK);
+  public Autos autos = new Autos(swerve, coralFlywheel, coralPivot, lift);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -144,13 +146,13 @@ public class RobotContainer {
     driverJoystick.leftBumper().onTrue(
         new DriveToPose(() -> swerve.getState().Pose,
             () -> PosesUtil.transformPoseDirection(true, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
-                PosesUtil.getScorePositionsFromAlliance(Alliance.Red))),
+                PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
             swerve, () -> swerve.getState().Speeds));
 
     driverJoystick.rightBumper().onTrue(
         new DriveToPose(() -> swerve.getState().Pose,
             () -> PosesUtil.transformPoseDirection(false, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
-                PosesUtil.getScorePositionsFromAlliance(Alliance.Red))),
+                PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
             swerve, () -> swerve.getState().Speeds));
 
     swerve.setDefaultCommand(
@@ -222,11 +224,14 @@ public class RobotContainer {
   }
 
   private void configureAutonomous() {
-    autoChooser.addOption("MiddleLeave", Autos.middleScore(swerve));
-    autoChooser.addOption("LeftLeaveScore", Autos.leftTwoPiece(swerve));
-    autoChooser.addOption("RightLeaveScore", Autos.rightTwoPiece(swerve));
-    autoChooser.addOption("RightLeave", Autos.rightLeave(swerve));
-    autoChooser.addOption("LeftLeave", Autos.leftLeave(swerve));
+    autoChooser.addOption("MiddleLeave", autos.middleLeave());
+    autoChooser.addOption("MiddleScore", autos.middleScore());
+    // autoChooser.addOption("LeftLeaveScoreTwoCoral", autos.leftTwoPiece());
+    // autoChooser.addOption("RightLeaveScoreTwoCoral", autos.rightTwoPiece());
+    autoChooser.addOption("RightLeave", autos.rightLeave());
+    autoChooser.addOption("LeftLeave", autos.leftLeave());
+    autoChooser.addOption("LeftLeaveScoreOneCoral", autos.leftScoreSingle());
+    autoChooser.addOption("RightLeaveScoreOneCoral", autos.rightScoreSingle());
     SmartDashboard.putData("Auto Mode", autoChooser);
     
   }

@@ -4,7 +4,15 @@
 
 package org.team2168.commands;
 
+import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
+import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
+import org.team2168.commands.lift.DriveLiftHeights;
+import org.team2168.subsystems.CoralFlywheel;
+import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.ExampleSubsystem;
+import org.team2168.subsystems.Lift;
+import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
+import org.team2168.subsystems.Lift.LiftHeights;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,11 +21,19 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
-  public static Command exampleAuto(ExampleSubsystem subsystem) {
-    return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
+  private Swerve swerve;
+  private CoralFlywheel flywheel;
+  private CoralPivot pivot;
+  private Lift lift;
+
+  public Autos(Swerve swerve, CoralFlywheel flywheel, CoralPivot pivot, Lift lift) {
+    this.swerve = swerve;
+    this.flywheel = flywheel;
+    this.pivot = pivot;
+    this.lift = lift;
   }
 
-  public static Command leftTwoPiece(Swerve swerve) {
+  public Command leftTwoPiece() {
     return Commands.sequence(
         swerve.resetPosePathplanner("TwoCoralLeftAuto1st"),
         swerve.drivePath("TwoCoralLeftAuto1st"),
@@ -25,13 +41,13 @@ public final class Autos {
         swerve.drivePath("TwoCoralLeftAuto3rd"));
   }
 
-  public static Command middleScore(Swerve swerve) {
+  public Command middleLeave() {
     return Commands.sequence(
         swerve.resetPosePathplanner("MiddleLeave"),
         swerve.drivePath("MiddleLeave"));
   }
 
-  public static Command rightTwoPiece(Swerve swerve) {
+  public Command rightTwoPiece() {
     return Commands.sequence(
         swerve.resetPosePathplanner("TwoCoralRightAuto1st"),
         swerve.drivePath("TwoCoralRightAuto1st"),
@@ -39,19 +55,40 @@ public final class Autos {
         swerve.drivePath("TwoCoralRightAuto3rd"));
   }
 
-  public static Command leftLeave(Swerve swerve) {
+  public Command leftLeave() {
     return Commands.sequence(
         swerve.resetPosePathplanner("LeftLeave"),
         swerve.drivePath("LeftLeave"));
   }
 
-  public static Command rightLeave(Swerve swerve) {
+  public Command rightLeave() {
     return Commands.sequence(
         swerve.resetPosePathplanner("RightLeave"),
         swerve.drivePath("RightLeave"));
   }
 
-  private Autos() {
-    throw new UnsupportedOperationException("This is a utility class!");
+  public Command middleScore() {
+    return Commands.sequence(
+        swerve.resetPosePathplanner("MiddleLeave"),
+        Commands.parallel(swerve.drivePath("MiddleLeave"), new DriveLiftHeights(lift, LiftHeights.L4.getValue()),
+            new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon())))
+        .andThen(new DriveFlywheelUntilNoCoral(flywheel, 0.4));
   }
+
+  public Command leftScoreSingle() {
+    return Commands.sequence(
+        swerve.resetPosePathplanner("TwoCoralLeftAuto1st"),
+        Commands.parallel(swerve.drivePath("TwoCoralLeftAuto1st"), new DriveLiftHeights(lift, LiftHeights.L4.getValue()),
+            new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon())))
+        .andThen(new DriveFlywheelUntilNoCoral(flywheel, 0.4));
+  }
+
+  public Command rightScoreSingle() {
+    return Commands.sequence(
+        swerve.resetPosePathplanner("TwoCoralRightAuto1st"),
+        Commands.parallel(swerve.drivePath("TwoCoralRightAuto1st"), new DriveLiftHeights(lift, LiftHeights.L4.getValue()),
+            new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon())))
+        .andThen(new DriveFlywheelUntilNoCoral(flywheel, 0.4));
+  }
+
 }
