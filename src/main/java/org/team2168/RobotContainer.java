@@ -22,6 +22,7 @@ import org.team2168.commands.CoralManipulator.DriveCoralFlywheel;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilCoral;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
+import org.team2168.commands.Drive.DriveToPose;
 import org.team2168.commands.DriveFlywheelWithJoystick;
 import org.team2168.commands.lift.DriveLift;
 import org.team2168.commands.lift.DriveLiftHeights;
@@ -35,6 +36,7 @@ import org.team2168.subsystems.Climber;
 import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
 import org.team2168.subsystems.SwerveDrivetrain.TunerConstants;
+import org.team2168.utils.PosesUtil;
 import org.team2168.utils.Telemetry;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -47,7 +49,10 @@ import org.team2168.subsystems.Lift.LiftHeights;
 import org.team2168.subsystems.CageDetector;
 import org.team2168.subsystems.LEDs;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.LTVDifferentialDriveController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -68,20 +73,20 @@ import io.github.oblarg.oblog.Logger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-
+  SendableChooser<Command> autoChooser = new SendableChooser<>();
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
   private final Swerve swerve = TunerConstants.createDrivetrain();
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem(); // Use open-loop control for drive motors
 
   private final Telemetry logger = new Telemetry(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond), swerve);
-  
+
   private final CoralFlywheel coralFlywheel = new CoralFlywheel();
   private final CoralPivot coralPivot = new CoralPivot();
 
   private final Lift lift = new Lift();
-  
-  private final Climber climber = new Climber(); 
+
+  private final Climber climber = new Climber();
 
   private final LEDs leds = new LEDs();
   private final CageDetector cageDetector = new CageDetector();
@@ -96,6 +101,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the trigger bindings
+    configureAutonomous();
     configureBindings();
     Logger.configureLoggingAndConfig(this, false);
   }
@@ -114,7 +120,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  //bindings for moving the climber teehee
+  // bindings for moving the climber teehee
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
@@ -128,22 +134,34 @@ public class RobotContainer {
     driverJoystick.leftTrigger().whileFalse(new InstantCommand(() -> {
       MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
       MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-  }, swerve));
-  
-  driverJoystick.leftTrigger().whileTrue(new InstantCommand(() -> {
-      MaxSpeed = MaxSpeed / 10;
-      MaxAngularRate = MaxAngularRate / 10;
-  }, swerve));
+    }, swerve));
+
+    driverJoystick.leftTrigger().whileTrue(new InstantCommand(() -> {
+      MaxSpeed = MaxSpeed / 8;
+      MaxAngularRate = MaxAngularRate / 8;
+    }, swerve));
+
+    driverJoystick.leftBumper().onTrue(
+        new DriveToPose(() -> swerve.getState().Pose,
+            () -> PosesUtil.transformPoseDirection(true, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
+                PosesUtil.getScorePositionsFromAlliance(Alliance.Red))),
+            swerve, () -> swerve.getState().Speeds));
+
+    driverJoystick.rightBumper().onTrue(
+        new DriveToPose(() -> swerve.getState().Pose,
+            () -> PosesUtil.transformPoseDirection(false, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
+                PosesUtil.getScorePositionsFromAlliance(Alliance.Red))),
+            swerve, () -> swerve.getState().Speeds));
 
     swerve.setDefaultCommand(
         swerve.runDriveWithJoystick(driverJoystick, MaxSpeed, MaxAngularRate));
-    driverJoystick.leftTrigger().onTrue(swerve.runDriveWithJoystick(driverJoystick, MaxSpeed/10, MaxAngularRate/10));
+    driverJoystick.leftTrigger()
+        .onTrue(swerve.runDriveWithJoystick(driverJoystick, MaxSpeed / 10, MaxAngularRate / 10));
 
     swerve.registerTelemetry(logger::telemeterize);
 
     leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel));
-    
-  
+
     testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralFlywheel, -0.6));
     testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralFlywheel, 0.6));
 
@@ -173,10 +191,11 @@ public class RobotContainer {
      * very slow speed depending on if the operator moves the left stick up or down
      */
     // operatorJoystick.leftStick()
-    //     .whileTrue(new DriveFlywheelWithJoystick(coralflyWheel, () -> operatorJoystick.getLeftY()));
+    // .whileTrue(new DriveFlywheelWithJoystick(coralflyWheel, () ->
+    // operatorJoystick.getLeftY()));
 
-    operatorJoystick.povUp().whileTrue(new DriveCoralFlywheel(coralFlywheel, 0.15)); 
-    operatorJoystick.povDown().whileTrue(new DriveCoralFlywheel(coralFlywheel, -0.15)); 
+    operatorJoystick.povUp().whileTrue(new DriveCoralFlywheel(coralFlywheel, 0.15));
+    operatorJoystick.povDown().whileTrue(new DriveCoralFlywheel(coralFlywheel, -0.15));
 
     /* L1-L4 buttons: sets elevator and coral pivot to desired reef branch */
     operatorJoystick.a()
@@ -196,9 +215,19 @@ public class RobotContainer {
     operatorJoystick.povRight()
         .onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.ZERO.getPivotPositon()),
             new DriveLiftHeights(lift, LiftHeights.ZERO.getValue())));
-    
+
     operatorJoystick.povLeft().whileTrue(new CloseClimber(climber));
-    operatorJoystick.povRight().whileTrue(new DriveClimber(climber, ()-> ClimberConstants.OPENING_SPEED));
+    operatorJoystick.povRight().whileTrue(new DriveClimber(climber, () -> ClimberConstants.OPENING_SPEED));
+
+  }
+
+  private void configureAutonomous() {
+    autoChooser.addOption("MiddleLeave", Autos.middleScore(swerve));
+    autoChooser.addOption("LeftLeaveScore", Autos.leftTwoPiece(swerve));
+    autoChooser.addOption("RightLeaveScore", Autos.rightTwoPiece(swerve));
+    autoChooser.addOption("RightLeave", Autos.rightLeave(swerve));
+    autoChooser.addOption("LeftLeave", Autos.leftLeave(swerve));
+    SmartDashboard.putData("Auto Mode", autoChooser);
     
   }
 
@@ -209,7 +238,12 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    Command auto = autoChooser.getSelected();
+    if (auto != null) {
+      return auto;
+    } else {
+      return Commands.none();
+    }
   }
 
 }

@@ -7,6 +7,9 @@ import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
 import org.team2168.subsystems.SwerveDrivetrain.TunerConstants.TunerSwerveDrivetrain;
+import org.team2168.utils.LimelightHelpers;
+import org.team2168.utils.LimelightHelpers.LimelightResults;
+import org.team2168.utils.LimelightHelpers.PoseEstimate;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
@@ -69,8 +72,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     private final SwerveRequest.ApplyRobotSpeeds robotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
-    private final PPHolonomicDriveController controller = new PPHolonomicDriveController(new PIDConstants(1, 0, 0),
-            new PIDConstants(1, 0, 0));
+    private final PPHolonomicDriveController controller = new PPHolonomicDriveController(new PIDConstants(7, 0, 0),
+            new PIDConstants(7, 0, 0));
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -162,17 +165,15 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
         try { //robot weight is 103.6lbs
             AutoBuilder.configure(() -> this.getState().Pose, this::resetPose, () -> this.getState().Speeds,
-                    (chassisSpeeds, feedforward) -> robotSpeeds.withSpeeds(chassisSpeeds)
+                    (chassisSpeeds, feedforward) -> setControl(robotSpeeds.withSpeeds(chassisSpeeds)
                             .withWheelForceFeedforwardsX(feedforward.robotRelativeForcesX())
-                            .withWheelForceFeedforwardsY(feedforward.robotRelativeForcesY()),
-                    controller, RobotConfig.fromGUISettings(), () -> DriverStation.getAlliance().get() == Alliance.Blue,
+                            .withWheelForceFeedforwardsY(feedforward.robotRelativeForcesY())),
+                    controller, RobotConfig.fromGUISettings(), () -> DriverStation.getAlliance().get() == Alliance.Red,
                     this);
         } catch (IOException | ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        resetPose(new Pose2d(8,4,Rotation2d.fromDegrees(0.0)));
     }
 
     /**
@@ -273,33 +274,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
-    @Override
-    public void periodic() {
-        /*
-         * Periodically try to apply the operator perspective.
-         * If we haven't applied the operator perspective before, then we should apply
-         * it regardless of DS state.
-         * This allows us to correct the perspective in case the robot code restarts
-         * mid-match.
-         * Otherwise, only check and apply the operator perspective if the DS is
-         * disabled.
-         * This ensures driving behavior doesn't change until an explicit disable event
-         * occurs during testing.
-         */
-        SmartDashboard.putNumber("cancoder 0", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("cancoder 1", getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("cancoder 3" ,getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble());
-        if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-            DriverStation.getAlliance().ifPresent(allianceColor -> {
-                setOperatorPerspectiveForward(
-                        allianceColor == Alliance.Red
-                                ? kRedAlliancePerspectiveRotation
-                                : kBlueAlliancePerspectiveRotation);
-                m_hasAppliedOperatorPerspective = true;
-            });
-        }
-    }
 
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
@@ -385,5 +359,59 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         PathConstraints pathConstraints = new PathConstraints(MetersPerSecond.of(3.5), MetersPerSecondPerSecond.of(1.5),
                 RadiansPerSecond.of(2 * Math.PI), RadiansPerSecondPerSecond.of(2 * Math.PI));
         return AutoBuilder.pathfindToPose(targetPose, pathConstraints);
+    }
+
+    public Pose2d getStartingPosePathplanner(String filename) {
+        try {
+            return PathPlannerPath.fromPathFile(filename).getStartingHolonomicPose().orElse(new Pose2d());
+        } catch (FileVersionException | IOException | ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return new Pose2d(); // Return a default Pose2d in case of an exception
+    }
+
+    public Command resetPosePathplanner(String pathname) {
+        try {
+            return AutoBuilder.resetOdom(PathPlannerPath.fromPathFile(pathname).getStartingHolonomicPose().orElse(new Pose2d()));
+        } catch (FileVersionException | IOException | ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return Commands.none(); // or return a default Command
+        }
+    }
+
+    @Override
+    public void periodic() {
+        /*
+         * Periodically try to apply the operator perspective.
+         * If we haven't applied the operator perspective before, then we should apply
+         * it regardless of DS state.
+         * This allows us to correct the perspective in case the robot code restarts
+         * mid-match.
+         * Otherwise, only check and apply the operator perspective if the DS is
+         * disabled.
+         * This ensures driving behavior doesn't change until an explicit disable event
+         * occurs during testing.
+         */
+        LimelightHelpers.SetRobotOrientation("",getPigeon2().getYaw().getValueAsDouble(), 0.0,0.0,0.0,0.0,0.0);
+        PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("");
+        if (LimelightHelpers.validPoseEstimate(poseEstimate) && poseEstimate.rawFiducials[0].ambiguity < 0.5) {
+            Pose2d visionEstimate = poseEstimate.pose;
+            addVisionMeasurement(visionEstimate, poseEstimate.timestampSeconds);
+        }
+        SmartDashboard.putNumber("cancoder 0", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("cancoder 1", getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("cancoder 3" ,getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble());
+        if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+            DriverStation.getAlliance().ifPresent(allianceColor -> {
+                setOperatorPerspectiveForward(
+                        allianceColor == Alliance.Red
+                                ? kRedAlliancePerspectiveRotation
+                                : kBlueAlliancePerspectiveRotation);
+                m_hasAppliedOperatorPerspective = true;
+            });
+        }
     }
 }

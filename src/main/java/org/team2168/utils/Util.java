@@ -1,6 +1,7 @@
 package org.team2168.utils;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains basic functions that are used often.
@@ -77,23 +78,23 @@ public class Util {
 	/**
 	 * Returns the array of substrings obtained by dividing the given input string
 	 * at each occurrence of the given delimiter.
-	 */
 	public static String[] split(String input, String delimiter) {
-		Vector<String> node = new Vector<String>();
+		List<String> node = new ArrayList<String>();
 		int index = input.indexOf(delimiter);
 		while (index >= 0) {
-			node.addElement(input.substring(0, index));
+			node.add(input.substring(0, index));
 			input = input.substring(index + delimiter.length());
 			index = input.indexOf(delimiter);
 		}
-		node.addElement(input);
+		node.add(input);
 
 		String[] retString = new String[node.size()];
 		for (int i = 0; i < node.size(); ++i) {
-			retString[i] = (String) node.elementAt(i);
+			retString[i] = node.get(i);
 		}
 
 		return retString;
+	}
 	}
 
 	/**
