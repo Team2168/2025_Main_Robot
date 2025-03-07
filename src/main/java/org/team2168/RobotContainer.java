@@ -79,7 +79,7 @@ public class RobotContainer {
             .whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5));
     
     /* shoot algae button */
-    operatorJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, -0.5));
+    operatorJoystick.leftTrigger().whileTrue(new setIntakeSpeed(algaeintakeWheel, -0.5));
 
     /* algae reset position button */
     operatorJoystick.povRight()
