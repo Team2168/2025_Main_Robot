@@ -40,7 +40,7 @@ public final class Constants {
   }
 
   public static class CANDevices {
-    public static final int LEDs_ID = 5; // placeholder
+    public static final int LEDs_ID = 0;
 
     public static final int CAGE_DETECTOR_LS_1 = 4; // placeholder, prev is 0
     public static final int CAGE_DETECTOR_LS_2 = 5; // placeholder, prev is 0
