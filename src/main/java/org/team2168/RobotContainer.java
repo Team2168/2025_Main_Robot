@@ -133,32 +133,23 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    driverJoystick.leftTrigger().whileFalse(new InstantCommand(() -> {
-      MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-      MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-    }, swerve));
-
-    driverJoystick.leftTrigger().whileTrue(new InstantCommand(() -> {
-      MaxSpeed = MaxSpeed / 8;
-      MaxAngularRate = MaxAngularRate / 8;
-    }, swerve));
-
+  
     driverJoystick.leftBumper().onTrue(
         new DriveToPose(() -> swerve.getState().Pose,
             () -> PosesUtil.transformPoseDirection(true, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
                 PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
-            swerve, () -> swerve.getState().Speeds));
+            swerve, () -> swerve.getState().Speeds)).onChange(Commands.none());
 
     driverJoystick.rightBumper().onTrue(
         new DriveToPose(() -> swerve.getState().Pose,
             () -> PosesUtil.transformPoseDirection(false, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
                 PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
-            swerve, () -> swerve.getState().Speeds));
+            swerve, () -> swerve.getState().Speeds)).onChange(Commands.none());
 
     swerve.setDefaultCommand(
         swerve.runDriveWithJoystick(driverJoystick, MaxSpeed, MaxAngularRate));
     driverJoystick.leftTrigger()
-        .onTrue(swerve.runDriveWithJoystick(driverJoystick, MaxSpeed / 10, MaxAngularRate / 10));
+        .whileTrue(swerve.runDriveWithJoystick(driverJoystick, MaxSpeed / Constants.DrivePIDConstants.SLOW_FACTOR, MaxAngularRate / Constants.DrivePIDConstants.SLOW_FACTOR));
 
     swerve.registerTelemetry(logger::telemeterize);
 

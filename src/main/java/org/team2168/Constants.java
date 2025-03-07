@@ -86,5 +86,6 @@ public final class Constants {
     public static final double yMaxAcceleration = 3;
     public static final double thetaMaxVelocity = Units.degreesToRadians(360);
     public static final double thetaMaxAcceleration = Units.degreesToRadians(180);
+    public static final double SLOW_FACTOR = 7;
   }
 }

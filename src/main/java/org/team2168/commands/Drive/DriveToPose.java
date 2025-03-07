@@ -38,20 +38,20 @@ public class DriveToPose extends Command {
     this.targetPose = targetPose;
     this.currentSpeeds = currentSpeeds;
 
-    xController = new ProfiledPIDController(2, 0, 0,
+    xController = new ProfiledPIDController(1, 0, 0,
         new TrapezoidProfile.Constraints(Constants.DrivePIDConstants.xMaxVelocity,
             Constants.DrivePIDConstants.yMaxAcceleration));
-    yController = new ProfiledPIDController(2, 0, 0,
+    yController = new ProfiledPIDController(1, 0, 0,
         new TrapezoidProfile.Constraints(Constants.DrivePIDConstants.yMaxVelocity,
             Constants.DrivePIDConstants.yMaxAcceleration));
-    thetaController = new ProfiledPIDController(2, 0.0, 0.02, new TrapezoidProfile.Constraints(
+    thetaController = new ProfiledPIDController(4, 0.0, 0.02, new TrapezoidProfile.Constraints(
         Constants.DrivePIDConstants.thetaMaxVelocity, Constants.DrivePIDConstants.thetaMaxAcceleration));
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Set tolerances for the controllers
-    xController.setTolerance(0.001);
-    yController.setTolerance(0.001);
-    thetaController.setTolerance(Units.degreesToRadians(3));
+    xController.setTolerance(0.01);
+    yController.setTolerance(0.01);
+    thetaController.setTolerance(Units.degreesToRadians(1));
 
     addRequirements(swerve);
   }
