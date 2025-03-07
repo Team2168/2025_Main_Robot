@@ -4,7 +4,6 @@
 
 package org.team2168.subsystems;
 
-import org.team2168.Constants;
 import org.team2168.Constants.CANDevices;
 
 import com.revrobotics.RelativeEncoder;

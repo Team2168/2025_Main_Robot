@@ -5,14 +5,11 @@
 package org.team2168;
 
 import org.team2168.Constants.Controllers;
-import org.team2168.Constants.OperatorConstants;
 import org.team2168.commands.Autos;
 import org.team2168.commands.ExampleCommand;
 import org.team2168.commands.IntakePivot.setIntakePivotAngleHigher;
 import org.team2168.commands.IntakePivot.setIntakePivotAngleLower;
-import org.team2168.commands.IntakePivot.setIntakePivotPosition;
 import org.team2168.commands.IntakeWheel.setIntakeSpeed;
-
 
 import org.team2168.commands.CloseClimber;
 import org.team2168.commands.DriveClimber;
@@ -23,7 +20,6 @@ import org.team2168.commands.DriveFlywheelUntilCoral;
 import org.team2168.commands.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.SetCoralPivotAngle;
 import org.team2168.commands.lift.DriveLift;
-import org.team2168.commands.lift.DriveLiftHeights;
 
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
@@ -33,16 +29,12 @@ import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.Lift.LiftHeights;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.math.controller.LTVDifferentialDriveController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
 
 import org.team2168.Constants.ClimberConstants;
-import org.team2168.Constants.Controllers;
 
 import org.team2168.subsystems.algaeIntakeWheel;
 import org.team2168.subsystems.algaeIntakePivot;
@@ -101,12 +93,11 @@ public class RobotContainer {
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     testJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake
-   testJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); //take off upper (up dpad)
+    testJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); //take off upper (up dpad)
     testJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot)); //take off lower (down dpad)
 
     //operatorJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake Algae
-    operatorJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); 
-    operatorJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot));
+  
 
     // new Trigger(m_exampleSubsystem::exampleCondition)
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
