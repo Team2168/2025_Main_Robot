@@ -4,12 +4,6 @@
 
 package org.team2168;
 
-import static edu.wpi.first.units.Units.Kilogram;
-
-import java.util.DoubleSummaryStatistics;
-
-import com.pathplanner.lib.config.RobotConfig;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -24,7 +18,7 @@ public final class Constants {
   }
 
   public static class CANDevices {
-    public static final int LEDs_ID = 5; //placeholder
+    public static final int LEDs_ID = 0;
 
     public static final int CAGE_DETECTOR_LS_1 = 0; //placeholder
     public static final int CAGE_DETECTOR_LS_2 = 0; //placeholder
