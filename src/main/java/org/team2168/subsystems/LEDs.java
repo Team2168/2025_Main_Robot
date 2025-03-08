@@ -6,19 +6,12 @@ package org.team2168.subsystems;
 
 import org.team2168.Constants.CANDevices;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDs extends SubsystemBase {
   /** Creates a new LEDs. */
-  private static SparkMax leds = new SparkMax(CANDevices.LEDs_ID, MotorType.kBrushless);
-
-  private final int SMART_CURRENT_LIMIT = 20;
+  private static Spark leds = new Spark(CANDevices.LEDs_ID);
 
   public enum LED_COLOR {
     RAINBOW(-0.97),
@@ -40,12 +33,7 @@ public class LEDs extends SubsystemBase {
   }
 
   public LEDs() {
-    final SparkMaxConfig ledsConfig = new SparkMaxConfig();
 
-    ledsConfig
-      .smartCurrentLimit(SMART_CURRENT_LIMIT);
-
-    leds.configure(ledsConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   /**

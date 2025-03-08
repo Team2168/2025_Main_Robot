@@ -34,21 +34,14 @@ public class LEDStatus extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  //   if (cageDetector.canClimb()) {
-  //     leds.setLEDColor(LED_COLOR.BLUE.getLEDColor());
-  //   }
-  //   else if (coralFlywheel.isCoralPresent()) {
-  //     leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
-  //   }
-  //   else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
-  // }
-
-  if (coralFlywheel.isCoralPresent()) {
-    leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
+    if (coralFlywheel.isCoralPresent()) {
+      leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
+    }
+    // else if (cageDetector.canClimb()) {
+    //   leds.setLEDColor(LED_COLOR.BLUE.getLEDColor());
+    // }
+    else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
   }
-  else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
-
-}
 
   // Called once the command ends or is interrupted.
   @Override

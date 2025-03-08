@@ -31,6 +31,10 @@ import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
 import org.team2168.subsystems.Climber;
+import org.team2168.subsystems.Lift;
+import org.team2168.subsystems.Lift.LiftHeights;
+import org.team2168.subsystems.CageDetector;
+import org.team2168.subsystems.LEDs;
 
 import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
@@ -42,10 +46,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
-import org.team2168.subsystems.Lift;
-import org.team2168.subsystems.Lift.LiftHeights;
-import org.team2168.subsystems.CageDetector;
-import org.team2168.subsystems.LEDs;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.math.controller.LTVDifferentialDriveController;
@@ -81,8 +81,10 @@ public class RobotContainer {
 
   private final Lift lift = new Lift();
   
+  // private final Climber climber = new Climber(); 
+
   private final LEDs leds = new LEDs();
-  // private final CageDetector cageDetector = new CageDetector();
+  // private final CageDetector cageDetector = new CageDetector(); 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
@@ -184,7 +186,17 @@ public class RobotContainer {
             new DriveLiftHeights(lift, LiftHeights.L4.getValue())));
 
     /* algae reset button: brings algae back to its 0 position */
-    //operatorJoystick.povRight()
+    //need to add
+
+    /* taking algae off upper reef: when clicked, it'll move the coral pivot to a spot to take algae off, and when held it will drive the wheels as well */
+    operatorJoystick.povRight()
+        .onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.UPPER_ALGAE.getPivotPositon()),
+            new DriveCoralFlywheel(coralFlywheel, 0.5)));
+
+    /* taking algae off lower reef: when clicked, it'll move the coral pivot to a spot to take algae off, and when held it will drive the wheels as well */
+    operatorJoystick.povRight()
+        .onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.LOWER_ALGAE.getPivotPositon()),
+            new DriveCoralFlywheel(coralFlywheel, 0.5)));
     
     // operatorJoystick.povRight().whileTrue(new DriveClimber(climber, ()-> ClimberConstants.OPENING_SPEED));
 
