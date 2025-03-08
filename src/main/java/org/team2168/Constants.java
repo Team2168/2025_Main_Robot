@@ -40,6 +40,8 @@ public final class Constants {
   }
 
   public static class CANDevices {
+    public static final int INTAKE_PIVOT = 31;
+    public static final int INTAKE_WHEEL = 30;
     public static final int LEDs_ID = 0;
 
     public static final int CAGE_DETECTOR_LS_1 = 4; // placeholder, prev is 0
@@ -57,7 +59,7 @@ public final class Constants {
   }
 
   public static class Controllers {
-    public static final int DRIVER_JOYSTICK = 0;
+    public static final int DRIVER_JOYSTICK = 0; //placeholders
     public static final int OPERATOR_JOYSTICK = 1;
     public static final int TEST_JOYSTICK = 2;
   }

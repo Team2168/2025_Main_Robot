@@ -33,6 +33,11 @@ import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
 import org.team2168.subsystems.Climber;
 
+import org.team2168.commands.IntakePivot.setIntakePivotAngleHigher;
+import org.team2168.commands.IntakePivot.setIntakePivotAngleLower;
+import org.team2168.commands.IntakePivot.setIntakePivotPosition;
+import org.team2168.commands.IntakeWheel.setIntakeSpeed;
+
 import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
 import org.team2168.subsystems.SwerveDrivetrain.TunerConstants;
@@ -59,9 +64,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
+
+import org.team2168.subsystems.algaeIntakeWheel;
+import org.team2168.subsystems.algaeIntakePivot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -91,6 +98,12 @@ public class RobotContainer {
 
   private final LEDs leds = new LEDs();
   // private final CageDetector cageDetector = new CageDetector();
+  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+
+  private final algaeIntakePivot algaeintakePivot = new algaeIntakePivot();
+  private final algaeIntakeWheel algaeintakeWheel = new algaeIntakeWheel();
+
+  
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
@@ -126,10 +139,9 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
-    // .onTrue(new ExampleCommand(m_exampleSubsystem));
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed,
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
