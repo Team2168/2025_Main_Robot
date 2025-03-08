@@ -81,10 +81,8 @@ public class RobotContainer {
 
   private final Lift lift = new Lift();
   
-  private final Climber climber = new Climber(); 
-
   private final LEDs leds = new LEDs();
-  private final CageDetector cageDetector = new CageDetector();
+  // private final CageDetector cageDetector = new CageDetector();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);
@@ -125,7 +123,7 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel));
+    leds.setDefaultCommand(new LEDStatus(leds, coralFlywheel));
 
     driverJoystick.leftTrigger().whileFalse(new InstantCommand(() -> {
       MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
@@ -143,7 +141,7 @@ public class RobotContainer {
 
     swerve.registerTelemetry(logger::telemeterize); 
 
-    driverJoystick.a().whileTrue(new CloseClimber(climber));
+    // driverJoystick.a().whileTrue(new CloseClimber(climber));
 
 
     /*
