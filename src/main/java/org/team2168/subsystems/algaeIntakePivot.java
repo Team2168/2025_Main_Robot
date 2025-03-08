@@ -15,7 +15,9 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.AlternateEncoderConfig;
+import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -33,7 +35,7 @@ public class algaeIntakePivot extends SubsystemBase {
 
   private double kP = 0.1;
   private double kI = 0.0;
-  private double kD = 0.0399;
+  private double kD = 0.0699;
 
   private double maxOutput = 1;
   private double minOutput = -1;
@@ -50,7 +52,7 @@ public class algaeIntakePivot extends SubsystemBase {
   private static RelativeEncoder pivotEncoder = intakePivotOne.getAlternateEncoder();
   private static AlternateEncoderConfig encoderConfig = new AlternateEncoderConfig();
   private static SparkClosedLoopController maxPid = intakePivotOne.getClosedLoopController();
-
+  private static MAXMotionConfig motionConfig = new MAXMotionConfig();
 
   //neo motor
   public algaeIntakePivot() {
@@ -58,10 +60,12 @@ public class algaeIntakePivot extends SubsystemBase {
     .inverted(isInverted)
     .idleMode(brake)
     .smartCurrentLimit(SMART_CURRENT_LIMIT);
-  config.closedLoop
+    config.closedLoop
     .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
     .pid(kP, kI, kD)
     .outputRange(minOutput, maxOutput);
+  motionConfig
+    .maxVelocity(1.0);
   softLimitConfig
     .forwardSoftLimit(MIN_ANGLE) 
     .forwardSoftLimitEnabled(true)
@@ -71,10 +75,13 @@ public class algaeIntakePivot extends SubsystemBase {
     .countsPerRevolution(TICKS_PER_REV)
     .positionConversionFactor(GEAR_RATIO)
     .setSparkMaxDataPortConfig()
+    .inverted(isInverted)
     .apply(encoderConfig);
 
 //configs are done minus placeholders and potential troubleshooting that arises
-    
+
+  config.signals.externalOrAltEncoderPosition(5);
+
   intakePivotOne.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); 
   }
 
@@ -124,7 +131,7 @@ public class algaeIntakePivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("algae pivot (angle)", getIntakePivotAngle());
+    SmartDashboard.putNumber("algae pivot (rot)", getIntakePivotAngle());
     SmartDashboard.putNumber("algae pivot (deg)", rotToDegrees(getIntakePivotAngle()));
   }
 }

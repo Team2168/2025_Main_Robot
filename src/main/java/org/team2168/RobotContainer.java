@@ -75,7 +75,7 @@ public class RobotContainer {
 
     /* intake algae button */
     operatorJoystick.leftBumper()
-        .onTrue(new setIntakePivotPosition(algaeintakePivot, -8.0))
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -4.738))
             .whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5));
     
     /* shoot algae button */
@@ -83,7 +83,7 @@ public class RobotContainer {
 
     /* algae reset position button */
     operatorJoystick.povRight()
-        .onTrue(new setIntakePivotPosition(algaeintakePivot, 0.0));
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -0.5));
   
 
     // new Trigger(m_exampleSubsystem::exampleCondition)

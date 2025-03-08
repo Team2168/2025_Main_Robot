@@ -9,6 +9,7 @@ import org.team2168.Constants.CANDevices;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
@@ -26,9 +27,9 @@ public class algaeIntakeWheel extends SubsystemBase {
   private final double GEAR_RATIO = (10/1);
   private final int SMART_CURRENT_LIMIT = 20; 
   private boolean isInverted = false;
-  private IdleMode coast = IdleMode.kCoast;
+  private IdleMode coast = IdleMode.kBrake;
 
-  private static SparkMax intakeWheelOne = new SparkMax(CANDevices.INTAKE_WHEEL, SparkLowLevel.MotorType.kBrushless);
+  private static SparkMax intakeWheelOne = new SparkMax(CANDevices.INTAKE_WHEEL, MotorType.kBrushless);
   private static SparkMaxConfig config = new SparkMaxConfig();
   private static final EncoderConfig encoderConfig = new EncoderConfig();
   private static RelativeEncoder intakeWheelEncoder = intakeWheelOne.getEncoder();
@@ -40,12 +41,13 @@ public class algaeIntakeWheel extends SubsystemBase {
     .idleMode(coast)
     .smartCurrentLimit(SMART_CURRENT_LIMIT);
  
-    config.closedLoop
-    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+    // config.closedLoop
+    // .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     config.encoder
-    .apply(encoderConfig)
-    .positionConversionFactor(GEAR_RATIO);
+    .apply(encoderConfig);
+
+    config.signals.appliedOutputPeriodMs(2);
     
     intakeWheelOne.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);  
   }
