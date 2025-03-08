@@ -87,7 +87,8 @@ public class RobotContainer {
 
     /* sets to intake cage */
     operatorJoystick.povLeft()
-        .whileTrue(new setIntakeSpeed(algaeintakeWheel, -0.5)); 
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -7.5))
+            .whileTrue(new setIntakeSpeed(algaeintakeWheel, -0.5)); 
 
     // new Trigger(m_exampleSubsystem::exampleCondition)
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
