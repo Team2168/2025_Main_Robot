@@ -24,7 +24,7 @@ public final class Constants {
   }
 
   public static class CANDevices {
-    public static final int LEDs_ID = 5; //placeholder
+    public static final int LEDs_ID = 0; //placeholder
 
     public static final int CAGE_DETECTOR_LS_1 = 0; //placeholder
     public static final int CAGE_DETECTOR_LS_2 = 0; //placeholder
