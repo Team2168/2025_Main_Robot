@@ -14,8 +14,8 @@ import org.team2168.Constants.ClimberConstants;
 
 import org.team2168.commands.Autos;
 import org.team2168.commands.ExampleCommand;
-import org.team2168.commands.CloseClimber;
-import org.team2168.commands.DriveClimber;
+import org.team2168.commands.Climber.CloseClimber;
+import org.team2168.commands.Climber.DriveClimber;
 import org.team2168.commands.CoralManipulator.BumpCoralPivotAngleDown;
 import org.team2168.commands.CoralManipulator.BumpCoralPivotAngleUp;
 import org.team2168.commands.CoralManipulator.DriveCoralFlywheel;
@@ -23,10 +23,10 @@ import org.team2168.commands.CoralManipulator.DriveFlywheelUntilCoral;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
 import org.team2168.commands.Drive.DriveToPose;
-import org.team2168.commands.DriveFlywheelWithJoystick;
+import org.team2168.commands.CoralManipulator.DriveFlywheelWithJoystick;
 import org.team2168.commands.lift.DriveLift;
 import org.team2168.commands.lift.DriveLiftHeights;
-import org.team2168.commands.LEDStatus;
+import org.team2168.commands.LED.LEDStatus;
 
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;

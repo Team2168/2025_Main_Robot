@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.team2168.commands;
+package org.team2168.commands.LED;
 
 import org.team2168.subsystems.CageDetector;
 import org.team2168.subsystems.CoralFlywheel;
