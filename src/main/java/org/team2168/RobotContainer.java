@@ -24,7 +24,6 @@ import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
 import org.team2168.commands.Drive.DriveToPose;
 import org.team2168.commands.CoralManipulator.DriveFlywheelWithJoystick;
-import org.team2168.commands.lift.DriveLift;
 import org.team2168.commands.lift.DriveLiftHeights;
 import org.team2168.commands.LED.LEDStatus;
 
@@ -98,7 +97,6 @@ public class RobotContainer {
 
   private final LEDs leds = new LEDs();
   // private final CageDetector cageDetector = new CageDetector();
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final algaeIntakePivot algaeintakePivot = new algaeIntakePivot();
   private final algaeIntakeWheel algaeintakeWheel = new algaeIntakeWheel();
@@ -224,6 +222,23 @@ public class RobotContainer {
         .onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.LOWER_ALGAE.getPivotPositon()))
             .whileTrue(new DriveCoralFlywheel(coralFlywheel, 0.5));
 
+    /* intake algae button */
+    operatorJoystick.leftBumper()
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -4.738))
+            .whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.7));
+    
+    /* shoot algae button */
+    operatorJoystick.leftTrigger().whileTrue(new setIntakeSpeed(algaeintakeWheel, -1.0));
+
+    /* algae reset position button */
+    operatorJoystick.povRight()
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -0.5));
+
+    /* sets to intake cage */
+    operatorJoystick.povLeft()
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -7.5))
+            .whileTrue(new setIntakeSpeed(algaeintakeWheel, -0.5)); 
+
     
     
     // testJoystick.povRight().whileTrue(new DriveClimber(climber, () -> ClimberConstants.OPENING_SPEED));
@@ -233,8 +248,6 @@ public class RobotContainer {
 
     testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); // test
     testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleDown(coralPivot));
-
-    testJoystick.rightStick().whileTrue(new DriveLift(lift, () -> testJoystick.getRightY()));
 
   }
 
