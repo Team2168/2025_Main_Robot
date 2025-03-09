@@ -47,6 +47,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.Lift.LiftHeights;
@@ -93,10 +94,10 @@ public class RobotContainer {
 
   private final Lift lift = new Lift();
 
-  // private final Climber climber = new Climber();
+//   private final Climber climber = new Climber();
 
   private final LEDs leds = new LEDs();
-  // private final CageDetector cageDetector = new CageDetector();
+//   private final CageDetector cageDetector = new CageDetector();
 
   private final algaeIntakePivot algaeintakePivot = new algaeIntakePivot();
   private final algaeIntakeWheel algaeintakeWheel = new algaeIntakeWheel();
@@ -144,30 +145,30 @@ public class RobotContainer {
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
   
-    driverJoystick.leftBumper().onTrue(
-        new DriveToPose(() -> swerve.getState().Pose,
-            () -> PosesUtil.transformPoseDirection(true, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
-                PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
-            swerve, () -> swerve.getState().Speeds)).onChange(Commands.none());
+    // driverJoystick.leftBumper().onTrue(
+    //     new DriveToPose(() -> swerve.getState().Pose,
+    //         () -> PosesUtil.transformPoseDirection(true, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
+    //             PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
+    //         swerve, () -> swerve.getState().Speeds)).onChange(Commands.none());
 
-    driverJoystick.rightBumper().onTrue(
-        new DriveToPose(() -> swerve.getState().Pose,
-            () -> PosesUtil.transformPoseDirection(false, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
-                PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
-            swerve, () -> swerve.getState().Speeds)).onChange(Commands.none());
+    // driverJoystick.rightBumper().onTrue(
+    //     new DriveToPose(() -> swerve.getState().Pose,
+    //         () -> PosesUtil.transformPoseDirection(false, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
+    //             PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
+    //         swerve, () -> swerve.getState().Speeds)).onChange(Commands.none());
 
     swerve.setDefaultCommand(
         swerve.runDriveWithJoystick(driverJoystick, MaxSpeed, MaxAngularRate));
     driverJoystick.leftTrigger()
         .whileTrue(swerve.runDriveWithJoystick(driverJoystick, MaxSpeed / Constants.DrivePIDConstants.SLOW_FACTOR, MaxAngularRate / Constants.DrivePIDConstants.SLOW_FACTOR));
-
+    
+        driverJoystick.back().onTrue(swerve.applyRequest(() -> new SwerveRequest.PointWheelsAt().withModuleDirection(Rotation2d.fromDegrees(180))));
+    
     // driverJoystick.a().whileTrue(new CloseClimber(climber));
 
     swerve.registerTelemetry(logger::telemeterize);
 
     leds.setDefaultCommand(new LEDStatus(leds, coralFlywheel));
-
-
 
     /* elevator and coral pivot reset button: sets elevator and coral pivot position to 0 */
     operatorJoystick.rightTrigger().
@@ -188,11 +189,8 @@ public class RobotContainer {
      * control coral in intake buttons: (needs testing) sets the coral intake to a
      * very slow speed depending on if the operator moves the left stick up or down
      */
-    operatorJoystick.leftStick()
-        .whileTrue(new DriveFlywheelWithJoystick(coralFlywheel, () -> operatorJoystick.getLeftY()));
-
-    // operatorJoystick.povUp().whileTrue(new DriveCoralFlywheel(coralFlywheel, 0.15));
-    // operatorJoystick.povDown().whileTrue(new DriveCoralFlywheel(coralFlywheel, -0.15));
+    operatorJoystick.rightStick()
+        .whileTrue(new DriveFlywheelWithJoystick(coralFlywheel, () -> operatorJoystick.getRightY()));
 
     /* L1-L4 buttons: sets elevator and coral pivot to desired reef branch */
     operatorJoystick.a()
@@ -213,14 +211,14 @@ public class RobotContainer {
     */
     operatorJoystick.povUp()
         .onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.UPPER_ALGAE.getPivotPositon()))
-            .whileTrue(new DriveCoralFlywheel(coralFlywheel, 0.5));
+            .whileTrue(new DriveCoralFlywheel(coralFlywheel, -0.5));
 
     /* taking algae off lower reef: when clicked, it'll move the coral pivot to a 
     * spot to take algae off, and when held it will drive the wheels as well 
     */
     operatorJoystick.povDown()
         .onTrue(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.LOWER_ALGAE.getPivotPositon()))
-            .whileTrue(new DriveCoralFlywheel(coralFlywheel, 0.5));
+                .whileTrue(new DriveCoralFlywheel(coralFlywheel, -0.5));
 
     /* intake algae button */
     operatorJoystick.leftBumper()
@@ -260,6 +258,9 @@ public class RobotContainer {
     autoChooser.addOption("LeftLeave", autos.leftLeave());
     autoChooser.addOption("LeftLeaveScoreOneCoral", autos.leftScoreSingle());
     autoChooser.addOption("RightLeaveScoreOneCoral", autos.rightScoreSingle());
+    autoChooser.addOption("RightScoreL4", autos.rightScoreSingleL4());
+    autoChooser.addOption("LeftScoreL4", autos.leftScoreSingleL4());
+    autoChooser.addOption("RightScoreL4TEST", autos.rightScoreSingleL4TEST());
     SmartDashboard.putData("Auto Mode", autoChooser);
     
   }
