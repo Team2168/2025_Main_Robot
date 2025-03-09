@@ -24,8 +24,8 @@ public class Climber extends SubsystemBase {
 
   TalonFX motor = new TalonFX(CANDevices.CLIMBER_ID);
   
-  DigitalInput rightlimitSwitch = new DigitalInput(ClimberConstants.RIGHT_LIMIT_SWITCH);
-  DigitalInput leftlimitSwitch = new DigitalInput(ClimberConstants.LEFT_LIMIT_SWITCH);
+  DigitalInput limitSwitch = new DigitalInput(ClimberConstants.CLIMBER_LIMIT_SWITCH);
+  // DigitalInput leftlimitSwitch = new DigitalInput(ClimberConstants.LEFT_LIMIT_SWITCH);
   
   // The motor's inversion is such that moving clockwise is considered moving forward
   private final InvertedValue INVERSION = InvertedValue.Clockwise_Positive;
@@ -36,20 +36,20 @@ public class Climber extends SubsystemBase {
   private final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
   // The maximum values the motor can be commanded to go, in percent
   // Values are arbitrary
-  private final double MAX_FORWARD_OUTPUT = 0.95;
+  private final double MAX_FORWARD_OUTPUT = 42.0;
   private final double MIN_FORWARD_OUTPUT = 0.0; //The motor is not allowed to move backwards 😱
 
-  private final double CURRENT_LIMIT = 20.0;
+  private final double CURRENT_LIMIT = 70.0;
   private final boolean CURRENT_LIMIT_ENABLED = true;
   
-  private final double kP = 0.0;
+  private final double kP = 1.0;
   private final double kI = 0.0;
   private final double kD = 0.0;
 
   private final int FEEDBACK_SENSOR = 0;
   private final int FEEDBACK_OFFSET = 457; //arbitrary number
 
-  private final int CRUISE_VELOCITY = 25; //in rotations per second
+  private final int CRUISE_VELOCITY = 50; //in rotations per second
   private final int ACCELERATION = 25; //in rotations per seconds squared
 
   
@@ -63,12 +63,12 @@ public class Climber extends SubsystemBase {
     motor.set(speed);
   } 
 
-  public boolean getrightlimitSwitch() {
-    return rightlimitSwitch.get(); 
-  }
+  // public boolean getrightlimitSwitch() {
+  //   return rightlimitSwitch.get(); 
+  // }
 
-  public boolean getleftlimitSwitch() {
-    return leftlimitSwitch.get();
+  public boolean getlimitSwitch() {
+    return limitSwitch.get();
   }
 
 
