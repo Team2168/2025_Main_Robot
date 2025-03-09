@@ -95,8 +95,8 @@ public final class Autos {
 
   public Command leftScoreSingleL4() {
     return Commands.sequence(
-        swerve.resetPosePathplanner("TwoCoralRightAuto1st"),
-        Commands.parallel(swerve.drivePath("TwoCoralRightAuto1st"), new DriveLiftHeights(lift, LiftHeights.L4.getValue()).withTimeout(1.5),
+        swerve.resetPosePathplanner("TwoCoralLeftAuto1st"),
+        Commands.parallel(swerve.drivePath("TwoCoralLeftAuto1st"), new DriveLiftHeights(lift, LiftHeights.L4.getValue()).withTimeout(1.5),
             new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()).withTimeout(2.0)
             .andThen(Commands.parallel(new DriveCoralFlywheel(flywheel, 0.5), new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon())))));
   }
@@ -107,5 +107,13 @@ public final class Autos {
         Commands.parallel(swerve.drivePath("TwoCoralRightAuto1st"), new DriveLiftHeights(lift, LiftHeights.L4.getValue()).withTimeout(1.5),
             new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()).withTimeout(2.0)
             .andThen(Commands.parallel(new DriveCoralFlywheel(flywheel, 0.5), new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon())))));
+  }
+
+  public Command rightScoreSingleL4TEST() {
+    return Commands.sequence(
+        swerve.resetPosePathplanner("TwoCoralRightAuto1st"),
+        Commands.parallel(swerve.drivePath("TwoCoralRightAuto1st"), new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()).withTimeout(2.0)
+            .alongWith(Commands.parallel(new WaitCommand(0.2).andThen(new DriveLiftHeights(lift, LiftHeights.L4.getValue()).withTimeout(1.5)))
+            .andThen(Commands.parallel(new DriveCoralFlywheel(flywheel, 0.5), new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()))))));
   }
 }
