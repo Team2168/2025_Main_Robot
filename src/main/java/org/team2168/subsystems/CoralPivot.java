@@ -53,7 +53,7 @@ public class CoralPivot extends SubsystemBase {
     INTAKE(18),
     ZERO(degreesToRot(5.0)),
     UPPER_ALGAE(degreesToRot(130.0)), //test algae angles
-    LOWER_ALGAE(degreesToRot(50.0));
+    LOWER_ALGAE(degreesToRot(70.0));
 
     public double pivotPosition;
 
