@@ -9,17 +9,20 @@ import java.util.function.DoubleSupplier;
 import org.team2168.subsystems.CoralFlywheel;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveFlywheelWithJoystick extends Command {
   /** Creates a new DriveFlywheelWithJoystick. */
   private CoralFlywheel coralFlywheel;
-  private DoubleSupplier yAxis;
+  // private DoubleSupplier yAxis;
+  private CommandXboxController controllerY;
 
-  public DriveFlywheelWithJoystick(CoralFlywheel coralFlywheel, DoubleSupplier yAxis) {
+  public DriveFlywheelWithJoystick(CoralFlywheel coralFlywheel, CommandXboxController controllerY) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.coralFlywheel = coralFlywheel;
-    this.yAxis = yAxis;
+    this.controllerY = controllerY;
+    // this.yAxis = yAxis;
 
     addRequirements(coralFlywheel);
   }
@@ -31,10 +34,10 @@ public class DriveFlywheelWithJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (yAxis.getAsDouble() < 0.15) {
+    if (controllerY.getRightY() < 0.15) {
       coralFlywheel.setFlywheelSpeed(0.15);
     }
-    else if (yAxis.getAsDouble() > -0.15) {
+    else if (controllerY.getRightY() > -0.15) {
       coralFlywheel.setFlywheelSpeed(-0.15);
     }
   }
