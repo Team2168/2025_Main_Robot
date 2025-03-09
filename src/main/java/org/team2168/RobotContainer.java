@@ -94,10 +94,10 @@ public class RobotContainer {
 
   private final Lift lift = new Lift();
 
-//   private final Climber climber = new Climber();
+  private final Climber climber = new Climber();
 
   private final LEDs leds = new LEDs();
-//   private final CageDetector cageDetector = new CageDetector();
+  private final CageDetector cageDetector = new CageDetector();
 
   private final algaeIntakePivot algaeintakePivot = new algaeIntakePivot();
   private final algaeIntakeWheel algaeintakeWheel = new algaeIntakeWheel();
@@ -164,11 +164,12 @@ public class RobotContainer {
     
         driverJoystick.back().onTrue(swerve.applyRequest(() -> new SwerveRequest.PointWheelsAt().withModuleDirection(Rotation2d.fromDegrees(180))));
     
-    // driverJoystick.a().whileTrue(new CloseClimber(climber));
+    driverJoystick.y()
+        .whileTrue(new DriveClimber(climber, ClimberConstants.CLOSING_SPEED));
 
     swerve.registerTelemetry(logger::telemeterize);
 
-    leds.setDefaultCommand(new LEDStatus(leds, coralFlywheel));
+    leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel));
 
     /* elevator and coral pivot reset button: sets elevator and coral pivot position to 0 */
     operatorJoystick.rightTrigger().
@@ -190,7 +191,7 @@ public class RobotContainer {
      * very slow speed depending on if the operator moves the left stick up or down
      */
     operatorJoystick.rightStick()
-        .whileTrue(new DriveFlywheelWithJoystick(coralFlywheel, () -> operatorJoystick.getRightY()));
+        .whileTrue(new DriveFlywheelWithJoystick(coralFlywheel, operatorJoystick));
 
     /* L1-L4 buttons: sets elevator and coral pivot to desired reef branch */
     operatorJoystick.a()
@@ -222,7 +223,7 @@ public class RobotContainer {
 
     /* intake algae button */
     operatorJoystick.leftBumper()
-        .onTrue(new setIntakePivotPosition(algaeintakePivot, -4.738))
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -4.538))
             .whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.7));
     
     /* shoot algae button */
@@ -236,7 +237,6 @@ public class RobotContainer {
     operatorJoystick.povLeft()
         .onTrue(new setIntakePivotPosition(algaeintakePivot, -7.5))
             .whileTrue(new setIntakeSpeed(algaeintakeWheel, -0.5)); 
-
     
     
     // testJoystick.povRight().whileTrue(new DriveClimber(climber, () -> ClimberConstants.OPENING_SPEED));
@@ -256,11 +256,10 @@ public class RobotContainer {
     // autoChooser.addOption("RightLeaveScoreTwoCoral", autos.rightTwoPiece());
     autoChooser.addOption("RightLeave", autos.rightLeave());
     autoChooser.addOption("LeftLeave", autos.leftLeave());
-    autoChooser.addOption("LeftLeaveScoreOneCoral", autos.leftScoreSingle());
-    autoChooser.addOption("RightLeaveScoreOneCoral", autos.rightScoreSingle());
-    autoChooser.addOption("RightScoreL4", autos.rightScoreSingleL4());
-    autoChooser.addOption("LeftScoreL4", autos.leftScoreSingleL4());
-    autoChooser.addOption("RightScoreL4TEST", autos.rightScoreSingleL4TEST());
+    autoChooser.addOption("L1LeftScore", autos.leftScoreSingle());
+    autoChooser.addOption("L1RightScore", autos.rightScoreSingle());
+    autoChooser.addOption("L4RightScore", autos.rightScoreSingleL4());
+    autoChooser.addOption("L4LeftScore", autos.leftScoreSingleL4());
     SmartDashboard.putData("Auto Mode", autoChooser);
     
   }
