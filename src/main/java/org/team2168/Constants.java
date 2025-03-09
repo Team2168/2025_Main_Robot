@@ -44,8 +44,8 @@ public final class Constants {
     public static final int INTAKE_WHEEL = 30;
     public static final int LEDs_ID = 0;
 
-    public static final int CAGE_DETECTOR_LS_1 = 8; // placeholder, prev is 0
-    public static final int CAGE_DETECTOR_LS_2 = 7; // placeholder, prev is 0
+    public static final int CAGE_DETECTOR_LS_1 = 8;
+    public static final int CAGE_DETECTOR_LS_2 = 7;
 
     public static final int CORAL_PIVOT_ID = 21;
     public static final int CORAL_FLYWHEEL_ID = 20;
@@ -65,9 +65,9 @@ public final class Constants {
   }
 
   public static class ClimberConstants {
-    public static final int CLIMBER_LIMIT_SWITCH = 9; // placeholder
-    public static final double CLOSING_SPEED = 0;
-    public static final double OPENING_SPEED = 0.4;
+    // public static final int CLIMBER_LIMIT_SWITCH = 9; // placeholder
+    public static final double CLOSING_SPEED = 0.2;
+    public static final double OPENING_SPEED = 0.0;
   }
 
   public static class PoseConstants {
