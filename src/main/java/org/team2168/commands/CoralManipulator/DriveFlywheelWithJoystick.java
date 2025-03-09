@@ -31,10 +31,10 @@ public class DriveFlywheelWithJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (yAxis.getAsDouble() > 0.15) {
+    if (yAxis.getAsDouble() < 0.15) {
       coralFlywheel.setFlywheelSpeed(0.15);
     }
-    else if (yAxis.getAsDouble() < -0.15) {
+    else if (yAxis.getAsDouble() > -0.15) {
       coralFlywheel.setFlywheelSpeed(-0.15);
     }
   }
