@@ -14,7 +14,7 @@ public class LEDs extends SubsystemBase {
   private static Spark leds = new Spark(CANDevices.LEDs_ID);
 
   public enum LED_COLOR {
-    RAINBOW(-0.97),
+    RAINBOW(-0.99),
     HOT_PINK(0.57),
     RED(0.61),
     GREEN(0.73),
