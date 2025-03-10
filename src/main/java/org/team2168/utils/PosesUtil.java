@@ -19,8 +19,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class PosesUtil {
     public static List<Pose2d> getScorePositionsFromAlliance(Alliance alliance) {
         List<Pose2d> allianceScoringPositions = alliance == Alliance.Red
-                ? Constants.PoseConstants.scorePoses.subList(0, 11)
-                : Constants.PoseConstants.scorePoses.subList(11, 22);
+                ? Constants.PoseConstants.scorePoses.subList(5, 11)
+                : Constants.PoseConstants.scorePoses.subList(16, 22);
 
         return allianceScoringPositions;
     }

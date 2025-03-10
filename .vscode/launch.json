@@ -6,6 +6,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Test",
+      "request": "launch",
+      "mainClass": "org.team2168.Test",
+      "projectName": "2025_Main_Robot"
+    },
+    {
+      "type": "java",
       "name": "TestJava",
       "request": "launch",
       "mainClass": "org.team2168.TestJava",
