@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
+import org.team2168.Constants.CameraConstants;
 import org.team2168.subsystems.SwerveDrivetrain.TunerConstants.TunerSwerveDrivetrain;
 import org.team2168.utils.LimelightHelpers;
 import org.team2168.utils.LimelightHelpers.LimelightResults;
@@ -174,6 +175,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        LimelightHelpers.setCameraPose_RobotSpace("", CameraConstants.FORWARD_OFFSET, CameraConstants.STRAFE_OFFSET,
+                CameraConstants.VERTICAL_OFFSET, CameraConstants.ROLL, CameraConstants.PITCH, CameraConstants.YAW);
     }
 
     /**

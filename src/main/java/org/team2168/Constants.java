@@ -89,4 +89,13 @@ public final class Constants {
     public static final double thetaMaxAcceleration = Units.degreesToRadians(180);
     public static final double SLOW_FACTOR = 7;
   }
+
+  public static class CameraConstants {
+    public static final double FORWARD_OFFSET = 0.0;
+    public static final double STRAFE_OFFSET = 0.0;
+    public static final double VERTICAL_OFFSET = 0.0;
+    public static final double YAW = 0.0;
+    public static final double PITCH = 0.0;
+    public static final double ROLL = 0.0;
+  }
 }

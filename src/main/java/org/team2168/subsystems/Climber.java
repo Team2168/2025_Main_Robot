@@ -55,6 +55,7 @@ public class Climber extends SubsystemBase {
 
   private final int CRUISE_VELOCITY = 50; //in rotations per second
   private final int ACCELERATION = 25; //in rotations per seconds squared
+  private final double GEAR_RATIO = 275.0;
 
   
   
