@@ -184,7 +184,7 @@ public class RobotContainer {
     operatorJoystick.rightBumper()
       .onTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()),
           new DriveLiftHeights(lift, LiftHeights.INTAKE.getValue()))))
-              .whileTrue(new DriveFlywheelUntilCoral(coralFlywheel, -0.65));
+              .whileTrue(new DriveFlywheelUntilCoral(coralFlywheel, -0.85));
 
     /*
      * control coral in intake buttons: (needs testing) sets the coral intake to a
