@@ -36,12 +36,12 @@ import io.github.oblarg.oblog.annotations.Log;
 public class Lift extends SubsystemBase {
 
   public enum LiftHeights {
-    BARGE(0.5148),
-    L2(0.1139),
-    L3(1.6365),
-    L4(5.27),
-    INTAKE(2.654),
-    ZERO(0.0);
+    BARGE(1.3148),
+    L2(0.9139),
+    L3(2.4365),
+    L4(5.9),
+    INTAKE(3.454),
+    ZERO(0.84);
 
     public double liftHeight;
 
@@ -96,7 +96,7 @@ public class Lift extends SubsystemBase {
   private final double PEAK_FORWARD_VOLTAGE = 16.0;
   private final double PEAK_REVERSE_VOLTAGE = -16.0;
 
-  private final double FORWARD_SOFT_LIMIT = 5.3;
+  private final double FORWARD_SOFT_LIMIT = 5.9;
   private final double REVERSE_SOFT_LIMIT = 0.0;
 
   private void configureMotors() {
