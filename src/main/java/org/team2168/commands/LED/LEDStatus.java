@@ -1,0 +1,55 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package org.team2168.commands.LED;
+
+import org.team2168.subsystems.CageDetector;
+import org.team2168.subsystems.CoralFlywheel;
+import org.team2168.subsystems.LEDs;
+import org.team2168.subsystems.LEDs.LED_COLOR;
+
+import edu.wpi.first.wpilibj2.command.Command;
+
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class LEDStatus extends Command {
+  /** Creates a new LEDStatus. */
+  private LEDs leds;
+  // private CageDetector cageDetector;
+  private CoralFlywheel coralFlywheel;
+
+  public LEDStatus(LEDs leds, CoralFlywheel coralFlywheel) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.leds = leds;
+    // this.cageDetector = cageDetector;
+    this.coralFlywheel = coralFlywheel;
+
+    addRequirements(leds);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    if (coralFlywheel.isCoralPresent()) {
+      leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
+    }
+    // else if (cageDetector.canClimb()) {
+    //   leds.setLEDColor(LED_COLOR.BLUE.getLEDColor());
+    // }
+    else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
+}
