@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -40,7 +41,7 @@ public class Climber extends SubsystemBase {
   private final double MAX_FORWARD_OUTPUT = 1.0;
   private final double MIN_FORWARD_OUTPUT = 0.0; //The motor is not allowed to move backwards 😱
 
-  private final double FORWARD_SOFT_LIMIT = 45.0;
+  private final double FORWARD_SOFT_LIMIT = 99.5;
   private final double REVERSE_SOFT_LIMIT = 0.0;
 
   private final double CURRENT_LIMIT = 70.0;
@@ -87,7 +88,7 @@ public class Climber extends SubsystemBase {
       Slot0Configs gains = new Slot0Configs();
       FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
       MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
-      SoftLimitConfig softLimitConfig = new SoftLimitConfig();
+      SoftwareLimitSwitchConfigs softLimitConfig = new SoftwareLimitSwitchConfigs();
   
       /* Motor Output Configurations */    
       motorConfigs.withInverted(INVERSION);
@@ -117,10 +118,10 @@ public class Climber extends SubsystemBase {
       motionMagicConfigs.withMotionMagicAcceleration(ACCELERATION);
 
       softLimitConfig
-        .forwardSoftLimit(FORWARD_SOFT_LIMIT)
-        .forwardSoftLimitEnabled(true)
-        .reverseSoftLimit(REVERSE_SOFT_LIMIT)
-        .reverseSoftLimitEnabled(true);
+        .withForwardSoftLimitThreshold(FORWARD_SOFT_LIMIT)
+        .withForwardSoftLimitEnable(true)
+        .withReverseSoftLimitThreshold(REVERSE_SOFT_LIMIT)
+        .withReverseSoftLimitEnable(true);
   
       /* Apply Configurations */
       motor.getConfigurator().apply(motorConfigs);
@@ -128,7 +129,15 @@ public class Climber extends SubsystemBase {
       motor.getConfigurator().apply(gains);
       motor.getConfigurator().apply(feedbackConfigs);
       motor.getConfigurator().apply(motionMagicConfigs);
+      motor.getConfigurator().apply(softLimitConfig);
         
+  }
+
+  public boolean atSoftLimit() {
+    if (motor.getPosition().getValueAsDouble() >= FORWARD_SOFT_LIMIT) {
+      return true;
+    }
+    else return false;
   }
 
   @Override
