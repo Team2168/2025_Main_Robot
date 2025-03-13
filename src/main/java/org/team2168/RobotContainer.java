@@ -260,6 +260,8 @@ public class RobotContainer {
     autoChooser.addOption("L1RightScore", autos.rightScoreSingle());
     autoChooser.addOption("L4RightScore", autos.rightScoreSingleL4());
     autoChooser.addOption("L4LeftScore", autos.leftScoreSingleL4());
+    autoChooser.addOption("L1LeftTwoPiece", autos.leftTwoPieceL1());
+    autoChooser.addOption("L1RightTwoPiece", autos.rightTwoPieceL1());
     SmartDashboard.putData("Auto Mode", autoChooser);
     
   }
