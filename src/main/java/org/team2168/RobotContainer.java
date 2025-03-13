@@ -169,7 +169,7 @@ public class RobotContainer {
 
     swerve.registerTelemetry(logger::telemeterize);
 
-    leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel));
+    leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel, climber));
 
     /* elevator and coral pivot reset button: sets elevator and coral pivot position to 0 */
     operatorJoystick.rightTrigger().
