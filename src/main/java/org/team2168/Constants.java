@@ -91,9 +91,9 @@ public final class Constants {
   }
 
   public static class CameraConstants {
-    public static final double FORWARD_OFFSET = 0.0;
-    public static final double STRAFE_OFFSET = 0.0;
-    public static final double VERTICAL_OFFSET = 0.0;
+    public static final double FORWARD_OFFSET = Units.inchesToMeters(8.0);
+    public static final double STRAFE_OFFSET = Units.inchesToMeters(11);
+    public static final double VERTICAL_OFFSET = Units.inchesToMeters(27);
     public static final double YAW = 0.0;
     public static final double PITCH = 0.0;
     public static final double ROLL = 0.0;

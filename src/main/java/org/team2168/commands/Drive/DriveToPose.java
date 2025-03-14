@@ -49,9 +49,9 @@ public class DriveToPose extends Command {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Set tolerances for the controllers
-    xController.setTolerance(0.05);
-    yController.setTolerance(0.05);
-    thetaController.setTolerance(Units.degreesToRadians(3l));
+    xController.setTolerance(0.1);
+    yController.setTolerance(0.1);
+    thetaController.setTolerance(Units.degreesToRadians(5));
 
     addRequirements(swerve);
   }
