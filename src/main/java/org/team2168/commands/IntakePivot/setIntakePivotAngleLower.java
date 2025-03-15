@@ -2,24 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package org.team2168.commands.CoralManipulator;
+package org.team2168.commands.IntakePivot;
 
-import org.team2168.subsystems.CoralFlywheel;
+import org.team2168.subsystems.algaeIntakePivot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveFlywheelUntilCoral extends Command {
-  /** Creates a new setIntakeSpeed. */
+public class setIntakePivotAngleLower extends Command {
 
-  private CoralFlywheel coralFlywheel;
-  private double speed;
+  private algaeIntakePivot iPivot;
 
-  public DriveFlywheelUntilCoral(CoralFlywheel coralFlywheel, double speed) {
+  public setIntakePivotAngleLower(algaeIntakePivot iPivot) {
+    this.iPivot = iPivot;
     // Use addRequirements() here to declare subsystem dependencies.
-    this.coralFlywheel = coralFlywheel;
-    this.speed = speed;
-    addRequirements(coralFlywheel);
+    addRequirements(iPivot);
   }
 
   // Called when the command is initially scheduled.
@@ -29,18 +26,16 @@ public class DriveFlywheelUntilCoral extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    coralFlywheel.setFlywheelSpeed(speed);
+    iPivot.setIntakePivotPosition(iPivot.getIntakePivotAngle() - 1.0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    coralFlywheel.setFlywheelSpeed(0.0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coralFlywheel.isCoralPresent();
+    return true;
   }
 }

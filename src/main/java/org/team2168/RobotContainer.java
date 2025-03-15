@@ -9,21 +9,17 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import org.team2168.Constants.Controllers;
-import org.team2168.Constants.OperatorConstants;
 import org.team2168.Constants.ClimberConstants;
 
 import org.team2168.commands.Autos;
 import org.team2168.commands.ExampleCommand;
 import org.team2168.commands.Climber.CloseClimber;
 import org.team2168.commands.Climber.DriveClimber;
-import org.team2168.commands.CoralManipulator.BumpCoralPivotAngleDown;
-import org.team2168.commands.CoralManipulator.BumpCoralPivotAngleUp;
 import org.team2168.commands.CoralManipulator.DriveCoralFlywheel;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilCoral;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
 import org.team2168.commands.CoralManipulator.DriveFlywheelWithJoystick;
-import org.team2168.commands.lift.DriveLift;
 import org.team2168.commands.lift.DriveLiftHeights;
 import org.team2168.commands.LED.LEDStatus;
 
@@ -46,16 +42,22 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.util.Units;
+import org.team2168.commands.IntakePivot.setIntakePivotAngleHigher;
+import org.team2168.commands.IntakePivot.setIntakePivotAngleLower;
+import org.team2168.commands.IntakePivot.setIntakePivotPosition;
+import org.team2168.commands.IntakeWheel.setIntakeSpeed;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.math.controller.LTVDifferentialDriveController;
+import org.team2168.subsystems.ExampleSubsystem;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import io.github.oblarg.oblog.Logger;
+
+import org.team2168.subsystems.algaeIntakeWheel;
+import org.team2168.subsystems.algaeIntakePivot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -80,6 +82,10 @@ public class RobotContainer {
   private final CoralPivot coralPivot = new CoralPivot();
 
   private final Lift lift = new Lift();
+
+  private final algaeIntakePivot algaeintakePivot = new algaeIntakePivot();
+  private final algaeIntakeWheel algaeintakeWheel = new algaeIntakeWheel();
+
   
   // private final Climber climber = new Climber(); 
 
@@ -117,6 +123,35 @@ public class RobotContainer {
   //bindings for moving the climber teehee
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+
+    new Trigger(m_exampleSubsystem::exampleCondition)
+        .onTrue(new ExampleCommand(m_exampleSubsystem));
+
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // cancelling on release.
+    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    testJoystick.leftBumper().whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.5)); //intake
+    testJoystick.pov(0).whileTrue(new setIntakePivotAngleHigher(algaeintakePivot)); //take off upper (up dpad)
+    testJoystick.pov(180).whileTrue(new setIntakePivotAngleLower(algaeintakePivot)); //take off lower (down dpad)
+
+    /* intake algae button */
+    operatorJoystick.leftBumper()
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -4.738))
+            .whileTrue(new setIntakeSpeed(algaeintakeWheel, 0.7));
+    
+    /* shoot algae button */
+    operatorJoystick.leftTrigger().whileTrue(new setIntakeSpeed(algaeintakeWheel, -1.0));
+
+    /* algae reset position button */
+    operatorJoystick.povRight()
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -0.5));
+
+    /* sets to intake cage */
+    operatorJoystick.povLeft()
+        .onTrue(new setIntakePivotPosition(algaeintakePivot, -7.5))
+            .whileTrue(new setIntakeSpeed(algaeintakeWheel, -0.5)); 
+
     // new Trigger(m_exampleSubsystem::exampleCondition)
     // .onTrue(new ExampleCommand(m_exampleSubsystem));
 
@@ -203,11 +238,6 @@ public class RobotContainer {
     
     testJoystick.rightBumper().whileTrue(new DriveFlywheelUntilCoral(coralFlywheel, -0.6));
     testJoystick.leftBumper().whileTrue(new DriveFlywheelUntilNoCoral(coralFlywheel, 0.6));
-
-    testJoystick.rightTrigger().onTrue(new BumpCoralPivotAngleUp(coralPivot)); // test
-    testJoystick.leftTrigger().onTrue(new BumpCoralPivotAngleDown(coralPivot));
-
-    testJoystick.rightStick().whileTrue(new DriveLift(lift, () -> testJoystick.getRightY()));
     
   }
 
