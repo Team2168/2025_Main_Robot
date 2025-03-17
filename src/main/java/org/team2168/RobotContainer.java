@@ -171,6 +171,12 @@ public class RobotContainer {
 
     leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel, climber));
 
+    /*
+     * control coral in intake buttons: (needs testing) sets the coral intake to a
+     * very slow speed depending on if the operator moves the right stick up or down
+     */
+    coralFlywheel.setDefaultCommand(new DriveFlywheelWithJoystick(coralFlywheel, operatorJoystick));
+
     /* elevator and coral pivot reset button: sets elevator and coral pivot position to 0 */
     operatorJoystick.rightTrigger().
         onTrue(Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.ZERO.getPivotPositon()),
@@ -185,13 +191,6 @@ public class RobotContainer {
       .onTrue((Commands.parallel(new SetCoralPivotAngle(coralPivot, CORAL_PIVOT_POSITION.INTAKE.getPivotPositon()),
           new DriveLiftHeights(lift, LiftHeights.INTAKE.getValue()))))
               .whileTrue(new DriveFlywheelUntilCoral(coralFlywheel, -0.85));
-
-    /*
-     * control coral in intake buttons: (needs testing) sets the coral intake to a
-     * very slow speed depending on if the operator moves the left stick up or down
-     */
-    operatorJoystick.rightStick()
-        .whileTrue(new DriveFlywheelWithJoystick(coralFlywheel, operatorJoystick));
 
     /* L1-L4 buttons: sets elevator and coral pivot to desired reef branch */
     operatorJoystick.a()

@@ -4,8 +4,6 @@
 
 package org.team2168.commands.CoralManipulator;
 
-import java.util.function.DoubleSupplier;
-
 import org.team2168.subsystems.CoralFlywheel;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,30 +13,32 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class DriveFlywheelWithJoystick extends Command {
   /** Creates a new DriveFlywheelWithJoystick. */
   private CoralFlywheel coralFlywheel;
-  // private DoubleSupplier yAxis;
   private CommandXboxController controllerY;
 
   public DriveFlywheelWithJoystick(CoralFlywheel coralFlywheel, CommandXboxController controllerY) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.coralFlywheel = coralFlywheel;
     this.controllerY = controllerY;
-    // this.yAxis = yAxis;
 
     addRequirements(coralFlywheel);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (controllerY.getRightY() < 0.15) {
-      coralFlywheel.setFlywheelSpeed(0.15);
+    if (controllerY.getRightY() < 0.5 && controllerY.getRightY() > -0.5) {
+      coralFlywheel.setFlywheelSpeed(0.0);
     }
-    else if (controllerY.getRightY() > -0.15) {
+    else if (controllerY.axisGreaterThan(5, 0.5).getAsBoolean()) {
       coralFlywheel.setFlywheelSpeed(-0.15);
+    }
+    else if (controllerY.axisLessThan(5, -0.5).getAsBoolean()) {
+      coralFlywheel.setFlywheelSpeed(0.15);
     }
   }
 
