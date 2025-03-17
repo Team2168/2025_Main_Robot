@@ -58,9 +58,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-    private SlewRateLimiter xLimiter = new SlewRateLimiter(8.0);
-    private SlewRateLimiter yLimiter = new SlewRateLimiter(8.0);
-    private SlewRateLimiter rotLimiter = new SlewRateLimiter(Units.degreesToRadians(1000));
+    private SlewRateLimiter xLimiter = new SlewRateLimiter(10.0);
+    private SlewRateLimiter yLimiter = new SlewRateLimiter(10.0);
+    private SlewRateLimiter rotLimiter = new SlewRateLimiter(Units.degreesToRadians(1350));
     private SlewRateLimiter xSlowLimiter = new SlewRateLimiter(20);
     private SlewRateLimiter ySlowLimiter = new SlewRateLimiter(20);
     private SlewRateLimiter slowRotLimiter = new SlewRateLimiter(Units.degreesToRadians(5000));
