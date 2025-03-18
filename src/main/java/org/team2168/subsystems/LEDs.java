@@ -19,7 +19,9 @@ public class LEDs extends SubsystemBase {
     RED(0.61),
     GREEN(0.73),
     BLUE(0.87),
-    TWINKLES_RAINBOW(-0.55);
+    PURPLE(0.91),
+    TWINKLES_RAINBOW(-0.55),
+    CONFETTI(-0.73);
   
 
     public double color;
