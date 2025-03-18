@@ -133,13 +133,6 @@ public class Climber extends SubsystemBase {
         
   }
 
-  public boolean atSoftLimit() {
-    if (motor.getPosition().getValueAsDouble() >= FORWARD_SOFT_LIMIT) {
-      return true;
-    }
-    else return false;
-  }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

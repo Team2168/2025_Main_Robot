@@ -18,14 +18,12 @@ public class LEDStatus extends Command {
   private LEDs leds;
   private CageDetector cageDetector;
   private CoralFlywheel coralFlywheel;
-  private Climber climber;
 
-  public LEDStatus(LEDs leds, CageDetector cageDetector, CoralFlywheel coralFlywheel, Climber climber) {
+  public LEDStatus(LEDs leds, CageDetector cageDetector, CoralFlywheel coralFlywheel) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.leds = leds;
     this.coralFlywheel = coralFlywheel;
     this.cageDetector = cageDetector;
-    this.climber = climber;
 
     addRequirements(leds);
   }
@@ -41,9 +39,6 @@ public class LEDStatus extends Command {
       leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
     }
     else if (cageDetector.canClimb()) {
-      leds.setLEDColor(LED_COLOR.BLUE.getLEDColor());
-    }
-    else if (climber.atSoftLimit()) {
       leds.setLEDColor(LED_COLOR.TWINKLES_RAINBOW.getLEDColor());
     }
     else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
