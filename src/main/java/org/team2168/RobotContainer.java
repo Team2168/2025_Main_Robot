@@ -169,7 +169,7 @@ public class RobotContainer {
 
     swerve.registerTelemetry(logger::telemeterize);
 
-    leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel, climber));
+    leds.setDefaultCommand(new LEDStatus(leds, cageDetector, coralFlywheel));
 
     /*
      * control coral in intake buttons: (needs testing) sets the coral intake to a

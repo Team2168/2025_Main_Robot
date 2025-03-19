@@ -41,7 +41,7 @@ public class Climber extends SubsystemBase {
   private final double MAX_FORWARD_OUTPUT = 1.0;
   private final double MIN_FORWARD_OUTPUT = 0.0; //The motor is not allowed to move backwards 😱
 
-  private final double FORWARD_SOFT_LIMIT = 99.5;
+  private final double FORWARD_SOFT_LIMIT = 145.0;
   private final double REVERSE_SOFT_LIMIT = 0.0;
 
   private final double CURRENT_LIMIT = 70.0;
@@ -56,7 +56,7 @@ public class Climber extends SubsystemBase {
 
   private final int CRUISE_VELOCITY = 50; //in rotations per second
   private final int ACCELERATION = 25; //in rotations per seconds squared
-  private final double GEAR_RATIO = 275.0;
+  private final double GEAR_RATIO = 342.0;
 
   
   
@@ -119,7 +119,7 @@ public class Climber extends SubsystemBase {
 
       softLimitConfig
         .withForwardSoftLimitThreshold(FORWARD_SOFT_LIMIT)
-        .withForwardSoftLimitEnable(true)
+        .withForwardSoftLimitEnable(false)
         .withReverseSoftLimitThreshold(REVERSE_SOFT_LIMIT)
         .withReverseSoftLimitEnable(true);
   
@@ -131,13 +131,6 @@ public class Climber extends SubsystemBase {
       motor.getConfigurator().apply(motionMagicConfigs);
       motor.getConfigurator().apply(softLimitConfig);
         
-  }
-
-  public boolean atSoftLimit() {
-    if (motor.getPosition().getValueAsDouble() >= FORWARD_SOFT_LIMIT) {
-      return true;
-    }
-    else return false;
   }
 
   @Override
