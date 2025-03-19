@@ -91,11 +91,18 @@ public final class Constants {
   }
 
   public static class CameraConstants {
-    public static final double FORWARD_OFFSET = Units.inchesToMeters(8.0);
-    public static final double STRAFE_OFFSET = Units.inchesToMeters(11);
-    public static final double VERTICAL_OFFSET = Units.inchesToMeters(27);
-    public static final double YAW = 0.0;
-    public static final double PITCH = 0.0;
-    public static final double ROLL = 0.0;
+    public static final double FRONT_HIGH_FORWARD_OFFSET = Units.inchesToMeters(8.0);
+    public static final double FRONT_HIGH_STRAFE_OFFSET = Units.inchesToMeters(10);
+    public static final double FRONT_HIGH_VERTICAL_OFFSET = Units.inchesToMeters(29);
+    public static final double FRONT_HIGH_YAW = 0.0;
+    public static final double FRONT_HIGH_PITCH = 0.0;
+    public static final double FRONT_HIGH_ROLL = 0.0;
+
+    public static final double FRONT_LOW_FORWARD_OFFSET = Units.inchesToMeters(10);
+    public static final double FRONT_LOW_STRAFE_OFFSET = Units.inchesToMeters(3.5);
+    public static final double FRONT_LOW_VERTICAL_OFFSET = Units.inchesToMeters(3);
+    public static final double FRONT_LOW_YAW = 0.0;
+    public static final double FRONT_LOW_PITCH = 0.0;
+    public static final double FRONT_LOW_ROLL = 0.0;
   }
 }

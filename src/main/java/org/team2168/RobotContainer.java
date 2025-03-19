@@ -145,17 +145,17 @@ public class RobotContainer {
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
   
-    // driverJoystick.leftBumper().onTrue(
-    //     new DriveToPose(() -> swerve.getState().Pose,
-    //         () -> PosesUtil.transformPoseDirection(true, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
-    //             PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
-    //         swerve, () -> swerve.getState().Speeds)).onChange(Commands.none());
+    driverJoystick.leftBumper().onTrue(
+        new DriveToPose(() -> swerve.getState().Pose,
+            () -> PosesUtil.transformPoseDirection(true, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
+                PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
+            swerve, () -> swerve.getState().Speeds));
 
-    // driverJoystick.rightBumper().onTrue(
-    //     new DriveToPose(() -> swerve.getState().Pose,
-    //         () -> PosesUtil.transformPoseDirection(false, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
-    //             PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
-    //         swerve, () -> swerve.getState().Speeds)).onChange(Commands.none());
+    driverJoystick.rightBumper().onTrue(
+        new DriveToPose(() -> swerve.getState().Pose,
+            () -> PosesUtil.transformPoseDirection(false, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
+                PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get()))),
+            swerve, () -> swerve.getState().Speeds));
 
     swerve.setDefaultCommand(
         swerve.runDriveWithJoystick(driverJoystick, MaxSpeed, MaxAngularRate));

@@ -30,6 +30,7 @@ public class DriveToPose extends Command {
   ProfiledPIDController thetaController; // Tune
   SwerveRequest.ApplyRobotSpeeds robotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
   Swerve swerve;
+  boolean finished = false;
 
   public DriveToPose(Supplier<Pose2d> robotPose, Supplier<Pose2d> targetPose, Swerve swerve,
       Supplier<ChassisSpeeds> currentSpeeds) {
@@ -69,6 +70,7 @@ public class DriveToPose extends Command {
   @Override
   public void execute() {
 
+    // System.out.println((xController.atGoal() && yController.atGoal() && thetaController.atGoal()));
     Pose2d goalPose = targetPose.get();
     Pose2d currentPose = robotPose.get();
 
@@ -86,6 +88,8 @@ public class DriveToPose extends Command {
     swerve.setControl(robotSpeeds.withSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(
         xSpeed, ySpeed,
         omegaSpeed, currentPose.getRotation())));
+    
+     
   }
 
   @Override
@@ -95,10 +99,6 @@ public class DriveToPose extends Command {
 
   @Override
   public boolean isFinished() {
-    // Check if the controllers have reached their goals
-    boolean finished = xController.atGoal() && yController.atGoal() && thetaController.atGoal();
-    if (finished) {
-    }
-    return finished;
+   return xController.atGoal() && yController.atGoal() && thetaController.atGoal();
   }
 }

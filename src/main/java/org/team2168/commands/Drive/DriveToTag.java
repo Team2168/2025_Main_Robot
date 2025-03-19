@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,6 +34,7 @@ public class DriveToTag extends Command {
   SwerveRequest.ApplyRobotSpeeds robotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
   Swerve swerve;
   boolean left;
+  boolean finished = false;
 
   public DriveToTag(Supplier<Pose2d> robotPose, Swerve swerve,
       Supplier<ChassisSpeeds> currentSpeeds, boolean left) {
@@ -61,23 +63,29 @@ public class DriveToTag extends Command {
   public void initialize() {
     Pose2d currentPose = robotPose.get();
     thetaController.reset(currentPose.getRotation().getRadians());
+    xController.setGoal(new State(0, 0));
+    yController.setGoal(new State(left ? 1.75 : -1.75, 0));
+    thetaController.setGoal(new State(0, 0));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose2d currentPose = robotPose.get();
-    Pose2d target = LimelightHelpers.getTargetPose3d_CameraSpace("").toPose2d();
-    Pose2d scorePose = left
-        ? target.transformBy(new Transform2d(new Translation2d(0.0, 1.75), target.getRotation().unaryMinus()))
-        : target.transformBy(new Transform2d(new Translation2d(0.0, -1.75), target.getRotation().unaryMinus()));
+    if (LimelightHelpers.getTV("frontes") == true) {
+      if (xController.atGoal() && yController.atGoal() && thetaController.atGoal()) {
+        finished = true;
+      }
+      Pose2d tagRelativePose = LimelightHelpers.getBotPose3d_TargetSpace("frontes").toPose2d();
 
-    var xSpeed = xController.calculate(scorePose.getX());
-    var ySpeed = yController.calculate(scorePose.getY());
-    var thetaSpeed = thetaController.calculate(scorePose.getRotation().getRadians());
+      var xSpeed = xController.calculate(tagRelativePose.getX());
+      var ySpeed = -yController.calculate(tagRelativePose.getY());
+      var thetaSpeed = -thetaController.calculate(tagRelativePose.getRotation().getRadians());
 
-    var targetSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
-    swerve.setControl(robotSpeeds.withSpeeds(targetSpeeds));
+      var targetSpeeds = new ChassisSpeeds(xSpeed, ySpeed, thetaSpeed);
+      swerve.setControl(robotSpeeds.withSpeeds(targetSpeeds));
+    } else {
+      finished = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -89,7 +97,7 @@ public class DriveToTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return xController.atGoal() && yController.atGoal() && thetaController.atGoal();
+    return finished;
 
   }
 }
