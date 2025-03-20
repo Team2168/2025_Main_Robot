@@ -402,7 +402,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     private void processPoseEstimate(PoseEstimate poseEstimate) {
-        if (LimelightHelpers.validPoseEstimate(poseEstimate) && poseEstimate.rawFiducials[0].ambiguity < 0.25) {
+        if (LimelightHelpers.validPoseEstimate(poseEstimate) && poseEstimate.rawFiducials[0].ambiguity < 0.2) {
             Pose2d visionEstimate = poseEstimate.pose;
             addVisionMeasurement(visionEstimate, poseEstimate.timestampSeconds);
             scaleStdDevs(poseEstimate, 0.5);
@@ -430,23 +430,15 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
          * This ensures driving behavior doesn't change until an explicit disable event
          * occurs during testing.
          */
-        LimelightHelpers.SetRobotOrientation("", getPigeon2().getYaw().getValueAsDouble(), 0.0, 0.0, 0.0, 0.0, 0.0);
+        double yaw = this.getPigeon2().getYaw().getValueAsDouble();
+        LimelightHelpers.SetRobotOrientation("limelight-frontes", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+        LimelightHelpers.SetRobotOrientation("limelight-central", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+
         PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-frontes");
         PoseEstimate poseEstimateTwo = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-central");
         processPoseEstimate(poseEstimate);
         processPoseEstimate(poseEstimateTwo);
-        // if (LimelightHelpers.validPoseEstimate(poseEstimate) &&
-        // poseEstimate.rawFiducials[0].ambiguity < 0.25) {
-        // setStateStdDevs(VecBuilder.fill(0.01, 0.01, 10000));
-        // Pose2d visionEstimate = poseEstimate.pose;
-        // addVisionMeasurement(visionEstimate, poseEstimate.timestampSeconds);
-        // }
-        // if (LimelightHelpers.validPoseEstimate(poseEstimateTwo) &&
-        // poseEstimateTwo.rawFiducials[0].ambiguity < 0.25) {
-        // setStateStdDevs(VecBuilder.fill(0.01, 0.01, 10000));
-        // Pose2d visionEstimateTwo = poseEstimateTwo.pose;
-        // addVisionMeasurement(visionEstimateTwo, poseEstimateTwo.timestampSeconds);
-        // }
+
         SmartDashboard.putNumber("cancoder 0", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("cancoder 1", getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());

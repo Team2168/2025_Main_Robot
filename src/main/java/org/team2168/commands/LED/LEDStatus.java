@@ -36,7 +36,7 @@ public class LEDStatus extends Command {
   @Override
   public void execute() {
     if (coralFlywheel.isCoralPresent()) {
-      leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
+      leds.setLEDColor(LED_COLOR.HOT_PINK.getLEDColor());
     }
     else if (cageDetector.canClimb()) {
       leds.setLEDColor(LED_COLOR.TWINKLES_RAINBOW.getLEDColor());
