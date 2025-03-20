@@ -39,10 +39,10 @@ public class DriveToPose extends Command {
     this.targetPose = targetPose;
     this.currentSpeeds = currentSpeeds;
 
-    xController = new ProfiledPIDController(1, 0, 0,
+    xController = new ProfiledPIDController(0.5, 0, 0,
         new TrapezoidProfile.Constraints(Constants.DrivePIDConstants.xMaxVelocity,
             Constants.DrivePIDConstants.yMaxAcceleration));
-    yController = new ProfiledPIDController(1, 0, 0,
+    yController = new ProfiledPIDController(0.5, 0, 0,
         new TrapezoidProfile.Constraints(Constants.DrivePIDConstants.yMaxVelocity,
             Constants.DrivePIDConstants.yMaxAcceleration));
     thetaController = new ProfiledPIDController(4, 0.0, 0.02, new TrapezoidProfile.Constraints(

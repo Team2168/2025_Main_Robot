@@ -402,10 +402,11 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     private void processPoseEstimate(PoseEstimate poseEstimate) {
-        if (LimelightHelpers.validPoseEstimate(poseEstimate) && poseEstimate.rawFiducials[0].ambiguity < 0.2) {
+        if (LimelightHelpers.validPoseEstimate(poseEstimate) && poseEstimate.rawFiducials[0].ambiguity < 0.2
+                && Math.abs(getPigeon2().getAngularVelocityZWorld().getValueAsDouble()) <= 275) {
             Pose2d visionEstimate = poseEstimate.pose;
             addVisionMeasurement(visionEstimate, poseEstimate.timestampSeconds);
-            scaleStdDevs(poseEstimate, 0.5);
+            // scaleStdDevs(poseEstimate, 0.5);
         }
     }
 
@@ -434,8 +435,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         LimelightHelpers.SetRobotOrientation("limelight-frontes", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
         LimelightHelpers.SetRobotOrientation("limelight-central", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-        PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-frontes");
-        PoseEstimate poseEstimateTwo = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-central");
+        PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-frontes");
+        PoseEstimate poseEstimateTwo = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-central");
         processPoseEstimate(poseEstimate);
         processPoseEstimate(poseEstimateTwo);
 
@@ -443,6 +444,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         SmartDashboard.putNumber("cancoder 1", getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("cancoder 3", getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("angularZSpeed", getPigeon2().getAngularVelocityZWorld().getValueAsDouble());
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(
