@@ -31,8 +31,8 @@ public class PosesUtil {
 
     public static Pose2d transformPoseDirection(boolean leftSide, Pose2d scoringPosition) {
         Pose2d reefSideScoringPosition = leftSide
-                ? scoringPosition.transformBy(new Transform2d(new Translation2d(0, 0.175), new Rotation2d()))
-                : scoringPosition.transformBy(new Transform2d(new Translation2d(0, -0.175), new Rotation2d()));
+                ? scoringPosition.transformBy(new Transform2d(new Translation2d(0, 0.2), new Rotation2d()))
+                : scoringPosition.transformBy(new Transform2d(new Translation2d(0, -0.2), new Rotation2d()));
         return reefSideScoringPosition;
     }
 }

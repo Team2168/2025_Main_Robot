@@ -81,10 +81,10 @@ public final class Constants {
   }
 
   public static class DrivePIDConstants {
-    public static final double xMaxVelocity = 4;
-    public static final double xMaxAcceleration = 2;
-    public static final double yMaxVelocity = 4;
-    public static final double yMaxAcceleration = 2;
+    public static final double xMaxVelocity = 3;
+    public static final double xMaxAcceleration = 1;
+    public static final double yMaxVelocity = 3;
+    public static final double yMaxAcceleration = 1;
     public static final double thetaMaxVelocity = Units.degreesToRadians(360);
     public static final double thetaMaxAcceleration = Units.degreesToRadians(180);
     public static final double SLOW_FACTOR = 7;
