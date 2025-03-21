@@ -21,6 +21,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -78,6 +80,10 @@ public final class Constants {
     public static final List<Pose2d> scorePoses = tagPoses.stream()
         .map(tagPose -> tagPose.transformBy(new Transform2d(new Translation2d(0.63865, 0), Rotation2d.fromDegrees(180))))
         .collect(Collectors.toList());
+
+      public static List<Pose2d> allianceScoringPositions = DriverStation.getAlliance().get() == Alliance.Red
+                ? scorePoses.subList(5, 11)
+                : scorePoses.subList(16, 22);
   }
 
   public static class DrivePIDConstants {

@@ -18,11 +18,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 /** Add your docs here. */
 public class PosesUtil {
     public static List<Pose2d> getScorePositionsFromAlliance(Alliance alliance) {
-        List<Pose2d> allianceScoringPositions = alliance == Alliance.Red
-                ? Constants.PoseConstants.scorePoses.subList(5, 11)
-                : Constants.PoseConstants.scorePoses.subList(16, 22);
 
-        return allianceScoringPositions;
+        return Constants.PoseConstants.allianceScoringPositions;
     }
 
     public static Pose2d findNearestScoringPose(Pose2d robotPose, List<Pose2d> scoringPoses) {
@@ -31,7 +28,7 @@ public class PosesUtil {
 
     public static Pose2d transformPoseDirection(boolean leftSide, Pose2d scoringPosition) {
         Pose2d reefSideScoringPosition = leftSide
-                ? scoringPosition.transformBy(new Transform2d(new Translation2d(0, 0.2), new Rotation2d()))
+                ? scoringPosition.transformBy(new Transform2d(new Translation2d(0, 0.3), new Rotation2d()))
                 : scoringPosition.transformBy(new Transform2d(new Translation2d(0, -0.2), new Rotation2d()));
         return reefSideScoringPosition;
     }
