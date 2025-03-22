@@ -6,10 +6,12 @@ package org.team2168.commands.lift;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import org.team2168.subsystems.Lift;
+
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveLiftHeights extends Command {
   private Lift lift;
   private double liftPosition;
+  private final double TOLERANCE = 0.1;
 
   /** Creates a new DriveLiftTest. */
   public DriveLiftHeights(Lift lift, double liftPosition) {
@@ -21,7 +23,8 @@ public class DriveLiftHeights extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -31,11 +34,18 @@ public class DriveLiftHeights extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    // lift.setPercentOutput(0.0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    if (lift.getPostionRotations() >= liftPosition - TOLERANCE
+        && lift.getPostionRotations() <= liftPosition + TOLERANCE) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

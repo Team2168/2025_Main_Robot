@@ -62,7 +62,7 @@ public final class Autos {
                                 LiftHeights.BARGE.liftHeight))
                         .andThen(new DriveFlywheelUntilNoCoral(flywheel, 0.5)),
                 Commands.parallel(swerve.drivePath("TwoCoralRightAuto2nd"),
-                        new DriveCoralAngleAndElevator(pivot, lift, CORAL_PIVOT_POSITION.BARGE.pivotPosition,
+                        new DriveCoralAngleAndElevator(pivot, lift, CORAL_PIVOT_POSITION.INTAKE.pivotPosition,
                                 LiftHeights.INTAKE.liftHeight).beforeStarting(new WaitCommand(1.0)))
                         .andThen(new DriveFlywheelUntilCoral(flywheel, 0.5)),
                 Commands

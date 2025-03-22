@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class SetCoralPivotAngle extends Command {
   private CoralPivot coralPivot;
   private double coralPivPosition;
-  private double tolerance = 0.5;
+  private double tolerance = 0.01;
 
   /** Creates a new SetCoralPivotAngle. */
   public SetCoralPivotAngle(CoralPivot coralPivot, double coralPivPosition) {
@@ -41,7 +41,7 @@ public class SetCoralPivotAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (coralPivot.getCoralPivotPositionRot() >= coralPivPosition - tolerance && coralPivot.getCoralPivotPositionRot() <= coralPivPosition + tolerance) {
+    if (coralPivot.getCoralPivotPositionDegrees() >= coralPivPosition - tolerance && coralPivot.getCoralPivotPositionDegrees() <= coralPivPosition + tolerance) {
       return true;
     } 
     else

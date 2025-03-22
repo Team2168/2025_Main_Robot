@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /** Add your docs here. */
@@ -28,8 +29,8 @@ public class PosesUtil {
 
     public static Pose2d transformPoseDirection(boolean leftSide, Pose2d scoringPosition) {
         Pose2d reefSideScoringPosition = leftSide
-                ? scoringPosition.transformBy(new Transform2d(new Translation2d(0, 0.3), new Rotation2d()))
-                : scoringPosition.transformBy(new Transform2d(new Translation2d(0, -0.2), new Rotation2d()));
+                ? scoringPosition.transformBy(new Transform2d(new Translation2d(0, Units.inchesToMeters(9.2175)), new Rotation2d()))
+                : scoringPosition.transformBy(new Transform2d(new Translation2d(0, -Units.inchesToMeters(9.0475)), new Rotation2d()));
         return reefSideScoringPosition;
     }
 }

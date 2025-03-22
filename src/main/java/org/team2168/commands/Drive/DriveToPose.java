@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -39,10 +40,10 @@ public class DriveToPose extends Command {
     this.targetPose = targetPose;
     this.currentSpeeds = currentSpeeds;
 
-    xController = new ProfiledPIDController(1, 0, 0,
+    xController = new ProfiledPIDController(0.8, 0, 0,
         new TrapezoidProfile.Constraints(Constants.DrivePIDConstants.xMaxVelocity,
             Constants.DrivePIDConstants.yMaxAcceleration));
-    yController = new ProfiledPIDController(1, 0, 0,
+    yController = new ProfiledPIDController(0.8, 0, 0,
         new TrapezoidProfile.Constraints(Constants.DrivePIDConstants.yMaxVelocity,
             Constants.DrivePIDConstants.yMaxAcceleration));
     thetaController = new ProfiledPIDController(4, 0.0, 0.02, new TrapezoidProfile.Constraints(
@@ -50,9 +51,9 @@ public class DriveToPose extends Command {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     // Set tolerances for the controllers
-    xController.setTolerance(0.1);
-    yController.setTolerance(0.1);
-    thetaController.setTolerance(Units.degreesToRadians(5));
+    xController.setTolerance(0.01);
+    yController.setTolerance(0.01);
+    thetaController.setTolerance(Units.degreesToRadians(1));
 
     addRequirements(swerve);
   }
@@ -88,6 +89,8 @@ public class DriveToPose extends Command {
     swerve.setControl(robotSpeeds.withSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(
         xSpeed, ySpeed,
         omegaSpeed, currentPose.getRotation())));
+
+        SmartDashboard.putNumberArray("error: ", new double[] {xController.getPositionError(), yController.getPositionError(), thetaController.getPositionError()});
     
      
   }

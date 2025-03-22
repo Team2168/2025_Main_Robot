@@ -180,7 +180,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
+        setStateStdDevs(VecBuilder.fill(0.1,0.1,10000));
         LimelightHelpers.setCameraPose_RobotSpace("limelight-frontes", CameraConstants.FRONT_HIGH_FORWARD_OFFSET,
                 CameraConstants.FRONT_HIGH_STRAFE_OFFSET,
                 CameraConstants.FRONT_HIGH_VERTICAL_OFFSET, CameraConstants.FRONT_HIGH_ROLL,
@@ -431,6 +431,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
          * This ensures driving behavior doesn't change until an explicit disable event
          * occurs during testing.
          */
+        setStateStdDevs(VecBuilder.fill(0.1,0.1,99999999));
         double yaw = this.getPigeon2().getYaw().getValueAsDouble();
         LimelightHelpers.SetRobotOrientation("limelight-frontes", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
         LimelightHelpers.SetRobotOrientation("limelight-central", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -445,6 +446,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("cancoder 3", getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble());
         SmartDashboard.putNumber("angularZSpeed", getPigeon2().getAngularVelocityZWorld().getValueAsDouble());
+        SmartDashboard.putNumber("Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
+
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
                 setOperatorPerspectiveForward(

@@ -87,9 +87,9 @@ public final class Constants {
   }
 
   public static class DrivePIDConstants {
-    public static final double xMaxVelocity = 3;
+    public static final double xMaxVelocity = 2;
     public static final double xMaxAcceleration = 1;
-    public static final double yMaxVelocity = 3;
+    public static final double yMaxVelocity = 2;
     public static final double yMaxAcceleration = 1;
     public static final double thetaMaxVelocity = Units.degreesToRadians(360);
     public static final double thetaMaxAcceleration = Units.degreesToRadians(180);
@@ -97,16 +97,16 @@ public final class Constants {
   }
 
   public static class CameraConstants {
-    public static final double FRONT_HIGH_FORWARD_OFFSET = Units.inchesToMeters(8.0);
-    public static final double FRONT_HIGH_STRAFE_OFFSET = Units.inchesToMeters(10);
-    public static final double FRONT_HIGH_VERTICAL_OFFSET = Units.inchesToMeters(29);
+    public static final double FRONT_HIGH_FORWARD_OFFSET = Units.inchesToMeters(8.9375);
+    public static final double FRONT_HIGH_STRAFE_OFFSET = Units.inchesToMeters(10.4375);
+    public static final double FRONT_HIGH_VERTICAL_OFFSET = Units.inchesToMeters(29.125+3.625);
     public static final double FRONT_HIGH_YAW = 0.0;
     public static final double FRONT_HIGH_PITCH = 0.0;
     public static final double FRONT_HIGH_ROLL = 0.0;
 
     public static final double FRONT_LOW_FORWARD_OFFSET = Units.inchesToMeters(10);
-    public static final double FRONT_LOW_STRAFE_OFFSET = Units.inchesToMeters(3.5);
-    public static final double FRONT_LOW_VERTICAL_OFFSET = Units.inchesToMeters(3);
+    public static final double FRONT_LOW_STRAFE_OFFSET = Units.inchesToMeters(-3.5);
+    public static final double FRONT_LOW_VERTICAL_OFFSET = Units.inchesToMeters(3+3.625);
     public static final double FRONT_LOW_YAW = 0.0;
     public static final double FRONT_LOW_PITCH = 0.0;
     public static final double FRONT_LOW_ROLL = 0.0;
