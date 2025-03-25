@@ -29,7 +29,7 @@ public class PosesUtil {
 
     public static Pose2d transformPoseDirection(boolean leftSide, Pose2d scoringPosition) {
         Pose2d reefSideScoringPosition = leftSide
-                ? scoringPosition.transformBy(new Transform2d(new Translation2d(0, Units.inchesToMeters(9.2175)), new Rotation2d()))
+                ? scoringPosition.transformBy(new Transform2d(new Translation2d(0, Units.inchesToMeters(6.1175)), new Rotation2d()))
                 : scoringPosition.transformBy(new Transform2d(new Translation2d(0, -Units.inchesToMeters(9.0475)), new Rotation2d()));
         return reefSideScoringPosition;
     }

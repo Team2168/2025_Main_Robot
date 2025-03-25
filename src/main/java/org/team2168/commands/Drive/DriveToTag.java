@@ -71,11 +71,11 @@ public class DriveToTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (LimelightHelpers.getTV("frontes") == true) {
+    if (LimelightHelpers.getTV("limelight-central") == true) {
       if (xController.atGoal() && yController.atGoal() && thetaController.atGoal()) {
         finished = true;
       }
-      Pose2d tagRelativePose = LimelightHelpers.getBotPose3d_TargetSpace("frontes").toPose2d();
+      Pose2d tagRelativePose = LimelightHelpers.getBotPose3d_TargetSpace("limelight-central").toPose2d();
 
       var xSpeed = xController.calculate(tagRelativePose.getX());
       var ySpeed = -yController.calculate(tagRelativePose.getY());
