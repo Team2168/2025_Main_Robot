@@ -30,7 +30,7 @@ public class Climber extends SubsystemBase {
   // DigitalInput leftlimitSwitch = new DigitalInput(ClimberConstants.LEFT_LIMIT_SWITCH);
   
   // The motor's inversion is such that moving clockwise is considered moving forward
-  private final InvertedValue INVERSION = InvertedValue.CounterClockwise_Positive;
+  private final InvertedValue INVERSION = InvertedValue.Clockwise_Positive;
   // The deadband for the motor--the minimum percentage output it needs to be commanded to go before actually moving
   // 0.05 is an arbitrary value
   private final double NEUTRAL_DEADBAND = 0.05; 

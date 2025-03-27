@@ -64,7 +64,7 @@ public class DriveToTag extends Command {
     Pose2d currentPose = robotPose.get();
     thetaController.reset(currentPose.getRotation().getRadians());
     xController.setGoal(new State(0, 0));
-    yController.setGoal(new State(left ? 1.75 : -1.75, 0));
+    yController.setGoal(new State(left ? -0.43 : 0.43, 0));
     thetaController.setGoal(new State(0, 0));
   }
 

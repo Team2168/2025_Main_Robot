@@ -11,7 +11,7 @@ import org.team2168.subsystems.Lift;
 public class DriveLiftHeights extends Command {
   private Lift lift;
   private double liftPosition;
-  private final double TOLERANCE = 0.1;
+  private final double TOLERANCE = 0.5;
 
   /** Creates a new DriveLiftTest. */
   public DriveLiftHeights(Lift lift, double liftPosition) {
@@ -48,4 +48,5 @@ public class DriveLiftHeights extends Command {
       return false;
     }
   }
+  // return true;
 }

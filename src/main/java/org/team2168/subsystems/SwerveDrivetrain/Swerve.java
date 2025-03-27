@@ -78,8 +78,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     private final SwerveRequest.ApplyRobotSpeeds robotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
-    private final PPHolonomicDriveController controller = new PPHolonomicDriveController(new PIDConstants(7, 0, 0),
-            new PIDConstants(7, 0, 0));
+    private final PPHolonomicDriveController controller = new PPHolonomicDriveController(new PIDConstants(4, 0, 0),
+            new PIDConstants(4, 0, 0));
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -403,7 +403,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
 
     private void processPoseEstimate(PoseEstimate poseEstimate) {
         if (LimelightHelpers.validPoseEstimate(poseEstimate) && poseEstimate.rawFiducials[0].ambiguity < 0.2
-                && Math.abs(getPigeon2().getAngularVelocityZWorld().getValueAsDouble()) <= 275) {
+                && Math.abs(getPigeon2().getAngularVelocityZWorld().getValueAsDouble()) <= 285) {
             Pose2d visionEstimate = poseEstimate.pose;
             addVisionMeasurement(visionEstimate, poseEstimate.timestampSeconds);
             // scaleStdDevs(poseEstimate, 0.5);
@@ -441,12 +441,12 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         processPoseEstimate(poseEstimate);
         processPoseEstimate(poseEstimateTwo);
 
-        SmartDashboard.putNumber("cancoder 0", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("cancoder 1", getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("cancoder 3", getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("angularZSpeed", getPigeon2().getAngularVelocityZWorld().getValueAsDouble());
-        SmartDashboard.putNumber("Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
+        // SmartDashboard.putNumber("cancoder 0", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
+        // SmartDashboard.putNumber("cancoder 1", getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble());
+        // SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());
+        // SmartDashboard.putNumber("cancoder 3", getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble());
+        // SmartDashboard.putNumber("angularZSpeed", getPigeon2().getAngularVelocityZWorld().getValueAsDouble());
+        // SmartDashboard.putNumber("Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
 
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {

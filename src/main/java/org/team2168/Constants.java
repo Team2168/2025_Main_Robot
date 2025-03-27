@@ -78,7 +78,7 @@ public final class Constants {
     public static final List<Pose2d> tagPoses = tags.stream().map(tag -> tag.pose.toPose2d())
         .collect(Collectors.toList());
     public static final List<Pose2d> scorePoses = tagPoses.stream()
-        .map(tagPose -> tagPose.transformBy(new Transform2d(new Translation2d(0.63865, 0), Rotation2d.fromDegrees(180))))
+        .map(tagPose -> tagPose.transformBy(new Transform2d(new Translation2d(0.53865, 0), Rotation2d.fromDegrees(180))))
         .collect(Collectors.toList());
 
       public static List<Pose2d> allianceScoringPositions = DriverStation.getAlliance().get() == Alliance.Red

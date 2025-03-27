@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import org.team2168.Constants;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
+import org.team2168.utils.PosesUtil;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -18,6 +19,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -33,11 +35,10 @@ public class DriveToPose extends Command {
   Swerve swerve;
   boolean finished = false;
 
-  public DriveToPose(Supplier<Pose2d> robotPose, Supplier<Pose2d> targetPose, Swerve swerve,
+  public DriveToPose(Supplier<Pose2d> robotPose, Swerve swerve,
       Supplier<ChassisSpeeds> currentSpeeds) {
     this.swerve = swerve;
     this.robotPose = robotPose;
-    this.targetPose = targetPose;
     this.currentSpeeds = currentSpeeds;
 
     xController = new ProfiledPIDController(0.8, 0, 0,
@@ -60,6 +61,8 @@ public class DriveToPose extends Command {
 
   @Override
   public void initialize() {
+    targetPose = () -> PosesUtil.transformPoseDirection(true, PosesUtil.findNearestScoringPose(swerve.getState().Pose,
+    PosesUtil.getScorePositionsFromAlliance(DriverStation.getAlliance().get())));
     Pose2d currentPose = robotPose.get();
     ChassisSpeeds currentRobotSpeeds = currentSpeeds.get();
     xController.reset(new TrapezoidProfile.State(currentPose.getX(), currentRobotSpeeds.vxMetersPerSecond));
@@ -89,8 +92,6 @@ public class DriveToPose extends Command {
     swerve.setControl(robotSpeeds.withSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(
         xSpeed, ySpeed,
         omegaSpeed, currentPose.getRotation())));
-
-        SmartDashboard.putNumberArray("error: ", new double[] {xController.getPositionError(), yController.getPositionError(), thetaController.getPositionError()});
     
      
   }

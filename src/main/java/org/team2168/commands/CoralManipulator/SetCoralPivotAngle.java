@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class SetCoralPivotAngle extends Command {
   private CoralPivot coralPivot;
   private double coralPivPosition;
-  private double tolerance = 0.01;
+  private double tolerance = 1;
 
   /** Creates a new SetCoralPivotAngle. */
   public SetCoralPivotAngle(CoralPivot coralPivot, double coralPivPosition) {
@@ -24,7 +24,8 @@ public class SetCoralPivotAngle extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -35,16 +36,12 @@ public class SetCoralPivotAngle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    coralPivot.setCoralPivotSpeed(0.0);
+    // coralPivot.setCoralPivotSpeed(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (coralPivot.getCoralPivotPositionDegrees() >= coralPivPosition - tolerance && coralPivot.getCoralPivotPositionDegrees() <= coralPivPosition + tolerance) {
-      return true;
-    } 
-    else
-      return false;
+    return true;
   }
-} 
+}

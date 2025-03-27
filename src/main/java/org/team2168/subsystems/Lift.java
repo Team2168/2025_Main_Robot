@@ -41,7 +41,7 @@ public class Lift extends SubsystemBase {
     L3(2.4365),
     L4(5.9),
     INTAKE(3.454),
-    ZERO(0.84);
+    ZERO(0.84); //0.84
 
     public double liftHeight;
 

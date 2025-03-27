@@ -50,10 +50,10 @@ public final class Autos {
 
         public Command middleL4() {
                 return Commands.sequence(swerve.resetPosePathplanner("MiddleLeave"), Commands.parallel(
-                                swerve.drivePath("MiddleLeave"),
+                                swerve.drivePath("MiddleLeave").beforeStarting(new WaitCommand(2)),
                                 new DriveLiftHeights(lift, LiftHeights.L4.getValue()),
                                 new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()),
-                                new DriveFlywheelUntilNoCoral(flywheel, -0.2).beforeStarting(new WaitCommand(3.0))));
+                                new DriveFlywheelUntilNoCoral(flywheel, -0.2).beforeStarting(new WaitCommand(4.0))));
         }
 
         public Command leftTwoPieceL1() {
