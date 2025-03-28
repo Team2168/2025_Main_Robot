@@ -22,7 +22,7 @@ import org.team2168.commands.CoralManipulator.DriveCoralFlywheel;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilCoral;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
-import org.team2168.commands.Drive.DriveToPose;
+// import org.team2168.commands.Drive.DriveToPose;
 import org.team2168.commands.CoralManipulator.DriveFlywheelWithJoystick;
 import org.team2168.commands.lift.DriveLiftHeights;
 import org.team2168.commands.LED.LEDStatus;
@@ -144,13 +144,13 @@ public class RobotContainer {
         // cancelling on release.
         // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-        driverJoystick.leftBumper().onTrue(
-                new DriveToPose(() -> swerve.getState().Pose,
-                        swerve, () -> swerve.getState().Speeds));
+        // driverJoystick.leftBumper().onTrue(
+        //         new DriveToPose(() -> swerve.getState().Pose,
+        //                 swerve, () -> swerve.getState().Speeds));
 
-        driverJoystick.rightBumper().onTrue(
-                new DriveToPose(() -> swerve.getState().Pose,
-                        swerve, () -> swerve.getState().Speeds));
+        // driverJoystick.rightBumper().onTrue(
+        //         new DriveToPose(() -> swerve.getState().Pose,
+        //                 swerve, () -> swerve.getState().Speeds));
 
         swerve.setDefaultCommand(
                 swerve.runDriveWithJoystick(driverJoystick, MaxSpeed, MaxAngularRate));

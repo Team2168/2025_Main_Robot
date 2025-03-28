@@ -6,6 +6,7 @@ package org.team2168;
 
 import static edu.wpi.first.units.Units.Kilogram;
 
+import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,10 +74,32 @@ public final class Constants {
   }
 
   public static class PoseConstants {
-    public static final AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-    public static final List<AprilTag> tags = layout.getTags();
-    public static final List<Pose2d> tagPoses = tags.stream().map(tag -> tag.pose.toPose2d())
-        .collect(Collectors.toList());
+    public static final List<Pose2d> tagPoses = Arrays.asList(
+        new Pose2d(new Translation2d(16.70, 0.66), new Rotation2d(2.20)),
+        new Pose2d(new Translation2d(16.70, 7.40), new Rotation2d(-2.20)),
+        new Pose2d(new Translation2d(11.56, 8.06), new Rotation2d(-1.57)),
+        new Pose2d(new Translation2d(9.28, 6.14), new Rotation2d(0.00)),
+        new Pose2d(new Translation2d(9.28, 1.91), new Rotation2d(0.00)),
+        new Pose2d(new Translation2d(13.47, 3.31), new Rotation2d(-1.05)),
+        new Pose2d(new Translation2d(13.89, 4.03), new Rotation2d(0.00)),
+        new Pose2d(new Translation2d(13.47, 4.75), new Rotation2d(1.05)),
+        new Pose2d(new Translation2d(12.64, 4.75), new Rotation2d(2.09)),
+        new Pose2d(new Translation2d(12.23, 4.03), new Rotation2d(3.14)),
+        new Pose2d(new Translation2d(12.64, 3.31), new Rotation2d(-2.09)),
+        new Pose2d(new Translation2d(0.85, 0.66), new Rotation2d(0.94)),
+        new Pose2d(new Translation2d(0.85, 7.40), new Rotation2d(-0.94)),
+        new Pose2d(new Translation2d(8.27, 6.14), new Rotation2d(3.14)),
+        new Pose2d(new Translation2d(8.27, 1.91), new Rotation2d(3.14)),
+        new Pose2d(new Translation2d(5.99, -0.00), new Rotation2d(1.57)),
+        new Pose2d(new Translation2d(4.07, 3.31), new Rotation2d(-2.09)),
+        new Pose2d(new Translation2d(3.66, 4.03), new Rotation2d(3.14)),
+        new Pose2d(new Translation2d(4.07, 4.75), new Rotation2d(2.09)),
+        new Pose2d(new Translation2d(4.90, 4.75), new Rotation2d(1.05)),
+        new Pose2d(new Translation2d(5.32, 4.03), new Rotation2d(0.00)),
+        new Pose2d(new Translation2d(4.90, 3.31), new Rotation2d(-1.05))
+    );
+   
+     
     public static final List<Pose2d> scorePoses = tagPoses.stream()
         .map(tagPose -> tagPose.transformBy(new Transform2d(new Translation2d(0.53865, 0), Rotation2d.fromDegrees(180))))
         .collect(Collectors.toList());

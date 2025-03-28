@@ -9,7 +9,7 @@ import org.team2168.commands.CoralManipulator.DriveCoralFlywheel;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilCoral;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
 import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
-import org.team2168.commands.Drive.DriveToPose;
+// import org.team2168.commands.Drive.DriveToPose;
 import org.team2168.commands.lift.DriveLiftHeights;
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
@@ -19,6 +19,8 @@ import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
 import org.team2168.subsystems.Lift.LiftHeights;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
 import org.team2168.utils.PosesUtil;
+
+import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -53,7 +55,7 @@ public final class Autos {
                                 swerve.drivePath("MiddleLeave").beforeStarting(new WaitCommand(2)),
                                 new DriveLiftHeights(lift, LiftHeights.L4.getValue()),
                                 new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()),
-                                new DriveFlywheelUntilNoCoral(flywheel, -0.2).beforeStarting(new WaitCommand(4.0))));
+                                new DriveFlywheelUntilNoCoral(flywheel, -0.5).beforeStarting(new WaitCommand(4.0)))).andThen(swerve.applyRequest(() -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(-0.5,0,0))).withTimeout(1)).beforeStarting(new WaitCommand(2.5));
         }
 
         public Command leftTwoPieceL1() {
@@ -148,32 +150,22 @@ public final class Autos {
                 return Commands.sequence(
                                 swerve.resetPosePathplanner("TwoCoralLeftAuto1st"),
                                 Commands.parallel(swerve.drivePath("TwoCoralLeftAuto1st"),
-                                                new DriveLiftHeights(lift, LiftHeights.BARGE.getValue())
-                                                                .withTimeout(1.5),
+                                                new DriveLiftHeights(lift, LiftHeights.BARGE.getValue()),
                                                 new SetCoralPivotAngle(pivot,
-                                                                CORAL_PIVOT_POSITION.BARGE.getPivotPositon())
-                                                                .withTimeout(2.0)
-                                                                .andThen(Commands.parallel(
-                                                                                new DriveCoralFlywheel(flywheel, 0.5),
-                                                                                new SetCoralPivotAngle(pivot,
-                                                                                                CORAL_PIVOT_POSITION.BARGE
-                                                                                                                .getPivotPositon())))));
+                                                                CORAL_PIVOT_POSITION.BARGE.getPivotPositon())))
+                                .andThen(Commands.parallel(
+                                                new DriveCoralFlywheel(flywheel, -0.2)));
         }
 
         public Command rightScoreSingle() {
                 return Commands.sequence(
                                 swerve.resetPosePathplanner("TwoCoralRightAuto1st"),
                                 Commands.parallel(swerve.drivePath("TwoCoralRightAuto1st"),
-                                                new DriveLiftHeights(lift, LiftHeights.BARGE.getValue())
-                                                                .withTimeout(1.5),
+                                                new DriveLiftHeights(lift, LiftHeights.BARGE.getValue()),
                                                 new SetCoralPivotAngle(pivot,
-                                                                CORAL_PIVOT_POSITION.BARGE.getPivotPositon())
-                                                                .withTimeout(2.0)
-                                                                .andThen(Commands.parallel(
-                                                                                new DriveCoralFlywheel(flywheel, 0.5),
-                                                                                new SetCoralPivotAngle(pivot,
-                                                                                                CORAL_PIVOT_POSITION.BARGE
-                                                                                                                .getPivotPositon())))));
+                                                                CORAL_PIVOT_POSITION.BARGE.getPivotPositon())))
+                                .andThen(Commands.parallel(
+                                                new DriveCoralFlywheel(flywheel, 0.2)));
         }
 
         public Command leftScoreSingleL4() {
