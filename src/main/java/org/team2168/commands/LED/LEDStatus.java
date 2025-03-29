@@ -38,9 +38,9 @@ public class LEDStatus extends Command {
     if (coralFlywheel.isCoralPresent()) {
       leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
     }
-    else if (cageDetector.canClimb()) {
-      leds.setLEDColor(LED_COLOR.PURPLE.getLEDColor());
-    }
+    // else if (cageDetector.canClimb()) {
+    //   leds.setLEDColor(LED_COLOR.PURPLE.getLEDColor());
+    // }
     else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
   }
 
