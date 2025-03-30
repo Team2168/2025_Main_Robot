@@ -41,10 +41,10 @@ public class Climber extends SubsystemBase {
   private final double MAX_FORWARD_OUTPUT = 1.0;
   private final double MIN_FORWARD_OUTPUT = 0.0; //The motor is not allowed to move backwards 😱
 
-  private final double FORWARD_SOFT_LIMIT = 145.0;
+  private final double FORWARD_SOFT_LIMIT = 151.0;
   private final double REVERSE_SOFT_LIMIT = 0.0;
 
-  private final double CURRENT_LIMIT = 70.0;
+  private final double CURRENT_LIMIT = 90.0;
   private final boolean CURRENT_LIMIT_ENABLED = true;
   
   private final double kP = 1.0;
