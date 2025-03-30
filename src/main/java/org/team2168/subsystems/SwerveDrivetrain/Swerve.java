@@ -347,7 +347,7 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     }
 
     public Command runDriveWithJoystick(CommandXboxController joystick, double maxSpeed, double maxAngularSpeed) {
-
+        // double deadband = isSlow ? 0.01 : 0.1;
         return applyRequest(() -> fieldCentricDrive.withVelocityX(xLimiter.calculate(-joystick.getLeftY() * maxSpeed))
                 .withVelocityY(yLimiter.calculate(-joystick.getLeftX() * maxSpeed))
                 .withRotationalRate(rotLimiter.calculate(-joystick.getRightX() * maxAngularSpeed)));
@@ -431,21 +431,22 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
          * This ensures driving behavior doesn't change until an explicit disable event
          * occurs during testing.
          */
-        setStateStdDevs(VecBuilder.fill(0.1,0.1,99999999));
-        double yaw = this.getPigeon2().getYaw().getValueAsDouble();
-        LimelightHelpers.SetRobotOrientation("limelight-frontes", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
-        LimelightHelpers.SetRobotOrientation("limelight-central", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+        // setStateStdDevs(VecBuilder.fill(0.1,0.1,99999999));
+        // double yaw = this.getPigeon2().getYaw().getValueAsDouble();
+        // LimelightHelpers.SetRobotOrientation("limelight-frontes", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+        // LimelightHelpers.SetRobotOrientation("limelight-central", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-        PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-frontes");
-        PoseEstimate poseEstimateTwo = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-central");
-        processPoseEstimate(poseEstimate);
-        processPoseEstimate(poseEstimateTwo);
+        // PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-frontes");
+        // PoseEstimate poseEstimateTwo = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-central");
+        // processPoseEstimate(poseEstimate);
+        // processPoseEstimate(poseEstimateTwo);
 
         // SmartDashboard.putNumber("cancoder 0", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
         // SmartDashboard.putNumber("cancoder 1", getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble());
         // SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());
         // SmartDashboard.putNumber("cancoder 3", getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble());
-        // SmartDashboard.putNumber("angularZSpeed", getPigeon2().getAngularVelocityZWorld().getValueAsDouble());
+        SmartDashboard.putNumber("angularZSpeed", getPigeon2().getAngularVelocityZWorld().getValueAsDouble());
+        SmartDashboard.putNumber("speed", getPigeon2().getAngularVelocityYWorld().getValueAsDouble());
         // SmartDashboard.putNumber("Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
 
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
