@@ -18,7 +18,6 @@ import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
 import org.team2168.subsystems.Lift.LiftHeights;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
-import org.team2168.utils.PosesUtil;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -55,7 +54,10 @@ public final class Autos {
                                 swerve.drivePath("MiddleLeave").beforeStarting(new WaitCommand(2)),
                                 new DriveLiftHeights(lift, LiftHeights.L4.getValue()),
                                 new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon()),
-                                new DriveFlywheelUntilNoCoral(flywheel, -0.5).beforeStarting(new WaitCommand(4.0)))).andThen(swerve.applyRequest(() -> new SwerveRequest.ApplyRobotSpeeds().withSpeeds(new ChassisSpeeds(-0.5,0,0))).withTimeout(1)).beforeStarting(new WaitCommand(2.5));
+                                new DriveFlywheelUntilNoCoral(flywheel, -0.5).beforeStarting(new WaitCommand(4.0))))
+                                .andThen(Commands.sequence(new WaitCommand(2.5),
+                                                swerve.applyRequest(() -> new SwerveRequest.ApplyRobotSpeeds()
+                                                                .withSpeeds(new ChassisSpeeds(-0.5, 0, 0))).withTimeout(1.0)));
         }
 
         public Command leftTwoPieceL1() {
