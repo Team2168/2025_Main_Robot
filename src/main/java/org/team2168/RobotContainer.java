@@ -153,17 +153,20 @@ public class RobotContainer {
                 // swerve, () -> swerve.getState().Speeds));
 
                 swerve.setDefaultCommand(
-                                swerve.runDriveWithJoystick(driverJoystick, MaxSpeed, MaxAngularRate));
+                                swerve.runDriveWithJoystick(driverJoystick, MaxSpeed, MaxAngularRate, false));
+
                 driverJoystick.leftTrigger()
                                 .whileTrue(
                                                 swerve.runDriveWithJoystick(driverJoystick,
                                                                 MaxSpeed / Constants.DrivePIDConstants.SLOW_FACTOR,
-                                                                MaxAngularRate / Constants.DrivePIDConstants.SLOW_FACTOR));
-                // driverJoystick.rightTrigger()
-                //                 .whileTrue(
-                //                                 swerve.runDriveWithJoystick(driverJoystick,
-                //                                                 MaxSpeed/Constants.DrivePIDConstants.VERY_SLOW_FACTOR,
-                //                                                 MaxAngularRate/Constants.DrivePIDConstants.VERY_SLOW_FACTOR));
+                                                                MaxAngularRate / Constants.DrivePIDConstants.SLOW_FACTOR, 
+                                                                false));
+                driverJoystick.rightTrigger()
+                                .whileTrue(
+                                                swerve.runDriveWithJoystick(driverJoystick,
+                                                                MaxSpeed/Constants.DrivePIDConstants.VERY_SLOW_FACTOR,
+                                                                MaxAngularRate/Constants.DrivePIDConstants.VERY_SLOW_FACTOR,
+                                                                true));
 
                 driverJoystick.back().onTrue(swerve.applyRequest(
                                 () -> new SwerveRequest.PointWheelsAt()
@@ -242,7 +245,7 @@ public class RobotContainer {
                 operatorJoystick.povDown()
                                 .onTrue(new SetCoralPivotAngle(coralPivot,
                                                 CORAL_PIVOT_POSITION.LOWER_ALGAE.getPivotPositon()))
-                                .whileTrue(new DriveCoralFlywheel(coralFlywheel, -0.5));
+                                .whileTrue(new DriveCoralFlywheel(coralFlywheel, 0.5));
 
                 /* intake algae button */
                 operatorJoystick.leftBumper()
