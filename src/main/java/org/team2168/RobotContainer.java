@@ -31,6 +31,10 @@ import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
 import org.team2168.subsystems.Climber;
+import org.team2168.subsystems.Lift;
+import org.team2168.subsystems.Lift.LiftHeights;
+import org.team2168.subsystems.CageDetector;
+import org.team2168.subsystems.LEDs;
 
 import org.team2168.commands.IntakePivot.setIntakePivotAngleHigher;
 import org.team2168.commands.IntakePivot.setIntakePivotAngleLower;
@@ -49,10 +53,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import org.team2168.subsystems.Lift;
-import org.team2168.subsystems.Lift.LiftHeights;
-import org.team2168.subsystems.CageDetector;
-import org.team2168.subsystems.LEDs;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DriverStation;
