@@ -346,9 +346,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                 visionMeasurementStdDevs);
     }
 
-    public Command runDriveWithJoystick(CommandXboxController joystick, double maxSpeed, double maxAngularSpeed) {
-        // double deadband = isSlow ? 0.01 : 0.1;
-        return applyRequest(() -> fieldCentricDrive.withVelocityX(xLimiter.calculate(-joystick.getLeftY() * maxSpeed))
+    public Command runDriveWithJoystick(CommandXboxController joystick, double maxSpeed, double maxAngularSpeed, boolean isSlow) {
+        double deadband = isSlow ? 0.01 : 0.1;
+        return applyRequest(() -> fieldCentricDrive.withDeadband(MaxSpeed * deadband).withVelocityX(xLimiter.calculate(-joystick.getLeftY() * maxSpeed))
                 .withVelocityY(yLimiter.calculate(-joystick.getLeftX() * maxSpeed))
                 .withRotationalRate(rotLimiter.calculate(-joystick.getRightX() * maxAngularSpeed)));
 
