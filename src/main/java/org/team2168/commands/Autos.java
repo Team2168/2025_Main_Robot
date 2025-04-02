@@ -4,7 +4,6 @@
 
 package org.team2168.commands;
 
-import org.team2168.Constants;
 import org.team2168.commands.CoralManipulator.DriveCoralFlywheel;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilCoral;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
@@ -13,7 +12,6 @@ import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
 import org.team2168.commands.lift.DriveLiftHeights;
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
-import org.team2168.subsystems.ExampleSubsystem;
 import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
 import org.team2168.subsystems.Lift.LiftHeights;
@@ -21,12 +19,9 @@ import org.team2168.subsystems.SwerveDrivetrain.Swerve;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public final class Autos {

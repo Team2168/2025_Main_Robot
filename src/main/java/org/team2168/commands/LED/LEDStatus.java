@@ -4,8 +4,6 @@
 
 package org.team2168.commands.LED;
 
-import org.team2168.subsystems.CageDetector;
-import org.team2168.subsystems.Climber;
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.LEDs;
 import org.team2168.subsystems.LEDs.LED_COLOR;
@@ -16,14 +14,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class LEDStatus extends Command {
   /** Creates a new LEDStatus. */
   private LEDs leds;
-  private CageDetector cageDetector;
   private CoralFlywheel coralFlywheel;
 
-  public LEDStatus(LEDs leds, CageDetector cageDetector, CoralFlywheel coralFlywheel) {
+  public LEDStatus(LEDs leds, CoralFlywheel coralFlywheel) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.leds = leds;
     this.coralFlywheel = coralFlywheel;
-    this.cageDetector = cageDetector;
 
     addRequirements(leds);
   }
@@ -38,9 +34,6 @@ public class LEDStatus extends Command {
     if (coralFlywheel.isCoralPresent()) {
       leds.setLEDColor(LED_COLOR.GREEN.getLEDColor());
     }
-    // else if (cageDetector.canClimb()) {
-    //   leds.setLEDColor(LED_COLOR.PURPLE.getLEDColor());
-    // }
     else leds.setLEDColor(LED_COLOR.RED.getLEDColor());
   }
 

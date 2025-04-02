@@ -4,10 +4,6 @@
 
 package org.team2168.subsystems;
 
-import static edu.wpi.first.units.Units.Rotations;
-
-
-import org.team2168.Constants;
 import org.team2168.Constants.CANDevices;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -88,8 +84,8 @@ public class Lift extends SubsystemBase {
   private final double KD = 0.9; // originally 0.23
   private final double K_Gravity = 0.24; // gravity accountment
 
-  private final int CRUISE_VELOCITY = 160; // TODO modify in future
-  private final int ACCELERATION = 130; // TODO modify in future
+  private final int CRUISE_VELOCITY = 160;
+  private final int ACCELERATION = 130;
   private final double EXPO_KV = 0.119;
   private final double EXPO_KA = 0.1;
 
@@ -163,14 +159,6 @@ public class Lift extends SubsystemBase {
     configureMotors();
   }
 
-  // public double degreesToRotations(double degrees){
-  // return (degrees / 360);
-  // }
-
-  // public double rotationsToDegrees(double rotations){
-  // return (rotations * 360);
-  // }
-
   public double inchesToRotations(double inches) {
     return (inches / INCHES_PER_REV) * GEAR_RATIO;
   }
@@ -202,12 +190,6 @@ public class Lift extends SubsystemBase {
     motor.setControl(velocityVoltage.withVelocity(speed));
   }
 
-  // (ControlModeValue.Velocity, inchesToRotations(speed) *
-  // TIME_UNITS_OF_VELOCITY, DemandType.ArbitraryFeedForward,
-  // kArbitraryFeedForward); //the "speed" parameter is the rate of the movement
-  // per second (in inches)
-  // }
-
   // @Config()
   public void setPosition(double rotations) {
     m_motmag.Slot = 0;
@@ -226,8 +208,6 @@ public class Lift extends SubsystemBase {
   public double getPostionRotations() {
     return motor.getPosition().getValueAsDouble();
   }
-  // (ControlModeValue.PercentOutput, 0, DemandType.ArbitraryFeedForward,
-  // kArbitraryFeedForward);
 
   @Log(name = "Position (inches)", rowIndex = 3, columnIndex = 2)
   public double getPositionIn() {
