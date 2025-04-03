@@ -58,11 +58,12 @@ public final class Constants {
     public static final int ELEVATOR_ID = 12;
     public static final int ELEVATOR_CANCODER_ID = 11;
 
-    public static final int CLIMBER_ID = 13; // placeholder
+    public static final int CLIMBER_ID_1 = 13;
+    public static final int CLIMBER_ID_2 = 14;
   }
 
   public static class Controllers {
-    public static final int DRIVER_JOYSTICK = 0; //placeholders
+    public static final int DRIVER_JOYSTICK = 0;
     public static final int OPERATOR_JOYSTICK = 1;
     public static final int TEST_JOYSTICK = 2;
   }

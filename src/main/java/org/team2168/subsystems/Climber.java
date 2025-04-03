@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -21,7 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
 
-  TalonFX motor = new TalonFX(CANDevices.CLIMBER_ID);
+  TalonFX motor = new TalonFX(CANDevices.CLIMBER_ID_1);
+  TalonFX follower = new TalonFX(CANDevices.CLIMBER_ID_2);
   
   // The motor's inversion is such that moving clockwise is considered moving forward
   private final InvertedValue INVERSION = InvertedValue.Clockwise_Positive;
@@ -68,7 +70,11 @@ public class Climber extends SubsystemBase {
   public Climber() {
 
       motor.getConfigurator().apply(new TalonFXConfiguration()); //sets the motor to its facotry default
+      follower.getConfigurator().apply(new TalonFXConfiguration());
       
+      follower.setControl(new Follower(motor.getDeviceID(), true));
+      
+
       MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
       CurrentLimitsConfigs currentConfigs = new CurrentLimitsConfigs();
       Slot0Configs gains = new Slot0Configs();
