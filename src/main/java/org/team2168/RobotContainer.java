@@ -164,7 +164,7 @@ public class RobotContainer {
 
                 swerve.registerTelemetry(logger::telemeterize);
 
-                leds.setDefaultCommand(new LEDStatus(leds, coralFlywheel));
+                leds.setDefaultCommand(new LEDStatus(leds, coralFlywheel, climber));
 
                 /*
                  * control coral in intake buttons: (needs testing) sets the coral intake to a
@@ -244,7 +244,7 @@ public class RobotContainer {
 
                 /* algae reset position button */
                 operatorJoystick.povRight()
-                                .onTrue(new setIntakePivotPosition(algaeintakePivot, -0.5));
+                                .onTrue(new setIntakePivotPosition(algaeintakePivot, -0.4));
 
                 /* sets to intake cage */
                 operatorJoystick.povLeft()
