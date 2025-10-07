@@ -4,18 +4,38 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-
+    {
+      "type": "java",
+      "name": "Test",
+      "request": "launch",
+      "mainClass": "org.team2168.utils.Test",
+      "projectName": "2025_Main_Robot"
+    },
+    {
+      "type": "java",
+      "name": "Test",
+      "request": "launch",
+      "mainClass": "org.team2168.Test",
+      "projectName": "2025_Main_Robot"
+    },
+    {
+      "type": "java",
+      "name": "TestJava",
+      "request": "launch",
+      "mainClass": "org.team2168.TestJava",
+      "projectName": "2025_Main_Robot"
+    },
     {
       "type": "wpilib",
       "name": "WPILib Desktop Debug",
       "request": "launch",
-      "desktop": true,
+      "desktop": true
     },
     {
       "type": "wpilib",
       "name": "WPILib roboRIO Debug",
       "request": "launch",
-      "desktop": false,
+      "desktop": false
     }
   ]
 }

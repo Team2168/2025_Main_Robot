@@ -34,7 +34,7 @@ public class CoralPivot extends SubsystemBase {
   private static final double GEAR_RATIO = 111.11111;
   private final int SMART_CURRENT_LIMIT = 35;
   private final double MAX_ANGLE = degreesToRot(155.0); //TODO: figure out again
-  private final double MIN_ANGLE = degreesToRot(0);
+  private final double MIN_ANGLE = degreesToRot(0.0);
   private boolean isInverted = true;
   private IdleMode brake = IdleMode.kBrake;
   private double kMaxOutput = 0.6;
@@ -51,9 +51,9 @@ public class CoralPivot extends SubsystemBase {
     L3(degreesToRot(145.376)),
     L4(degreesToRot(150.958)),
     INTAKE(18),
-    ZERO(degreesToRot(5.0)),
+    ZERO(degreesToRot(5.0)), // 5.0
     UPPER_ALGAE(degreesToRot(130.0)), //test algae angles
-    LOWER_ALGAE(degreesToRot(50.0));
+    LOWER_ALGAE(degreesToRot(121.0));
 
     public double pivotPosition;
 

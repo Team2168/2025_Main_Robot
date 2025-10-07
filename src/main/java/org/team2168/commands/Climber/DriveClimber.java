@@ -15,10 +15,10 @@ public class DriveClimber extends Command {
 
 private final Climber climber;
 
-private final DoubleSupplier input;
+private final double input;
 
   /** Creates a new DriveClimber. */
-  public DriveClimber(Climber c, DoubleSupplier i) {
+  public DriveClimber(Climber c, double i) {
     climber = c;
     input = i;
 
@@ -33,12 +33,14 @@ private final DoubleSupplier input;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   climber.driveClimbMotor(input.getAsDouble());
+   climber.driveClimbMotor(input);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    climber.driveClimbMotor(0.0);
+  }
 
   // Returns true when the command should end.
   @Override

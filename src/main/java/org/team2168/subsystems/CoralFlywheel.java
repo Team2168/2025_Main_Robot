@@ -24,7 +24,7 @@ public class CoralFlywheel extends SubsystemBase {
 
     private final double minuteInHundredMs = 600.0;
     private final double TICKS_PER_REV = 8192;
-    private final double GEAR_RATIO = 10;
+    private final double GEAR_RATIO = 21.0;
     private final int SMART_CURRENT_LIMIT = 40;
     private boolean isInverted = false;
     private IdleMode coast = IdleMode.kCoast;
@@ -46,7 +46,8 @@ public class CoralFlywheel extends SubsystemBase {
         motorConfigs.alternateEncoder
             .apply(altEncoderConfig)
             .countsPerRevolution(4096)
-            .setSparkMaxDataPortConfig();
+            .setSparkMaxDataPortConfig()
+            .velocityConversionFactor(GEAR_RATIO);
 
 
         motorConfigs.signals.externalOrAltEncoderPosition(5);

@@ -3,15 +3,22 @@ package org.team2168.subsystems.SwerveDrivetrain;
 import static edu.wpi.first.units.Units.*;
 
 import java.io.IOException;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.json.simple.parser.ParseException;
+import org.team2168.Constants.CameraConstants;
 import org.team2168.subsystems.SwerveDrivetrain.TunerConstants.TunerSwerveDrivetrain;
+import org.team2168.utils.LimelightHelpers;
+import org.team2168.utils.LimelightHelpers.LimelightResults;
+import org.team2168.utils.LimelightHelpers.PoseEstimate;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
+import com.fasterxml.jackson.core.StreamReadFeature;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -23,7 +30,9 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.FileVersionException;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -51,9 +60,9 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
-    private SlewRateLimiter xLimiter = new SlewRateLimiter(8.0);
-    private SlewRateLimiter yLimiter = new SlewRateLimiter(8.0);
-    private SlewRateLimiter rotLimiter = new SlewRateLimiter(Units.degreesToRadians(1000));
+    private SlewRateLimiter xLimiter = new SlewRateLimiter(10.0);
+    private SlewRateLimiter yLimiter = new SlewRateLimiter(10.0);
+    private SlewRateLimiter rotLimiter = new SlewRateLimiter(Units.degreesToRadians(1350));
     private SlewRateLimiter xSlowLimiter = new SlewRateLimiter(20);
     private SlewRateLimiter ySlowLimiter = new SlewRateLimiter(20);
     private SlewRateLimiter slowRotLimiter = new SlewRateLimiter(Units.degreesToRadians(5000));
@@ -69,8 +78,8 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
     private final SwerveRequest.ApplyRobotSpeeds robotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
-    private final PPHolonomicDriveController controller = new PPHolonomicDriveController(new PIDConstants(1, 0, 0),
-            new PIDConstants(1, 0, 0));
+    private final PPHolonomicDriveController controller = new PPHolonomicDriveController(new PIDConstants(4, 0, 0),
+            new PIDConstants(4, 0, 0));
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
@@ -160,19 +169,26 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
             startSimThread();
         }
 
-        try { //robot weight is 103.6lbs
+        try { // robot weight is 103.6lbs
             AutoBuilder.configure(() -> this.getState().Pose, this::resetPose, () -> this.getState().Speeds,
-                    (chassisSpeeds, feedforward) -> robotSpeeds.withSpeeds(chassisSpeeds)
+                    (chassisSpeeds, feedforward) -> setControl(robotSpeeds.withSpeeds(chassisSpeeds)
                             .withWheelForceFeedforwardsX(feedforward.robotRelativeForcesX())
-                            .withWheelForceFeedforwardsY(feedforward.robotRelativeForcesY()),
-                    controller, RobotConfig.fromGUISettings(), () -> DriverStation.getAlliance().get() == Alliance.Blue,
+                            .withWheelForceFeedforwardsY(feedforward.robotRelativeForcesY())),
+                    controller, RobotConfig.fromGUISettings(), () -> DriverStation.getAlliance().get() == Alliance.Red,
                     this);
         } catch (IOException | ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        resetPose(new Pose2d(8,4,Rotation2d.fromDegrees(0.0)));
+        setStateStdDevs(VecBuilder.fill(0.1,0.1,10000));
+        LimelightHelpers.setCameraPose_RobotSpace("limelight-frontes", CameraConstants.FRONT_HIGH_FORWARD_OFFSET,
+                CameraConstants.FRONT_HIGH_STRAFE_OFFSET,
+                CameraConstants.FRONT_HIGH_VERTICAL_OFFSET, CameraConstants.FRONT_HIGH_ROLL,
+                CameraConstants.FRONT_HIGH_PITCH, CameraConstants.FRONT_HIGH_YAW);
+        LimelightHelpers.setCameraPose_RobotSpace("limelight-central", CameraConstants.FRONT_LOW_FORWARD_OFFSET,
+                CameraConstants.FRONT_LOW_STRAFE_OFFSET,
+                CameraConstants.FRONT_LOW_VERTICAL_OFFSET, CameraConstants.FRONT_LOW_ROLL,
+                CameraConstants.FRONT_LOW_PITCH, CameraConstants.FRONT_LOW_YAW);
     }
 
     /**
@@ -273,34 +289,6 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 
-    @Override
-    public void periodic() {
-        /*
-         * Periodically try to apply the operator perspective.
-         * If we haven't applied the operator perspective before, then we should apply
-         * it regardless of DS state.
-         * This allows us to correct the perspective in case the robot code restarts
-         * mid-match.
-         * Otherwise, only check and apply the operator perspective if the DS is
-         * disabled.
-         * This ensures driving behavior doesn't change until an explicit disable event
-         * occurs during testing.
-         */
-        SmartDashboard.putNumber("cancoder 0", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("cancoder 1", getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());
-        SmartDashboard.putNumber("cancoder 3" ,getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble());
-        if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-            DriverStation.getAlliance().ifPresent(allianceColor -> {
-                setOperatorPerspectiveForward(
-                        allianceColor == Alliance.Red
-                                ? kRedAlliancePerspectiveRotation
-                                : kBlueAlliancePerspectiveRotation);
-                m_hasAppliedOperatorPerspective = true;
-            });
-        }
-    }
-
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 
@@ -358,17 +346,18 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
                 visionMeasurementStdDevs);
     }
 
-   public Command runDriveWithJoystick(CommandXboxController joystick, double maxSpeed, double maxAngularSpeed) {
+    public Command runDriveWithJoystick(CommandXboxController joystick, double maxSpeed, double maxAngularSpeed, boolean isSlow) {
+        double deadband = isSlow ? 0.01 : 0.1;
+        return applyRequest(() -> fieldCentricDrive.withDeadband(MaxSpeed * deadband).withVelocityX(xLimiter.calculate(-joystick.getLeftY() * maxSpeed))
+                .withVelocityY(yLimiter.calculate(-joystick.getLeftX() * maxSpeed))
+                .withRotationalRate(rotLimiter.calculate(-joystick.getRightX() * maxAngularSpeed)));
 
-    return applyRequest(() -> fieldCentricDrive.withVelocityX(xLimiter.calculate(-joystick.getLeftY() * maxSpeed))
-    .withVelocityY(yLimiter.calculate(-joystick.getLeftX() * maxSpeed))
-    .withRotationalRate(rotLimiter.calculate(-joystick.getRightX() * maxAngularSpeed))); 
-
-  }
+    }
 
     public Command drivePath(String pathName) {
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+            // PathConstraints constraints = new PathConstraints()
             return AutoBuilder.followPath(path);
         } catch (FileVersionException | IOException | ParseException e) {
             // TODO Auto-generated catch block
@@ -385,5 +374,89 @@ public class Swerve extends TunerSwerveDrivetrain implements Subsystem {
         PathConstraints pathConstraints = new PathConstraints(MetersPerSecond.of(3.5), MetersPerSecondPerSecond.of(1.5),
                 RadiansPerSecond.of(2 * Math.PI), RadiansPerSecondPerSecond.of(2 * Math.PI));
         return AutoBuilder.pathfindToPose(targetPose, pathConstraints);
+    }
+
+    public Pose2d getStartingPosePathplanner(String filename) {
+        try {
+            return PathPlannerPath.fromPathFile(filename).getStartingHolonomicPose().orElse(new Pose2d());
+        } catch (FileVersionException | IOException | ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return new Pose2d(); // Return a default Pose2d in case of an exception
+    }
+
+    public Command resetPosePathplanner(String pathname) {
+        try {
+            return AutoBuilder
+                    .resetOdom(PathPlannerPath.fromPathFile(pathname).getStartingHolonomicPose().orElse(new Pose2d()));
+        } catch (FileVersionException | IOException | ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return Commands.none(); // or return a default Command
+        }
+    }
+
+    public void changeAutoSpeedFromClimberHeight(DoubleSupplier climbHeightRotations) {
+
+    }
+
+    private void processPoseEstimate(PoseEstimate poseEstimate) {
+        if (LimelightHelpers.validPoseEstimate(poseEstimate) && poseEstimate.rawFiducials[0].ambiguity < 0.2
+                && Math.abs(getPigeon2().getAngularVelocityZWorld().getValueAsDouble()) <= 285) {
+            Pose2d visionEstimate = poseEstimate.pose;
+            addVisionMeasurement(visionEstimate, poseEstimate.timestampSeconds);
+            // scaleStdDevs(poseEstimate, 0.5);
+        }
+    }
+
+    private void scaleStdDevs(PoseEstimate estimate, double scaleFactor) {
+        double tagDistance = estimate.avgTagDist;
+        double xStdScaled = 0.001 * Math.pow(tagDistance / scaleFactor, 2);
+        double yStdScaled = 0.001 * Math.pow(tagDistance / scaleFactor, 2);
+        double rotScaled = 100000;
+        setStateStdDevs(VecBuilder.fill(xStdScaled, yStdScaled, rotScaled));
+    }
+
+    @Override
+    public void periodic() {
+        /*
+         * Periodically try to apply the operator perspective.
+         * If we haven't applied the operator perspective before, then we should apply
+         * it regardless of DS state.
+         * This allows us to correct the perspective in case the robot code restarts
+         * mid-match.
+         * Otherwise, only check and apply the operator perspective if the DS is
+         * disabled.
+         * This ensures driving behavior doesn't change until an explicit disable event
+         * occurs during testing.
+         */
+        // setStateStdDevs(VecBuilder.fill(0.1,0.1,99999999));
+        // double yaw = this.getPigeon2().getYaw().getValueAsDouble();
+        // LimelightHelpers.SetRobotOrientation("limelight-frontes", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+        // LimelightHelpers.SetRobotOrientation("limelight-central", yaw, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+        // PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-frontes");
+        // PoseEstimate poseEstimateTwo = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-central");
+        // processPoseEstimate(poseEstimate);
+        // processPoseEstimate(poseEstimateTwo);
+
+        // SmartDashboard.putNumber("cancoder 0", getModule(0).getEncoder().getAbsolutePosition().getValueAsDouble());
+        // SmartDashboard.putNumber("cancoder 1", getModule(1).getEncoder().getAbsolutePosition().getValueAsDouble());
+        // SmartDashboard.putNumber("cancoder 2", getModule(2).getEncoder().getAbsolutePosition().getValueAsDouble());
+        // SmartDashboard.putNumber("cancoder 3", getModule(3).getEncoder().getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("angularZSpeed", getPigeon2().getAngularVelocityZWorld().getValueAsDouble());
+        SmartDashboard.putNumber("speed", getPigeon2().getAngularVelocityYWorld().getValueAsDouble());
+        // SmartDashboard.putNumber("Gyro Yaw", getPigeon2().getYaw().getValueAsDouble());
+
+        if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+            DriverStation.getAlliance().ifPresent(allianceColor -> {
+                setOperatorPerspectiveForward(
+                        allianceColor == Alliance.Red
+                                ? kRedAlliancePerspectiveRotation
+                                : kBlueAlliancePerspectiveRotation);
+                m_hasAppliedOperatorPerspective = true;
+            });
+        }
     }
 }
