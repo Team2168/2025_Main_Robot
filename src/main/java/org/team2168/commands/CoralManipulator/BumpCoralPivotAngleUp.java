@@ -2,6 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+
 package org.team2168.commands.CoralManipulator;
 
 import org.team2168.subsystems.CoralPivot;
@@ -10,13 +11,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class BumpCoralPivotAngleUp extends Command {
-  /** Creates a new BumpCoralPivotAngleUp. */
+  /** Creates a new setIntakePivotPosition. */
+
   private CoralPivot coralPivot;
 
   public BumpCoralPivotAngleUp(CoralPivot coralPivot) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.coralPivot = coralPivot;
 
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(coralPivot);
   }
 

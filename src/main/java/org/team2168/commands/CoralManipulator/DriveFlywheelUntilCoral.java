@@ -10,14 +10,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveFlywheelUntilCoral extends Command {
+  /** Creates a new setIntakeSpeed. */
+
   private CoralFlywheel coralFlywheel;
   private double speed;
 
-  /** Creates a new DriveFlywheelUntilCoral. */
   public DriveFlywheelUntilCoral(CoralFlywheel coralFlywheel, double speed) {
+    // Use addRequirements() here to declare subsystem dependencies.
     this.coralFlywheel = coralFlywheel;
     this.speed = speed;
-
     addRequirements(coralFlywheel);
   }
 
