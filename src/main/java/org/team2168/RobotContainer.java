@@ -248,7 +248,7 @@ public class RobotContainer {
 
                 /* sets to intake cage */
                 operatorJoystick.povLeft()
-                                .onTrue(new setIntakePivotPosition(algaeintakePivot, -7.5))
+                                .onTrue(new setIntakePivotPosition(algaeintakePivot, -5.8))
                                 .whileTrue(new setIntakeSpeed(algaeintakeWheel, -0.5));
 
                 // testJoystick.povRight().whileTrue(new DriveClimber(climber, () ->

@@ -40,7 +40,7 @@ public class algaeIntakePivot extends SubsystemBase {
   private boolean isInverted = true;
   private IdleMode brake = IdleMode.kBrake;
   final double MIN_ANGLE = 0.0; //in rot, change to degrees later
-  final double MAX_ANGLE = -15.0;
+  final double MAX_ANGLE = -14.0;
   private double setPoint = degreesToRot(0.0);
   private final int SMART_CURRENT_LIMIT = 30; 
 
