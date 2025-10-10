@@ -171,12 +171,12 @@ public final class Autos {
                                 Commands.parallel(swerve.drivePath("TwoCoralLeftAuto1st"),
                                                 new DriveLiftHeights(lift, LiftHeights.L4.getValue()).withTimeout(1.5),
                                                 new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon())
-                                                                .withTimeout(2.0)
+                                                                .withTimeout(2.0))
                                                                 .andThen(Commands.parallel(
                                                                                 new DriveCoralFlywheel(flywheel, -0.5),
                                                                                 new SetCoralPivotAngle(pivot,
                                                                                                 CORAL_PIVOT_POSITION.L4
-                                                                                                                .getPivotPositon())))));
+                                                                                                                .getPivotPositon()))));
         }
 
         public Command rightScoreSingleL4() {
@@ -186,12 +186,12 @@ public final class Autos {
                                                 new DriveLiftHeights(lift, LiftHeights.L4.getValue()).withTimeout(1.5),
                                                 new SetCoralPivotAngle(pivot, CORAL_PIVOT_POSITION.L4.getPivotPositon())
                                                                 .withTimeout(2.0)
-                                                                .andThen(new WaitCommand(0.3))
+                                                                .andThen(new WaitCommand(0.3)))
                                                                 .andThen(Commands.parallel(
                                                                                 new DriveCoralFlywheel(flywheel, -0.5),
                                                                                 new SetCoralPivotAngle(pivot,
                                                                                                 CORAL_PIVOT_POSITION.L4
-                                                                                                                .getPivotPositon())))));
+                                                                                                                .getPivotPositon()))));
         }
 
         public Command rightScoreSingleL4TEST() {
