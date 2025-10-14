@@ -10,9 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -76,11 +74,6 @@ public class algaeIntakeWheel extends SubsystemBase {
     public double getSpeedRPM () {
       return TicksPerOneHundredMSToRPM(intakeWheelEncoder.getVelocity());
     }
-
-   /* @Log(name = "Is algae present?")
-        public boolean isAlgaePresent() {
-            return !intakeDetector.get();
-        }*/
 
   @Override
   public void periodic() {

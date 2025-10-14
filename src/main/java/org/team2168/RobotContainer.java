@@ -9,12 +9,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import org.team2168.Constants.Controllers;
-import org.team2168.Constants.ClimberConstants;
 
 import org.team2168.commands.Autos;
 import org.team2168.commands.ExampleCommand;
-import org.team2168.commands.Climber.CloseClimber;
-import org.team2168.commands.Climber.DriveClimber;
 import org.team2168.commands.CoralManipulator.DriveCoralFlywheel;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilCoral;
 import org.team2168.commands.CoralManipulator.DriveFlywheelUntilNoCoral;
@@ -26,10 +23,8 @@ import org.team2168.commands.LED.LEDStatus;
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
-import org.team2168.subsystems.Climber;
 import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.Lift.LiftHeights;
-import org.team2168.subsystems.CageDetector;
 import org.team2168.subsystems.LEDs;
 
 import org.team2168.subsystems.ExampleSubsystem;
@@ -37,17 +32,11 @@ import org.team2168.subsystems.SwerveDrivetrain.Swerve;
 import org.team2168.subsystems.SwerveDrivetrain.TunerConstants;
 import org.team2168.utils.Telemetry;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.util.Units;
 import org.team2168.commands.IntakePivot.setIntakePivotAngleHigher;
 import org.team2168.commands.IntakePivot.setIntakePivotAngleLower;
 import org.team2168.commands.IntakePivot.setIntakePivotPosition;
 import org.team2168.commands.IntakeWheel.setIntakeSpeed;
 
-import org.team2168.subsystems.ExampleSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;

@@ -4,10 +4,7 @@
 
 package org.team2168.subsystems;
 
-import static edu.wpi.first.units.Units.Rotations;
 
-
-import org.team2168.Constants;
 import org.team2168.Constants.CANDevices;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
