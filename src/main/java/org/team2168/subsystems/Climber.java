@@ -12,20 +12,19 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
 
-  TalonFX motor = new TalonFX(CANDevices.CLIMBER_ID);
-  
-  DigitalInput rightlimitSwitch = new DigitalInput(ClimberConstants.RIGHT_LIMIT_SWITCH);
-  DigitalInput leftlimitSwitch = new DigitalInput(ClimberConstants.LEFT_LIMIT_SWITCH);
+  TalonFX motor = new TalonFX(CANDevices.CLIMBER_ID_1);
+  TalonFX follower = new TalonFX(CANDevices.CLIMBER_ID_2);
   
   // The motor's inversion is such that moving clockwise is considered moving forward
   private final InvertedValue INVERSION = InvertedValue.Clockwise_Positive;
@@ -36,21 +35,25 @@ public class Climber extends SubsystemBase {
   private final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
   // The maximum values the motor can be commanded to go, in percent
   // Values are arbitrary
-  private final double MAX_FORWARD_OUTPUT = 0.95;
+  private final double MAX_FORWARD_OUTPUT = 1.0;
   private final double MIN_FORWARD_OUTPUT = 0.0; //The motor is not allowed to move backwards 😱
 
-  private final double CURRENT_LIMIT = 20.0;
+  private final double FORWARD_SOFT_LIMIT = 156.81;
+  private final double REVERSE_SOFT_LIMIT = 0.0;
+
+  private final double CURRENT_LIMIT = 90.0;
   private final boolean CURRENT_LIMIT_ENABLED = true;
   
-  private final double kP = 0.0;
+  private final double kP = 1.0;
   private final double kI = 0.0;
   private final double kD = 0.0;
 
   private final int FEEDBACK_SENSOR = 0;
   private final int FEEDBACK_OFFSET = 457; //arbitrary number
 
-  private final int CRUISE_VELOCITY = 25; //in rotations per second
+  private final int CRUISE_VELOCITY = 50; //in rotations per second
   private final int ACCELERATION = 25; //in rotations per seconds squared
+  private final double GEAR_RATIO = 342.0;
 
   
   
@@ -63,25 +66,22 @@ public class Climber extends SubsystemBase {
     motor.set(speed);
   } 
 
-  public boolean getrightlimitSwitch() {
-    return rightlimitSwitch.get(); 
-  }
-
-  public boolean getleftlimitSwitch() {
-    return leftlimitSwitch.get();
-  }
-
 
   /** Creates a new Climber. */
   public Climber() {
 
       motor.getConfigurator().apply(new TalonFXConfiguration()); //sets the motor to its facotry default
+      follower.getConfigurator().apply(new TalonFXConfiguration());
       
+      follower.setControl(new Follower(motor.getDeviceID(), true));
+      
+
       MotorOutputConfigs motorConfigs = new MotorOutputConfigs();
       CurrentLimitsConfigs currentConfigs = new CurrentLimitsConfigs();
       Slot0Configs gains = new Slot0Configs();
       FeedbackConfigs feedbackConfigs = new FeedbackConfigs();
       MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+      SoftwareLimitSwitchConfigs softLimitConfig = new SoftwareLimitSwitchConfigs();
   
       /* Motor Output Configurations */    
       motorConfigs.withInverted(INVERSION);
@@ -98,11 +98,7 @@ public class Climber extends SubsystemBase {
       //setting gains with the dot operator
       gains.withKP(kP)
            .withKI(kI)
-           .withKD(kD);
-      //another way to set gains (accessing the member variable directly to change it):
-      gains.kP = kP;
-      gains.kI = kI;
-      gains.kD = kD;
+           .withKD(kD);    
   
       /* Feedback Configurations */
       feedbackConfigs.withFeedbackRemoteSensorID(FEEDBACK_SENSOR); //normally, the parameter should be calling the sensor ID from Constants
@@ -113,6 +109,12 @@ public class Climber extends SubsystemBase {
       /* Motion Magic Configurations */
       motionMagicConfigs.withMotionMagicCruiseVelocity(CRUISE_VELOCITY);
       motionMagicConfigs.withMotionMagicAcceleration(ACCELERATION);
+
+      softLimitConfig
+        .withForwardSoftLimitThreshold(FORWARD_SOFT_LIMIT)
+        .withForwardSoftLimitEnable(true)
+        .withReverseSoftLimitThreshold(REVERSE_SOFT_LIMIT)
+        .withReverseSoftLimitEnable(true);
   
       /* Apply Configurations */
       motor.getConfigurator().apply(motorConfigs);
@@ -120,7 +122,15 @@ public class Climber extends SubsystemBase {
       motor.getConfigurator().apply(gains);
       motor.getConfigurator().apply(feedbackConfigs);
       motor.getConfigurator().apply(motionMagicConfigs);
+      motor.getConfigurator().apply(softLimitConfig);
         
+  }
+
+  public boolean isClimbing() {
+    if (motor.getPosition().getValueAsDouble() >=  FORWARD_SOFT_LIMIT || motor.getPosition().getValueAsDouble() >= (FORWARD_SOFT_LIMIT - 1.0)) {
+      return true;
+    }
+    return false;
   }
 
   @Override
