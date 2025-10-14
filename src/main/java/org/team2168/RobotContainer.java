@@ -23,14 +23,13 @@ import org.team2168.commands.CoralManipulator.SetCoralPivotAngle;
 import org.team2168.commands.CoralManipulator.DriveFlywheelWithJoystick;
 import org.team2168.commands.lift.DriveLiftHeights;
 import org.team2168.commands.LED.LEDStatus;
-
+import org.team2168.subsystems.CageDetector;
+import org.team2168.subsystems.Climber;
 import org.team2168.subsystems.CoralFlywheel;
 import org.team2168.subsystems.CoralPivot;
 import org.team2168.subsystems.CoralPivot.CORAL_PIVOT_POSITION;
-import org.team2168.subsystems.Climber;
 import org.team2168.subsystems.Lift;
 import org.team2168.subsystems.Lift.LiftHeights;
-import org.team2168.subsystems.CageDetector;
 import org.team2168.subsystems.LEDs;
 
 import org.team2168.commands.IntakePivot.setIntakePivotPosition;
@@ -89,6 +88,7 @@ public class RobotContainer {
 
         private final algaeIntakePivot algaeintakePivot = new algaeIntakePivot();
         private final algaeIntakeWheel algaeintakeWheel = new algaeIntakeWheel();
+  
 
         // Replace with CommandPS4Controller or CommandJoystick if needed
         public CommandXboxController driverJoystick = new CommandXboxController(Controllers.DRIVER_JOYSTICK);

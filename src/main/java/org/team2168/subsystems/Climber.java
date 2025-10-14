@@ -5,6 +5,7 @@
 package org.team2168.subsystems;
 
 import org.team2168.Constants.CANDevices;
+import org.team2168.Constants.ClimberConstants;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;

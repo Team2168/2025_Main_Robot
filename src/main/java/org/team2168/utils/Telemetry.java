@@ -3,10 +3,7 @@ package org.team2168.utils;
 import org.team2168.subsystems.SwerveDrivetrain.Swerve;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
-import com.ctre.phoenix6.swerve.SwerveModule;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
