@@ -43,23 +43,23 @@ public final class Constants {
   }
 
   public static class CANDevices {
-    public static final int INTAKE_PIVOT = 31;
-    public static final int INTAKE_WHEEL = 30;
+    public static final int INTAKE_PIVOT = 0;
+    public static final int INTAKE_WHEEL = 0;
     public static final int LEDs_ID = 0;
 
-    public static final int CAGE_DETECTOR_LS_1 = 8;
-    public static final int CAGE_DETECTOR_LS_2 = 7;
+    public static final int CAGE_DETECTOR_LS_1 = 0;
+    public static final int CAGE_DETECTOR_LS_2 = 0;
 
-    public static final int CORAL_PIVOT_ID = 21;
-    public static final int CORAL_FLYWHEEL_ID = 20;
+    public static final int CORAL_PIVOT_ID = 0;
+    public static final int CORAL_FLYWHEEL_ID = 0;
 
     public static final int LINE_BREAK_SENSOR = 0;
 
-    public static final int ELEVATOR_ID = 12;
-    public static final int ELEVATOR_CANCODER_ID = 11;
+    public static final int ELEVATOR_ID = 0;
+    public static final int ELEVATOR_CANCODER_ID = 0;
 
-    public static final int CLIMBER_ID_1 = 13;
-    public static final int CLIMBER_ID_2 = 14;
+    public static final int CLIMBER_ID_1 = 0;
+    public static final int CLIMBER_ID_2 = 0;
   }
 
   public static class Controllers {
